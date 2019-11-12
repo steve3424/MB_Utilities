@@ -383,6 +383,11 @@ namespace MB_Utilities.controls.chester
             {
                 start++;
                 cellValue = worksheet.Cells[start, 1].GetValue<string>();
+                while (cellValue == null)
+                {
+                    start++;
+                    cellValue = worksheet.Cells[start, 1].GetValue<string>();
+                }
             }
             start += 2;
             return start;
@@ -396,6 +401,11 @@ namespace MB_Utilities.controls.chester
             {
                 end++;
                 cellValue = worksheet.Cells[end, 1].GetValue<string>();
+                while (cellValue == null)
+                {
+                    end++;
+                    cellValue = worksheet.Cells[end, 1].GetValue<string>();
+                }
             }
             return end;
         }
