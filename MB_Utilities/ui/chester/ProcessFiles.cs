@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,8 @@ namespace MB_Utilities.controls.chester
 {
     public partial class ProcessFiles : UserControl
     {
+        private Stopwatch mStopwatch = new Stopwatch();
+
         // state of directory
         private const int FOLDER_READY = 0;
         private const int PATH_IS_EMPTY = 1;
@@ -96,6 +99,8 @@ namespace MB_Utilities.controls.chester
             }
             else
             {
+                mStopwatch.Start();
+
                 FileInfo[] files = loadFiles();
                 disableUI();
                 backgroundWorker1.RunWorkerAsync(files);
@@ -124,6 +129,8 @@ namespace MB_Utilities.controls.chester
         {
             /// ACCESS UI THREAD HERE
 
+            mStopwatch.Stop();
+
             if (e.Error != null)
             {
                 showErrorMessage(BACKGROUND_WORKER_ERROR);
@@ -131,10 +138,12 @@ namespace MB_Utilities.controls.chester
             }
             else
             {
-                string outputMessage = "\nSearch Time: ";
-                outputField.Text += outputMessage;
+                TimeSpan ts = mStopwatch.Elapsed;
+                string searchTime = string.Format("{0:00}m:{1:00}s.{2:00}ms", ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+                outputField.Text += "Search Time: " + searchTime;
             }
 
+            mStopwatch.Reset();
             enableUI();
         }
 
