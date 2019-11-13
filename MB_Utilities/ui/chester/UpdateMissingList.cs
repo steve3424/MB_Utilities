@@ -116,7 +116,7 @@ namespace MB_Utilities.controls.chester
             List<Dictionary<string, string>> unbilledReportCharts = new List<Dictionary<string, string>>();
 
             int startRow = findStartRowOfUnbilledReport(worksheet);
-            int endRow = findEndRow(worksheet);
+            int endRow = findEndRowOfUnbilledReport(worksheet);
             for (int i = startRow; i < endRow; i++)
             {
                 string currentCell = worksheet.Cells[i, 1].GetValue<string>();
@@ -140,7 +140,7 @@ namespace MB_Utilities.controls.chester
         private void appendToMissingList(List<Dictionary<string, string>> unbilledReportCharts, ExcelWorksheet worksheet)
         {
             FileInfo missingListPath = new FileInfo(missingListPathField.Text);
-            int insertionRow = findEndRow(worksheet);
+            int insertionRow = findEndRowOfMissingList(worksheet);
             foreach (Dictionary<string, string> chartToAppend in unbilledReportCharts)
             {
                 worksheet.InsertRow(insertionRow, 1);
@@ -175,7 +175,7 @@ namespace MB_Utilities.controls.chester
             return startRow;
         }
 
-        private int findEndRow(ExcelWorksheet worksheet)
+        private int findEndRowOfUnbilledReport(ExcelWorksheet worksheet)
         {
             int endRow = 13; // begin from start row of 13
             string endString = "TD - MISSING COMPLETE CHART Total:";
@@ -184,6 +184,19 @@ namespace MB_Utilities.controls.chester
             {
                 endRow++;
                 stringOnReport = worksheet.Cells[endRow, 3].GetValue<string>();
+            }
+            return endRow;
+        }
+
+        private int findEndRowOfMissingList(ExcelWorksheet worksheet)
+        {
+            int endRow = 13; // begin from start row of 13
+            string endString = "TD - MISSING COMPLETE CHART Total:";
+            string stringOnReport = worksheet.Cells[endRow, 1].GetValue<string>();
+            while (stringOnReport != endString)
+            {
+                endRow++;
+                stringOnReport = worksheet.Cells[endRow, 1].GetValue<string>();
             }
             return endRow;
         }
