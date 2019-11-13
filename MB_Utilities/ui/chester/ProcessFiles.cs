@@ -140,7 +140,7 @@ namespace MB_Utilities.controls.chester
             {
                 TimeSpan ts = mStopwatch.Elapsed;
                 string searchTime = string.Format("{0:00}m:{1:00}s.{2:00}ms", ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-                outputField.Text += "Search Time: " + searchTime;
+                outputField.Text += "\nSearch Time: " + searchTime;
             }
 
             mStopwatch.Reset();
