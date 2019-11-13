@@ -79,6 +79,7 @@ namespace MB_Utilities.controls.chester
                 SortedDictionary<int, Dictionary<string, string>> voidedList = createVoidedList(logFile, fileNames);
                 showMissingList(missingList);
                 showVoidedList(voidedList);
+                createTextFile(missingList);
 
                 enableUI();
             }
@@ -205,6 +206,21 @@ namespace MB_Utilities.controls.chester
                 string voidedTotal = voidedList.Count.ToString();
                 voidedTotalLabel.Text = "Voided Total: " + voidedTotal;
             }
+        }
+
+        private void createTextFile(SortedDictionary<int, Dictionary<string, string>> missingList)
+        {
+            // creates text file to use in UiPath
+
+            string savePath = folderPathField.Text + "\\missing_list.txt";
+            StreamWriter sw = new StreamWriter(savePath, false);
+
+            foreach (int chartNum in missingList.Keys)
+            {
+                sw.WriteLine(chartNum);
+            }
+            sw.Flush();
+            sw.Close();
         }
 
 
