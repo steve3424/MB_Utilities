@@ -91,21 +91,22 @@ namespace MB_Utilities.controls.chester
 
         private void processFilesBTN_Click(object sender, EventArgs e)
         {
+            disableUI();
+
             // check state of folder before running
             int folderState = getFolderState();
             if (folderState != FOLDER_READY)
             {
                 showErrorMessage(folderState);
+                enableUI();
             }
             else
             {
                 mStopwatch.Start();
 
                 FileInfo[] files = loadFiles();
-                disableUI();
                 backgroundWorker1.RunWorkerAsync(files);
             }
-
         }
 
         /****************** BACKGROUND WORKER FUNCTIONS **************/

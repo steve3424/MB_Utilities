@@ -71,6 +71,8 @@ namespace MB_Utilities.controls.chester
 
         private void renameFilesBTN_Click(object sender, EventArgs e)
         {
+            disableUI();
+
             if (showWarning(RENAME_WARNING) == DialogResult.Yes)
             {
                 // check state of file and folder before executing
@@ -88,7 +90,7 @@ namespace MB_Utilities.controls.chester
                 {
                     // continue with rename
 
-                    disableUI();
+                    
 
                     List<string> subListIDs = new List<string>() { "ME", "PM", "SC", "WR", "TD" };
                     List<SubList> subLists = createSubLists(subListIDs);
@@ -103,9 +105,9 @@ namespace MB_Utilities.controls.chester
                     }
 
                     MessageBox.Show("Rename complete!!");
-                    enableUI();
                 }
             }
+            enableUI();
         }
 
         private void createStragglerListBTN_Click(object sender, EventArgs e)

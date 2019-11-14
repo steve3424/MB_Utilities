@@ -58,6 +58,8 @@ namespace MB_Utilities.controls.chester
 
         private void createMissingListBTN_Click(object sender, EventArgs e)
         {
+            disableUI();
+
             // check state of file and folder before executing
             int fileState = getFileState();
             int folderState = getFolderState();
@@ -71,8 +73,6 @@ namespace MB_Utilities.controls.chester
             }
             else
             {
-                disableUI();
-
                 HashSet<int> fileNames = loadFileNames();
                 Dictionary<int, Dictionary<string, string>> logFile = loadLogFile();
                 SortedDictionary<int, Dictionary<string, string>> missingList = createMissingList(logFile, fileNames);
@@ -80,9 +80,8 @@ namespace MB_Utilities.controls.chester
                 showMissingList(missingList);
                 showVoidedList(voidedList);
                 createTextFile(missingList);
-
-                enableUI();
             }
+            enableUI();
         }
 
 
