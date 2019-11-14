@@ -90,8 +90,6 @@ namespace MB_Utilities.controls.chester
                 {
                     // continue with rename
 
-                    
-
                     List<string> subListIDs = new List<string>() { "ME", "PM", "SC", "WR", "TD" };
                     List<SubList> subLists = createSubLists(subListIDs);
 
@@ -112,6 +110,8 @@ namespace MB_Utilities.controls.chester
 
         private void createStragglerListBTN_Click(object sender, EventArgs e)
         {
+            disableUI();
+
             if (showWarning(CREATE_LIST_WARNING) == DialogResult.Yes)
             {
                 // check state of file and folder before executing
@@ -127,18 +127,15 @@ namespace MB_Utilities.controls.chester
                 }
                 else
                 {
-                    disableUI();
-
                     List<string> subListIDs = new List<string>() { "ME", "PM", "TD"};
                     List<SubList> subLists = createSubLists(subListIDs);
                     SortedDictionary<int, Tuple<int, string, DateTime>> stragglerList = createStragglerList(subLists);
                     List<int> rowsToDelete = getRowsToDelete(stragglerList);
                     updateMissingList(subLists, rowsToDelete);
                     outputStragglerList(stragglerList);
-
-                    enableUI();
                 }
             }
+            enableUI();
         }
 
 
