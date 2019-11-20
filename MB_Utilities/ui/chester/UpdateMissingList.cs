@@ -186,6 +186,7 @@ namespace MB_Utilities.controls.chester
             {
                 endRow++;
                 dateOnReport = worksheet.Cells[endRow, 7].GetValue<DateTime>().ToShortDateString();
+                stringOnReport = worksheet.Cells[endRow, 3].GetValue<string>();
                 while (dateOnReport == dateDefault && stringOnReport != endString)
                 {
                     endRow++;
