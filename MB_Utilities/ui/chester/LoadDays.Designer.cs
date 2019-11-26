@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.processFilesTitle = new System.Windows.Forms.Label();
-            this.saveFileToPath = new System.Windows.Forms.RichTextBox();
+            this.saveFileToPathField = new System.Windows.Forms.RichTextBox();
             this.saveFileToBTN = new System.Windows.Forms.Button();
-            this.codingLogFilePath = new System.Windows.Forms.RichTextBox();
+            this.codingLogFilePathField = new System.Windows.Forms.RichTextBox();
             this.chooseCodingLogFileBTN = new System.Windows.Forms.Button();
             this.createListsBTN = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -46,15 +46,15 @@
             this.processFilesTitle.TabIndex = 22;
             this.processFilesTitle.Text = "Load Days";
             // 
-            // saveFileToPath
+            // saveFileToPathField
             // 
-            this.saveFileToPath.Location = new System.Drawing.Point(111, 291);
-            this.saveFileToPath.Name = "saveFileToPath";
-            this.saveFileToPath.ReadOnly = true;
-            this.saveFileToPath.Size = new System.Drawing.Size(592, 31);
-            this.saveFileToPath.TabIndex = 41;
-            this.saveFileToPath.TabStop = false;
-            this.saveFileToPath.Text = "";
+            this.saveFileToPathField.Location = new System.Drawing.Point(111, 291);
+            this.saveFileToPathField.Name = "saveFileToPathField";
+            this.saveFileToPathField.ReadOnly = true;
+            this.saveFileToPathField.Size = new System.Drawing.Size(592, 31);
+            this.saveFileToPathField.TabIndex = 41;
+            this.saveFileToPathField.TabStop = false;
+            this.saveFileToPathField.Text = "";
             // 
             // saveFileToBTN
             // 
@@ -65,16 +65,17 @@
             this.saveFileToBTN.TabIndex = 7;
             this.saveFileToBTN.Text = "Save File To";
             this.saveFileToBTN.UseVisualStyleBackColor = true;
+            this.saveFileToBTN.Click += new System.EventHandler(this.saveFileToBTN_Click);
             // 
-            // codingLogFilePath
+            // codingLogFilePathField
             // 
-            this.codingLogFilePath.Location = new System.Drawing.Point(111, 162);
-            this.codingLogFilePath.Name = "codingLogFilePath";
-            this.codingLogFilePath.ReadOnly = true;
-            this.codingLogFilePath.Size = new System.Drawing.Size(592, 31);
-            this.codingLogFilePath.TabIndex = 40;
-            this.codingLogFilePath.TabStop = false;
-            this.codingLogFilePath.Text = "";
+            this.codingLogFilePathField.Location = new System.Drawing.Point(111, 162);
+            this.codingLogFilePathField.Name = "codingLogFilePathField";
+            this.codingLogFilePathField.ReadOnly = true;
+            this.codingLogFilePathField.Size = new System.Drawing.Size(592, 31);
+            this.codingLogFilePathField.TabIndex = 40;
+            this.codingLogFilePathField.TabStop = false;
+            this.codingLogFilePathField.Text = "";
             // 
             // chooseCodingLogFileBTN
             // 
@@ -85,6 +86,7 @@
             this.chooseCodingLogFileBTN.TabIndex = 6;
             this.chooseCodingLogFileBTN.Text = "Choose Coding Log File";
             this.chooseCodingLogFileBTN.UseVisualStyleBackColor = true;
+            this.chooseCodingLogFileBTN.Click += new System.EventHandler(this.chooseCodingLogFileBTN_Click);
             // 
             // createListsBTN
             // 
@@ -95,14 +97,15 @@
             this.createListsBTN.TabIndex = 8;
             this.createListsBTN.Text = "Create Lists";
             this.createListsBTN.UseVisualStyleBackColor = true;
+            this.createListsBTN.Click += new System.EventHandler(this.createListsBTN_Click);
             // 
             // LoadDays
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.saveFileToPath);
+            this.Controls.Add(this.saveFileToPathField);
             this.Controls.Add(this.saveFileToBTN);
-            this.Controls.Add(this.codingLogFilePath);
+            this.Controls.Add(this.codingLogFilePathField);
             this.Controls.Add(this.chooseCodingLogFileBTN);
             this.Controls.Add(this.createListsBTN);
             this.Controls.Add(this.processFilesTitle);
@@ -116,9 +119,9 @@
         #endregion
 
         private System.Windows.Forms.Label processFilesTitle;
-        private System.Windows.Forms.RichTextBox saveFileToPath;
+        private System.Windows.Forms.RichTextBox saveFileToPathField;
         private System.Windows.Forms.Button saveFileToBTN;
-        private System.Windows.Forms.RichTextBox codingLogFilePath;
+        private System.Windows.Forms.RichTextBox codingLogFilePathField;
         private System.Windows.Forms.Button chooseCodingLogFileBTN;
         private System.Windows.Forms.Button createListsBTN;
     }

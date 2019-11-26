@@ -92,7 +92,6 @@
             // 
             // loadDaysNavBTN
             // 
-            this.loadDaysNavBTN.Enabled = false;
             this.loadDaysNavBTN.FlatAppearance.BorderSize = 0;
             this.loadDaysNavBTN.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightGray;
             this.loadDaysNavBTN.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
