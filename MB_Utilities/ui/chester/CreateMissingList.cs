@@ -195,15 +195,20 @@ namespace MB_Utilities.controls.chester
                 voidedListTable.Columns.Add("Patient Name");
                 voidedListTable.Columns.Add("Log Code");
 
+                int chartsWeHave = 0;
+
                 foreach (int chartNum in voidedList.Keys)
                 {
+                    if (voidedList[chartNum]["missing"] == "") {
+                        chartsWeHave++;
+                    }
                     string patientName = string.Concat(voidedList[chartNum]["lastName"], ", ", voidedList[chartNum]["firstName"]);
                     voidedListTable.Rows.Add(voidedList[chartNum]["missing"], chartNum, patientName, voidedList[chartNum]["logCode"]);
                 }
 
                 voidedListOutput.DataSource = voidedListTable;
                 string voidedTotal = voidedList.Count.ToString();
-                voidedTotalLabel.Text = "Voided Total: " + voidedTotal;
+                voidedTotalLabel.Text = "Voided Total: " + voidedTotal + " " + "(" + chartsWeHave.ToString() + ")";
             }
         }
 
