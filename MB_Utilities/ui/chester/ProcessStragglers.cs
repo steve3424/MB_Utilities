@@ -129,7 +129,7 @@ namespace MB_Utilities.controls.chester
                 {
                     List<string> subListIDs = new List<string>() { "ME", "PM", "TD"};
                     List<SubList> subLists = createSubLists(subListIDs);
-                    SortedDictionary<int, Tuple<int, string, DateTime>> stragglerList = createStragglerList(subLists);
+                    SortedDictionary<int, Dictionary<string, string>> stragglerList = createStragglerList(subLists);
                     List<int> rowsToDelete = getRowsToDelete(stragglerList);
                     updateMissingList(subLists, rowsToDelete);
                     outputStragglerList(stragglerList);
@@ -237,12 +237,11 @@ namespace MB_Utilities.controls.chester
                     newSubList.name = subListID;
                     newSubList.startRow = findStartOfList(worksheet, subListID);
                     newSubList.endRow = findEndOfList(worksheet, subListID);
-                    newSubList.chartInfo = loadList(worksheet, newSubList);
+                    newSubList.chartInfo = loadChartInfo(worksheet, newSubList);
                     newSubList.totalCharts = worksheet.Cells[newSubList.endRow, 3].GetValue<int>();
 
                     subLists.Add(newSubList);
                 }
-                // need to close worksheet ??
             }
             return subLists;
         }
@@ -259,9 +258,9 @@ namespace MB_Utilities.controls.chester
             return null;
         }
 
-        private SortedDictionary<int, Tuple<int, string, DateTime>> createStragglerList(List<SubList> subLists)
+        private SortedDictionary<int, Dictionary<string, string>> createStragglerList(List<SubList> subLists)
         {
-            SortedDictionary<int, Tuple<int, string, DateTime>> stragglerList = new SortedDictionary<int, Tuple<int, string, DateTime>>();
+            SortedDictionary<int, Dictionary<string, string>> stragglerList = new SortedDictionary<int, Dictionary<string, string>>();
 
             foreach (string file in Directory.EnumerateFiles(folderPathField.Text, "*.pdf"))
             {
@@ -281,22 +280,27 @@ namespace MB_Utilities.controls.chester
             return stragglerList;
         }
 
-        private Dictionary<int, Tuple<int, string, DateTime>> loadList(ExcelWorksheet worksheet, SubList subList)
+        private Dictionary<int, Dictionary<string, string>> loadChartInfo(ExcelWorksheet worksheet, SubList subList)
         {
-            Dictionary<int, Tuple<int, string, DateTime>> list = new Dictionary<int, Tuple<int, string, DateTime>>();
+            Dictionary<int, Dictionary<string, string>> chartInfo = new Dictionary<int, Dictionary<string, string>>();
 
             for (int row = subList.startRow; row < subList.endRow; row++)
             {
                 int chartNum = worksheet.Cells[row, 1].GetValue<int>();
                 string patientName = worksheet.Cells[row, 2].GetValue<string>();
-                DateTime date = worksheet.Cells[row, 3].GetValue<DateTime>();
+                string date = worksheet.Cells[row, 3].GetValue<DateTime>().ToShortDateString();
 
-                Tuple<int, string, DateTime> rowNameDate = new Tuple<int, string, DateTime>(row, patientName, date);
-                list.Add(chartNum, rowNameDate);
+                Dictionary<string, string> rowNameDate = new Dictionary<string, string>() 
+                {
+                    { "rowNumber", row.ToString()},
+                    { "patientName", patientName},
+                    { "date", date}
+                };
+                chartInfo.Add(chartNum, rowNameDate);
 
                 // maybe add exception handling for possible blank cells or cells with bad chart numbers ??
             }
-            return list;
+            return chartInfo;
         }
 
         private void updateMissingList(List<SubList> subLists, List<int> rowsToDelete)
@@ -326,8 +330,6 @@ namespace MB_Utilities.controls.chester
                     }
                 }
 
-                // need to close worksheet ??
-
                 try
                 {
                     package.Save();
@@ -339,7 +341,7 @@ namespace MB_Utilities.controls.chester
             }
         }
 
-        private void outputStragglerList(SortedDictionary<int, Tuple<int, string, DateTime>> stragglerList)
+        private void outputStragglerList(SortedDictionary<int, Dictionary<string, string>> stragglerList)
         {
             using (DataTable stragglerListDataTable = new DataTable())
             {
@@ -349,8 +351,8 @@ namespace MB_Utilities.controls.chester
 
                 foreach (int chartNum in stragglerList.Keys)
                 {
-                    string patientName = stragglerList[chartNum].Item2;
-                    string date = stragglerList[chartNum].Item3.ToShortDateString();
+                    string patientName = stragglerList[chartNum]["patientName"];
+                    string date = stragglerList[chartNum]["date"];
 
                     stragglerListDataTable.Rows.Add(chartNum, patientName, date);
                 }
@@ -359,13 +361,14 @@ namespace MB_Utilities.controls.chester
             }
         }
 
-        private List<int> getRowsToDelete(SortedDictionary<int, Tuple<int, string, DateTime>> stragglerList)
+        private List<int> getRowsToDelete(SortedDictionary<int, Dictionary<string, string>> stragglerList)
         {
             List<int> rowsToDelete = new List<int>();
             
             foreach (int stragglerKey in stragglerList.Keys)
             {
-                rowsToDelete.Add(stragglerList[stragglerKey].Item1);
+                int rowNumber = Int32.Parse(stragglerList[stragglerKey]["rowNumber"]);
+                rowsToDelete.Add(rowNumber);
             }
 
             rowsToDelete.Sort();

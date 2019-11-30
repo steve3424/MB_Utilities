@@ -12,6 +12,6 @@ namespace MB_Utilities.utils
         public int startRow;
         public int endRow;
         public int totalCharts;
-        public Dictionary<int, Tuple<int, string, DateTime>> chartInfo = new Dictionary<int, Tuple<int, string, DateTime>>();
+        public Dictionary<int, Dictionary<string, string>> chartInfo = new Dictionary<int, Dictionary<string, string>>();
     }
 }
