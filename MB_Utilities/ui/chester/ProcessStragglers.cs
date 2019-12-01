@@ -129,7 +129,7 @@ namespace MB_Utilities.controls.chester
                 {
                     List<string> subListIDs = new List<string>() { "ME", "PM", "TD"};
                     List<SubList> subLists = createSubLists(subListIDs);
-                    SortedDictionary<int, Dictionary<string, string>> stragglerList = createStragglerList(subLists);
+                    List<Dictionary<string, string>> stragglerList = createStragglerList(subLists);
                     List<int> rowsToDelete = getRowsToDelete(stragglerList);
                     updateMissingList(subLists, rowsToDelete);
                     outputStragglerList(stragglerList);
@@ -258,9 +258,9 @@ namespace MB_Utilities.controls.chester
             return null;
         }
 
-        private SortedDictionary<int, Dictionary<string, string>> createStragglerList(List<SubList> subLists)
+        private List<Dictionary<string, string>> createStragglerList(List<SubList> subLists)
         {
-            SortedDictionary<int, Dictionary<string, string>> stragglerList = new SortedDictionary<int, Dictionary<string, string>>();
+            List<Dictionary<string, string>> stragglerList = new List<Dictionary<string, string>>();
 
             foreach (string file in Directory.EnumerateFiles(folderPathField.Text, "*.pdf"))
             {
@@ -271,13 +271,18 @@ namespace MB_Utilities.controls.chester
                 {
                     if (subList.chartInfo.ContainsKey(chartNum))
                     {
-                        stragglerList.Add(chartNum, subList.chartInfo[chartNum]);
+                        stragglerList.Add(subList.chartInfo[chartNum]);
                         subList.totalCharts -= 1;
                     }
                 }
             }
 
-            return stragglerList;
+            // sort by "date", then by "chartNum"
+            List<Dictionary<string, string>> sortedStragglerList = stragglerList.OrderBy(x => Convert.ToDateTime(x["date"]))
+                                                                   .ThenBy(x => x["chartNum"])
+                                                                   .ToList<Dictionary<string, string>>();
+
+            return sortedStragglerList;
         }
 
         private Dictionary<int, Dictionary<string, string>> loadChartInfo(ExcelWorksheet worksheet, SubList subList)
@@ -290,13 +295,14 @@ namespace MB_Utilities.controls.chester
                 string patientName = worksheet.Cells[row, 2].GetValue<string>();
                 string date = worksheet.Cells[row, 3].GetValue<DateTime>().ToShortDateString();
 
-                Dictionary<string, string> rowNameDate = new Dictionary<string, string>() 
+                Dictionary<string, string> chartRowNameDate = new Dictionary<string, string>() 
                 {
+                    { "chartNum", chartNum.ToString() },
                     { "rowNumber", row.ToString()},
                     { "patientName", patientName},
                     { "date", date}
                 };
-                chartInfo.Add(chartNum, rowNameDate);
+                chartInfo.Add(chartNum, chartRowNameDate);
 
                 // maybe add exception handling for possible blank cells or cells with bad chart numbers ??
             }
@@ -341,7 +347,7 @@ namespace MB_Utilities.controls.chester
             }
         }
 
-        private void outputStragglerList(SortedDictionary<int, Dictionary<string, string>> stragglerList)
+        private void outputStragglerList(List<Dictionary<string, string>> stragglerList)
         {
             using (DataTable stragglerListDataTable = new DataTable())
             {
@@ -349,25 +355,25 @@ namespace MB_Utilities.controls.chester
                 stragglerListDataTable.Columns.Add("Patient Name");
                 stragglerListDataTable.Columns.Add("DOS");
 
-                foreach (int chartNum in stragglerList.Keys)
+                foreach (var chartInfo in stragglerList)
                 {
-                    string patientName = stragglerList[chartNum]["patientName"];
-                    string date = stragglerList[chartNum]["date"];
+                    string patientName = chartInfo["patientName"];
+                    string date = chartInfo["date"];
 
-                    stragglerListDataTable.Rows.Add(chartNum, patientName, date);
+                    stragglerListDataTable.Rows.Add(chartInfo["chartNum"], patientName, date);
                 }
                 stragglerListOutput.DataSource = stragglerListDataTable;
                 stragglersTotalLabel.Text = "Total: " + stragglerList.Count.ToString();
             }
         }
 
-        private List<int> getRowsToDelete(SortedDictionary<int, Dictionary<string, string>> stragglerList)
+        private List<int> getRowsToDelete(List<Dictionary<string, string>> stragglerList)
         {
             List<int> rowsToDelete = new List<int>();
             
-            foreach (int stragglerKey in stragglerList.Keys)
+            foreach (var chartInfo in stragglerList)
             {
-                int rowNumber = Int32.Parse(stragglerList[stragglerKey]["rowNumber"]);
+                int rowNumber = Int32.Parse(chartInfo["rowNumber"]);
                 rowsToDelete.Add(rowNumber);
             }
 
