@@ -38,7 +38,7 @@
             // 
             // folderPathField
             // 
-            this.folderPathField.Font = new System.Drawing.Font("Calibri", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.folderPathField.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
             this.folderPathField.Location = new System.Drawing.Point(134, 156);
             this.folderPathField.Name = "folderPathField";
             this.folderPathField.ReadOnly = true;
@@ -60,7 +60,7 @@
             // 
             // outputField
             // 
-            this.outputField.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.outputField.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
             this.outputField.Location = new System.Drawing.Point(134, 315);
             this.outputField.Name = "outputField";
             this.outputField.ReadOnly = true;
