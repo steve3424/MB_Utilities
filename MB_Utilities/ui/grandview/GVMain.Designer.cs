@@ -33,7 +33,7 @@
             this.hospitalTitlePanel = new System.Windows.Forms.Panel();
             this.hospitalTitle = new System.Windows.Forms.Label();
             this.updateMissingListNavBTN = new System.Windows.Forms.Button();
-            this.createMissingListNavBTN = new System.Windows.Forms.Button();
+            this.updateMissingList_GV1 = new MB_Utilities.ui.grandview.UpdateMissingList_GV();
             this.gvNav.SuspendLayout();
             this.hospitalTitlePanel.SuspendLayout();
             this.SuspendLayout();
@@ -41,7 +41,6 @@
             // gvNav
             // 
             this.gvNav.BackColor = System.Drawing.SystemColors.Control;
-            this.gvNav.Controls.Add(this.createMissingListNavBTN);
             this.gvNav.Controls.Add(this.navSelectedPanel);
             this.gvNav.Controls.Add(this.hospitalTitlePanel);
             this.gvNav.Controls.Add(this.updateMissingListNavBTN);
@@ -93,27 +92,21 @@
             this.updateMissingListNavBTN.Text = "Update Missing List";
             this.updateMissingListNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.updateMissingListNavBTN.UseVisualStyleBackColor = true;
+            this.updateMissingListNavBTN.Click += new System.EventHandler(this.updateMissingListNavBTN_Click);
             // 
-            // createMissingListNavBTN
+            // updateMissingList_GV1
             // 
-            this.createMissingListNavBTN.Enabled = false;
-            this.createMissingListNavBTN.FlatAppearance.BorderSize = 0;
-            this.createMissingListNavBTN.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightGray;
-            this.createMissingListNavBTN.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.createMissingListNavBTN.Font = new System.Drawing.Font("Calibri", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.createMissingListNavBTN.ForeColor = System.Drawing.Color.Black;
-            this.createMissingListNavBTN.Location = new System.Drawing.Point(10, 118);
-            this.createMissingListNavBTN.Name = "createMissingListNavBTN";
-            this.createMissingListNavBTN.Size = new System.Drawing.Size(177, 50);
-            this.createMissingListNavBTN.TabIndex = 2;
-            this.createMissingListNavBTN.Text = "Create Missing List";
-            this.createMissingListNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.createMissingListNavBTN.UseVisualStyleBackColor = true;
+            this.updateMissingList_GV1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.updateMissingList_GV1.Location = new System.Drawing.Point(190, 0);
+            this.updateMissingList_GV1.Name = "updateMissingList_GV1";
+            this.updateMissingList_GV1.Size = new System.Drawing.Size(816, 692);
+            this.updateMissingList_GV1.TabIndex = 2;
             // 
             // GVMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.updateMissingList_GV1);
             this.Controls.Add(this.gvNav);
             this.Name = "GVMain";
             this.Size = new System.Drawing.Size(1006, 692);
@@ -131,6 +124,6 @@
         private System.Windows.Forms.Panel hospitalTitlePanel;
         private System.Windows.Forms.Label hospitalTitle;
         private System.Windows.Forms.Button updateMissingListNavBTN;
-        private System.Windows.Forms.Button createMissingListNavBTN;
+        private UpdateMissingList_GV updateMissingList_GV1;
     }
 }

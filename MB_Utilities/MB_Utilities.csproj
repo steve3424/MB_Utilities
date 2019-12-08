@@ -156,6 +156,12 @@
     <Compile Include="ui\grandview\GVMain.Designer.cs">
       <DependentUpon>GVMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="ui\grandview\UpdateMissingList_GV.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ui\grandview\UpdateMissingList_GV.Designer.cs">
+      <DependentUpon>UpdateMissingList_GV.cs</DependentUpon>
+    </Compile>
     <Compile Include="utils\SubList.cs" />
     <EmbeddedResource Include="ui\chester\CreateMissingList.resx">
       <DependentUpon>CreateMissingList.cs</DependentUpon>
@@ -189,6 +195,9 @@
     </Compile>
     <EmbeddedResource Include="ui\grandview\GVMain.resx">
       <DependentUpon>GVMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\grandview\UpdateMissingList_GV.resx">
+      <DependentUpon>UpdateMissingList_GV.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
