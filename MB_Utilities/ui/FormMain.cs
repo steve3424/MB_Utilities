@@ -21,7 +21,7 @@ namespace MB_Utilities
         {
             titleMain.Hide();
             iconMain.Hide();
-            // hide GV
+            gvMain1.Hide();
 
             ctMain1.Show();
         }
@@ -30,8 +30,9 @@ namespace MB_Utilities
         {
             titleMain.Hide();
             iconMain.Hide();
-            // hide CT
-            // show GV
+            ctMain1.Hide();
+
+            gvMain1.Show();
         }
     }
 }

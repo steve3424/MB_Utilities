@@ -35,6 +35,7 @@
             this.grandviewNavBTN = new System.Windows.Forms.ToolStripMenuItem();
             this.titleMain = new System.Windows.Forms.Label();
             this.iconMain = new System.Windows.Forms.PictureBox();
+            this.gvMain1 = new MB_Utilities.ui.grandview.GVMain();
             this.ctMain1 = new MB_Utilities.ui.chester.CTMain();
             this.navMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.iconMain)).BeginInit();
@@ -101,6 +102,15 @@
             this.iconMain.TabIndex = 2;
             this.iconMain.TabStop = false;
             // 
+            // gvMain1
+            // 
+            this.gvMain1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gvMain1.Location = new System.Drawing.Point(0, 29);
+            this.gvMain1.Name = "gvMain1";
+            this.gvMain1.Size = new System.Drawing.Size(1006, 692);
+            this.gvMain1.TabIndex = 4;
+            this.gvMain1.Visible = false;
+            // 
             // ctMain1
             // 
             this.ctMain1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -116,6 +126,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.ClientSize = new System.Drawing.Size(1006, 721);
+            this.Controls.Add(this.gvMain1);
             this.Controls.Add(this.ctMain1);
             this.Controls.Add(this.iconMain);
             this.Controls.Add(this.titleMain);
@@ -141,6 +152,7 @@
         private System.Windows.Forms.Label titleMain;
         private System.Windows.Forms.PictureBox iconMain;
         private ui.chester.CTMain ctMain1;
+        private ui.grandview.GVMain gvMain1;
     }
 }
 
