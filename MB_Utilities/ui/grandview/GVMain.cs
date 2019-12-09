@@ -16,16 +16,30 @@ namespace MB_Utilities.ui.grandview
         {
             InitializeComponent();
 
-            // hide all controls
-            // show initial control
+            hideAllControls();
+            updateMissingList_GV1.Show();
         }
 
         private void updateMissingListNavBTN_Click(object sender, EventArgs e)
         {
             navSelectedPanel.Top = updateMissingListNavBTN.Top;
 
-            // hide all controls
-            // show updateMissingList control
+            hideAllControls();
+            updateMissingList_GV1.Show();
+        }
+
+        private void createMissingNavBTN_Click(object sender, EventArgs e)
+        {
+            navSelectedPanel.Top = createMissingNavBTN.Top;
+
+            hideAllControls();
+            createMissingList_GV1.Show();
+        }
+
+        private void hideAllControls()
+        {
+            updateMissingList_GV1.Hide();
+            createMissingList_GV1.Hide();
         }
     }
 }
