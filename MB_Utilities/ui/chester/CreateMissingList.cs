@@ -288,14 +288,14 @@ namespace MB_Utilities.controls.chester
 
         private void disableUI()
         {
-            chooseFileFolderBTN.Enabled = false;
+            chooseLogFileBTN.Enabled = false;
             chooseFileFolderBTN.Enabled = false;
             createMissingListBTN.Enabled = false;
         }
 
         private void enableUI()
         {
-            chooseFileFolderBTN.Enabled = true;
+            chooseLogFileBTN.Enabled = true;
             chooseFileFolderBTN.Enabled = true;
             createMissingListBTN.Enabled = true;
         }
