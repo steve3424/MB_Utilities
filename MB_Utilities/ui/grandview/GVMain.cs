@@ -17,15 +17,7 @@ namespace MB_Utilities.ui.grandview
             InitializeComponent();
 
             hideAllControls();
-            updateMissingList_GV1.Show();
-        }
-
-        private void updateMissingListNavBTN_Click(object sender, EventArgs e)
-        {
-            navSelectedPanel.Top = updateMissingListNavBTN.Top;
-
-            hideAllControls();
-            updateMissingList_GV1.Show();
+            createMissingList_GV1.Show();
         }
 
         private void createMissingNavBTN_Click(object sender, EventArgs e)
@@ -34,6 +26,14 @@ namespace MB_Utilities.ui.grandview
 
             hideAllControls();
             createMissingList_GV1.Show();
+        }
+
+        private void updateMissingListNavBTN_Click(object sender, EventArgs e)
+        {
+            navSelectedPanel.Top = updateMissingListNavBTN.Top;
+
+            hideAllControls();
+            updateMissingList_GV1.Show();
         }
 
         private void hideAllControls()

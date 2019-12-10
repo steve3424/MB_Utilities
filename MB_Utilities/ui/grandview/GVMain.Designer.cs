@@ -60,7 +60,7 @@
             this.createMissingNavBTN.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.createMissingNavBTN.Font = new System.Drawing.Font("Calibri", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.createMissingNavBTN.ForeColor = System.Drawing.Color.Black;
-            this.createMissingNavBTN.Location = new System.Drawing.Point(10, 118);
+            this.createMissingNavBTN.Location = new System.Drawing.Point(10, 56);
             this.createMissingNavBTN.Name = "createMissingNavBTN";
             this.createMissingNavBTN.Size = new System.Drawing.Size(177, 50);
             this.createMissingNavBTN.TabIndex = 2;
@@ -104,7 +104,7 @@
             this.updateMissingListNavBTN.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.updateMissingListNavBTN.Font = new System.Drawing.Font("Calibri", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.updateMissingListNavBTN.ForeColor = System.Drawing.Color.Black;
-            this.updateMissingListNavBTN.Location = new System.Drawing.Point(10, 56);
+            this.updateMissingListNavBTN.Location = new System.Drawing.Point(10, 118);
             this.updateMissingListNavBTN.Name = "updateMissingListNavBTN";
             this.updateMissingListNavBTN.Size = new System.Drawing.Size(177, 50);
             this.updateMissingListNavBTN.TabIndex = 1;
