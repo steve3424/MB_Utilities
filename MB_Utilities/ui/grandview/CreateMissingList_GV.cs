@@ -49,9 +49,9 @@ namespace MB_Utilities.ui.grandview
             }
             else
             {
-                Dictionary<int, Dictionary<string, string>> logFile = loadLogFile();
-                SortedDictionary<int, Dictionary<string, string>> missingList = createMissingList(logFile);
-                SortedDictionary<int, Dictionary<string, string>> voidedList = createVoidedList(logFile);
+                Dictionary<string, Dictionary<string, string>> logFile = loadLogFile();
+                SortedDictionary<string, Dictionary<string, string>> missingList = createMissingList(logFile);
+                SortedDictionary<string, Dictionary<string, string>> voidedList = createVoidedList(logFile);
                 showMissingList(missingList);
                 showVoidedList(voidedList);
             }
@@ -62,15 +62,15 @@ namespace MB_Utilities.ui.grandview
 
         /************* MAIN FUNCTIONS ******************/
 
-        private Dictionary<int, Dictionary<string, string>> loadLogFile()
+        private Dictionary<string, Dictionary<string, string>> loadLogFile()
         {
-            Dictionary<int, Dictionary<string, string>> logFile = new Dictionary<int, Dictionary<string, string>>();
+            Dictionary<string, Dictionary<string, string>> logFile = new Dictionary<string, Dictionary<string, string>>();
 
             string[] lines = File.ReadAllLines(logFilePathField.Text);
             foreach (string line in lines)
             {
                 string[] chartInfo = line.Split(',');
-                int chartNum = Int32.Parse(chartInfo[1]);
+                string chartNum = chartInfo[1];
                 string date = chartInfo[0];
                 string lastName = chartInfo[2];
                 string firstName = chartInfo[3];
@@ -87,10 +87,10 @@ namespace MB_Utilities.ui.grandview
             return logFile;
         }
 
-        private SortedDictionary<int, Dictionary<string, string>> createMissingList(Dictionary<int, Dictionary<string, string>> logFile)
+        private SortedDictionary<string, Dictionary<string, string>> createMissingList(Dictionary<string, Dictionary<string, string>> logFile)
         {
-            SortedDictionary<int, Dictionary<string, string>> missingList = new SortedDictionary<int, Dictionary<string, string>>();
-            foreach (int logNum in logFile.Keys)
+            SortedDictionary<string, Dictionary<string, string>> missingList = new SortedDictionary<string, Dictionary<string, string>>();
+            foreach (string logNum in logFile.Keys)
             {
                 // charts marked TD go on missing list
                 if (logFile[logNum]["logCode"] == "TD")
@@ -101,10 +101,10 @@ namespace MB_Utilities.ui.grandview
             return missingList;
         }
 
-        private SortedDictionary<int, Dictionary<string, string>> createVoidedList(Dictionary<int, Dictionary<string, string>> logFile)
+        private SortedDictionary<string, Dictionary<string, string>> createVoidedList(Dictionary<string, Dictionary<string, string>> logFile)
         {
-            SortedDictionary<int, Dictionary<string, string>> voidedList = new SortedDictionary<int, Dictionary<string, string>>();
-            foreach (int logNum in logFile.Keys)
+            SortedDictionary<string, Dictionary<string, string>> voidedList = new SortedDictionary<string, Dictionary<string, string>>();
+            foreach (string logNum in logFile.Keys)
             {
                 // log codes other than RG or TD
                 if (!(logFile[logNum]["logCode"] == "RG") && !(logFile[logNum]["logCode"] == "TD"))
@@ -115,14 +115,14 @@ namespace MB_Utilities.ui.grandview
             return voidedList;
         }
 
-        private void showMissingList(SortedDictionary<int, Dictionary<string, string>> missingList)
+        private void showMissingList(SortedDictionary<string, Dictionary<string, string>> missingList)
         {
             using (DataTable missingListTable = new DataTable())
             {
                 missingListTable.Columns.Add("Chart #");
                 missingListTable.Columns.Add("Patient Name");
 
-                foreach (int chartNum in missingList.Keys)
+                foreach (string chartNum in missingList.Keys)
                 {
                     string patientName = string.Concat(missingList[chartNum]["lastName"], ", ", missingList[chartNum]["firstName"]);
                     missingListTable.Rows.Add(chartNum, patientName);
@@ -134,7 +134,7 @@ namespace MB_Utilities.ui.grandview
             }
         }
 
-        private void showVoidedList(SortedDictionary<int, Dictionary<string, string>> voidedList)
+        private void showVoidedList(SortedDictionary<string, Dictionary<string, string>> voidedList)
         {
             using (DataTable voidedListTable = new DataTable())
             {
@@ -142,7 +142,7 @@ namespace MB_Utilities.ui.grandview
                 voidedListTable.Columns.Add("Patient Name");
                 voidedListTable.Columns.Add("Log Code");
 
-                foreach (int chartNum in voidedList.Keys)
+                foreach (string chartNum in voidedList.Keys)
                 {
                     string patientName = string.Concat(voidedList[chartNum]["lastName"], ", ", voidedList[chartNum]["firstName"]);
                     voidedListTable.Rows.Add(chartNum, patientName, voidedList[chartNum]["logCode"]);
