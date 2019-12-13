@@ -141,7 +141,7 @@ namespace MB_Utilities.ui.grandview
 
                     // add doctor name if available
                     string doc = chartToAppend["doctor"];
-                    if (string.IsNullOrEmpty(doc))
+                    if (string.IsNullOrEmpty(doc) || doc == "NaN")
                     {
                         worksheetMissing.Cells[insertRow, 4].Value = "NO PHYSICIAL LISTED";
                         worksheetMissing.Cells[insertRow, 4].Style.Font.Bold = true;
