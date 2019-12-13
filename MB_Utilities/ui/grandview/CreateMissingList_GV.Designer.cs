@@ -150,6 +150,7 @@
             this.missingListOutput.RowTemplate.Height = 24;
             this.missingListOutput.Size = new System.Drawing.Size(755, 263);
             this.missingListOutput.TabIndex = 17;
+            this.missingListOutput.MouseClick += new System.Windows.Forms.MouseEventHandler(this.missingListOutput_MouseClick);
             // 
             // voidedTab
             // 
@@ -175,6 +176,7 @@
             this.voidedListOutput.RowTemplate.Height = 24;
             this.voidedListOutput.Size = new System.Drawing.Size(755, 263);
             this.voidedListOutput.TabIndex = 21;
+            this.voidedListOutput.MouseClick += new System.Windows.Forms.MouseEventHandler(this.voidedListOutput_MouseClick);
             // 
             // rightClickMenu
             // 
@@ -189,6 +191,7 @@
             this.copyRightClickMenuItem.Name = "copyRightClickMenuItem";
             this.copyRightClickMenuItem.Size = new System.Drawing.Size(112, 24);
             this.copyRightClickMenuItem.Text = "Copy";
+            this.copyRightClickMenuItem.Click += new System.EventHandler(this.copyRightClickMenuItem_Click);
             // 
             // CreateMissingList_GV
             // 
