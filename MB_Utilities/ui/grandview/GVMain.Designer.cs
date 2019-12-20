@@ -34,8 +34,10 @@
             this.hospitalTitlePanel = new System.Windows.Forms.Panel();
             this.hospitalTitle = new System.Windows.Forms.Label();
             this.updateMissingListNavBTN = new System.Windows.Forms.Button();
+            this.loadDaysNavBTN = new System.Windows.Forms.Button();
             this.createMissingList_GV1 = new MB_Utilities.ui.grandview.CreateMissingList_GV();
             this.updateMissingList_GV1 = new MB_Utilities.ui.grandview.UpdateMissingList_GV();
+            this.loadDays_GV1 = new MB_Utilities.ui.grandview.LoadDays_GV();
             this.gvNav.SuspendLayout();
             this.hospitalTitlePanel.SuspendLayout();
             this.SuspendLayout();
@@ -43,6 +45,7 @@
             // gvNav
             // 
             this.gvNav.BackColor = System.Drawing.SystemColors.Control;
+            this.gvNav.Controls.Add(this.loadDaysNavBTN);
             this.gvNav.Controls.Add(this.createMissingNavBTN);
             this.gvNav.Controls.Add(this.navSelectedPanel);
             this.gvNav.Controls.Add(this.hospitalTitlePanel);
@@ -113,6 +116,22 @@
             this.updateMissingListNavBTN.UseVisualStyleBackColor = true;
             this.updateMissingListNavBTN.Click += new System.EventHandler(this.updateMissingListNavBTN_Click);
             // 
+            // loadDaysNavBTN
+            // 
+            this.loadDaysNavBTN.FlatAppearance.BorderSize = 0;
+            this.loadDaysNavBTN.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightGray;
+            this.loadDaysNavBTN.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.loadDaysNavBTN.Font = new System.Drawing.Font("Calibri", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.loadDaysNavBTN.ForeColor = System.Drawing.Color.Black;
+            this.loadDaysNavBTN.Location = new System.Drawing.Point(3, 183);
+            this.loadDaysNavBTN.Name = "loadDaysNavBTN";
+            this.loadDaysNavBTN.Size = new System.Drawing.Size(177, 50);
+            this.loadDaysNavBTN.TabIndex = 3;
+            this.loadDaysNavBTN.Text = "Load Days";
+            this.loadDaysNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.loadDaysNavBTN.UseVisualStyleBackColor = true;
+            this.loadDaysNavBTN.Click += new System.EventHandler(this.loadDaysNavBTN_Click);
+            // 
             // createMissingList_GV1
             // 
             this.createMissingList_GV1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -129,10 +148,19 @@
             this.updateMissingList_GV1.Size = new System.Drawing.Size(816, 692);
             this.updateMissingList_GV1.TabIndex = 2;
             // 
+            // loadDays_GV1
+            // 
+            this.loadDays_GV1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.loadDays_GV1.Location = new System.Drawing.Point(190, 0);
+            this.loadDays_GV1.Name = "loadDays_GV1";
+            this.loadDays_GV1.Size = new System.Drawing.Size(816, 692);
+            this.loadDays_GV1.TabIndex = 4;
+            // 
             // GVMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.loadDays_GV1);
             this.Controls.Add(this.createMissingList_GV1);
             this.Controls.Add(this.updateMissingList_GV1);
             this.Controls.Add(this.gvNav);
@@ -155,5 +183,7 @@
         private UpdateMissingList_GV updateMissingList_GV1;
         private System.Windows.Forms.Button createMissingNavBTN;
         private CreateMissingList_GV createMissingList_GV1;
+        private System.Windows.Forms.Button loadDaysNavBTN;
+        private LoadDays_GV loadDays_GV1;
     }
 }

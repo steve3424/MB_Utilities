@@ -36,10 +36,19 @@ namespace MB_Utilities.ui.grandview
             updateMissingList_GV1.Show();
         }
 
+        private void loadDaysNavBTN_Click(object sender, EventArgs e)
+        {
+            navSelectedPanel.Top = loadDaysNavBTN.Top;
+
+            hideAllControls();
+            loadDays_GV1.Show();
+        }
+
         private void hideAllControls()
         {
             updateMissingList_GV1.Hide();
             createMissingList_GV1.Hide();
+            loadDays_GV1.Hide();
         }
     }
 }
