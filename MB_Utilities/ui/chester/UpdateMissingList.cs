@@ -223,13 +223,10 @@ namespace MB_Utilities.controls.chester
             {
                 return MISSING_LIST_NOT_FOUND;
             }
-            /*
-             * NOT YET IMPLEMENTED
-            else if (!correctFile())
+            else if (!correctMissingList())
             {
                 return MISSING_LIST_INCORRECT;
             }
-            */
             return MISSING_LIST_READY;
         }
 
@@ -243,18 +240,44 @@ namespace MB_Utilities.controls.chester
             {
                 return UNBILLED_REPORT_NOT_FOUND;
             }
+            else if (!correctUnbilledReport())
+            {
+                return UNBILLED_REPORT_INCORRECT;
+            }
             else if (!dateOnReport())
             {
                 return DATE_NOT_FOUND;
             }
-            /*
-             * NOT YET IMPLEMENTED
-            else if (!correctFile())
-            {
-                return UNBILLED_INCORRECT;
-            }
-            */
             return UNBILLED_REPORT_READY;
+        }
+
+        private bool correctMissingList() {
+            FileInfo missingListPath = new FileInfo(missingListPathField.Text);
+            using (ExcelPackage packageMissing = new ExcelPackage(missingListPath))
+            using (ExcelWorksheet worksheetMissing = packageMissing.Workbook.Worksheets[1])
+            {
+                string title = worksheetMissing.Cells[1, 1].GetValue<string>();
+                if (title == "CT Unbilled Report")
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool correctUnbilledReport()
+        {
+            FileInfo unbilledReportPath = new FileInfo(unbilledReportPathField.Text);
+            using (ExcelPackage packageUnbilled = new ExcelPackage(unbilledReportPath))
+            using (ExcelWorksheet worksheetUnbilled = packageUnbilled.Workbook.Worksheets[1])
+            {
+                string title = worksheetUnbilled.Cells[1, 1].GetValue<string>();
+                if (title == "Unbilled Report")
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private bool dateOnReport()
