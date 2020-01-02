@@ -288,7 +288,8 @@ namespace MB_Utilities.ui.grandview
             using (ExcelWorksheet worksheetUnbilled = packageUnbilled.Workbook.Worksheets[1])
             {
                 string title = worksheetUnbilled.Cells[1, 1].GetValue<string>();
-                if (title == "Unbilled Report")
+                string hospital = worksheetUnbilled.Cells[10, 2].GetValue<string>();
+                if (title == "Unbilled Report" && hospital == "GV - GRAND VIEW HOSPITAL")
                 {
                     return true;
                 }
