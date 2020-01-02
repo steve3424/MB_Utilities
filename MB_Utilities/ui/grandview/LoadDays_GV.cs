@@ -18,11 +18,12 @@ namespace MB_Utilities.ui.grandview
         private const int FILE_READY = 0;
         private const int FILE_PATH_EMPTY = 1;
         private const int FILE_NOT_FOUND = 2;
+        private const int FILE_INCORRECT = 3;
 
         // state of save folder
-        private const int FOLDER_READY = 3;
-        private const int FOLDER_PATH_EMPTY = 4;
-        private const int FOLDER_NOT_FOUND = 5;
+        private const int FOLDER_READY = 4;
+        private const int FOLDER_PATH_EMPTY = 5;
+        private const int FOLDER_NOT_FOUND = 6;
 
         public LoadDays_GV()
         {
@@ -201,7 +202,31 @@ namespace MB_Utilities.ui.grandview
             {
                 return FILE_NOT_FOUND;
             }
+            else if (!correctFile())
+            {
+                return FILE_INCORRECT;
+            }
             return FILE_READY;
+        }
+
+        private bool correctFile()
+        {
+            string fileName = Path.GetFileNameWithoutExtension(codingLogFilePathField.Text);
+            // get first 5 letters of file name
+            string hospitalCode = "";
+            if (fileName.Length >= 5)
+            {
+                for (int i = 0; i < 5; ++i)
+                {
+                    hospitalCode += fileName[i];
+                }
+            }
+
+            if (hospitalCode == "1950L")
+            {
+                return true;
+            }
+            return false;
         }
 
         private int getFolderState()
@@ -240,6 +265,9 @@ namespace MB_Utilities.ui.grandview
                     return;
                 case FILE_NOT_FOUND:
                     MessageBox.Show("The file you selected could not be found.");
+                    return;
+                case FILE_INCORRECT:
+                    MessageBox.Show("This looks like the wrong file. Please select the LOG file sent from coding.");
                     return;
                 case FOLDER_PATH_EMPTY:
                     MessageBox.Show("Please select a folder.");
