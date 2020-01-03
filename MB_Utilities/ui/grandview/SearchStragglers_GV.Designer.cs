@@ -126,6 +126,7 @@
             this.createListsBTN.TabIndex = 61;
             this.createListsBTN.Text = "Create Lists";
             this.createListsBTN.UseVisualStyleBackColor = true;
+            this.createListsBTN.Click += new System.EventHandler(this.createListsBTN_Click);
             // 
             // SearchStragglers_GV
             // 
