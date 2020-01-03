@@ -344,22 +344,22 @@ namespace MB_Utilities.ui.grandview
             switch (error)
             {
                 case MISSING_LIST_PATH_EMPTY:
-                    MessageBox.Show("Please select the CT missing list");
+                    MessageBox.Show("Please select the GV missing list");
                     return;
                 case MISSING_LIST_NOT_FOUND:
-                    MessageBox.Show("The CT missing list could not be found.");
+                    MessageBox.Show("The GV missing list could not be found.");
                     return;
                 case MISSING_LIST_INCORRECT:
-                    MessageBox.Show("The missing list you chose is not the CT missing list.");
+                    MessageBox.Show("The missing list you chose is not the GV missing list.");
                     return;
                 case UNBILLED_REPORT_PATH_EMPTY:
-                    MessageBox.Show("Please select the CT unbilled report.");
+                    MessageBox.Show("Please select the GV unbilled report.");
                     return;
                 case UNBILLED_REPORT_NOT_FOUND:
-                    MessageBox.Show("The CT unbilled report could not be found.");
+                    MessageBox.Show("The GV unbilled report could not be found.");
                     return;
                 case UNBILLED_REPORT_INCORRECT:
-                    MessageBox.Show("The unbilled report you chose is not the CT unbilled report.");
+                    MessageBox.Show("The unbilled report you chose is not the GV unbilled report.");
                     return;
                 case DATE_NOT_FOUND:
                     MessageBox.Show("The date you've selected is not on the unbilled report. The missing list will not be updated.");
