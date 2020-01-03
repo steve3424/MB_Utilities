@@ -168,6 +168,12 @@
     <Compile Include="ui\grandview\LoadDays_GV.Designer.cs">
       <DependentUpon>LoadDays_GV.cs</DependentUpon>
     </Compile>
+    <Compile Include="ui\grandview\SearchStragglers_GV.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ui\grandview\SearchStragglers_GV.Designer.cs">
+      <DependentUpon>SearchStragglers_GV.cs</DependentUpon>
+    </Compile>
     <Compile Include="ui\grandview\UpdateMissingList_GV.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -213,6 +219,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ui\grandview\LoadDays_GV.resx">
       <DependentUpon>LoadDays_GV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\grandview\SearchStragglers_GV.resx">
+      <DependentUpon>SearchStragglers_GV.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ui\grandview\UpdateMissingList_GV.resx">
       <DependentUpon>UpdateMissingList_GV.cs</DependentUpon>

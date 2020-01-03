@@ -35,10 +35,11 @@
             this.hospitalTitlePanel = new System.Windows.Forms.Panel();
             this.hospitalTitle = new System.Windows.Forms.Label();
             this.updateMissingListNavBTN = new System.Windows.Forms.Button();
+            this.searchStragglersNavBTN = new System.Windows.Forms.Button();
+            this.loadDays_GV1 = new MB_Utilities.ui.grandview.LoadDays_GV();
             this.createMissingList_GV1 = new MB_Utilities.ui.grandview.CreateMissingList_GV();
             this.updateMissingList_GV1 = new MB_Utilities.ui.grandview.UpdateMissingList_GV();
-            this.loadDays_GV1 = new MB_Utilities.ui.grandview.LoadDays_GV();
-            this.searchStragglersNavBTN = new System.Windows.Forms.Button();
+            this.searchStragglers_GV1 = new MB_Utilities.ui.grandview.SearchStragglers_GV();
             this.gvNav.SuspendLayout();
             this.hospitalTitlePanel.SuspendLayout();
             this.SuspendLayout();
@@ -134,30 +135,6 @@
             this.updateMissingListNavBTN.UseVisualStyleBackColor = true;
             this.updateMissingListNavBTN.Click += new System.EventHandler(this.updateMissingListNavBTN_Click);
             // 
-            // createMissingList_GV1
-            // 
-            this.createMissingList_GV1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.createMissingList_GV1.Location = new System.Drawing.Point(190, 0);
-            this.createMissingList_GV1.Name = "createMissingList_GV1";
-            this.createMissingList_GV1.Size = new System.Drawing.Size(816, 692);
-            this.createMissingList_GV1.TabIndex = 3;
-            // 
-            // updateMissingList_GV1
-            // 
-            this.updateMissingList_GV1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.updateMissingList_GV1.Location = new System.Drawing.Point(190, 0);
-            this.updateMissingList_GV1.Name = "updateMissingList_GV1";
-            this.updateMissingList_GV1.Size = new System.Drawing.Size(816, 692);
-            this.updateMissingList_GV1.TabIndex = 2;
-            // 
-            // loadDays_GV1
-            // 
-            this.loadDays_GV1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.loadDays_GV1.Location = new System.Drawing.Point(190, 0);
-            this.loadDays_GV1.Name = "loadDays_GV1";
-            this.loadDays_GV1.Size = new System.Drawing.Size(816, 692);
-            this.loadDays_GV1.TabIndex = 4;
-            // 
             // searchStragglersNavBTN
             // 
             this.searchStragglersNavBTN.FlatAppearance.BorderSize = 0;
@@ -174,10 +151,43 @@
             this.searchStragglersNavBTN.UseVisualStyleBackColor = true;
             this.searchStragglersNavBTN.Click += new System.EventHandler(this.searchStragglersNavBTN_Click);
             // 
+            // loadDays_GV1
+            // 
+            this.loadDays_GV1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.loadDays_GV1.Location = new System.Drawing.Point(190, 0);
+            this.loadDays_GV1.Name = "loadDays_GV1";
+            this.loadDays_GV1.Size = new System.Drawing.Size(816, 692);
+            this.loadDays_GV1.TabIndex = 4;
+            // 
+            // createMissingList_GV1
+            // 
+            this.createMissingList_GV1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.createMissingList_GV1.Location = new System.Drawing.Point(190, 0);
+            this.createMissingList_GV1.Name = "createMissingList_GV1";
+            this.createMissingList_GV1.Size = new System.Drawing.Size(816, 692);
+            this.createMissingList_GV1.TabIndex = 3;
+            // 
+            // updateMissingList_GV1
+            // 
+            this.updateMissingList_GV1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.updateMissingList_GV1.Location = new System.Drawing.Point(190, 0);
+            this.updateMissingList_GV1.Name = "updateMissingList_GV1";
+            this.updateMissingList_GV1.Size = new System.Drawing.Size(816, 692);
+            this.updateMissingList_GV1.TabIndex = 2;
+            // 
+            // searchStragglers_GV1
+            // 
+            this.searchStragglers_GV1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.searchStragglers_GV1.Location = new System.Drawing.Point(190, 0);
+            this.searchStragglers_GV1.Name = "searchStragglers_GV1";
+            this.searchStragglers_GV1.Size = new System.Drawing.Size(816, 692);
+            this.searchStragglers_GV1.TabIndex = 5;
+            // 
             // GVMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.searchStragglers_GV1);
             this.Controls.Add(this.loadDays_GV1);
             this.Controls.Add(this.createMissingList_GV1);
             this.Controls.Add(this.updateMissingList_GV1);
@@ -204,5 +214,6 @@
         private System.Windows.Forms.Button loadDaysNavBTN;
         private LoadDays_GV loadDays_GV1;
         private System.Windows.Forms.Button searchStragglersNavBTN;
+        private SearchStragglers_GV searchStragglers_GV1;
     }
 }
