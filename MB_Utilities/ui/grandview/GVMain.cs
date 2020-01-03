@@ -28,6 +28,14 @@ namespace MB_Utilities.ui.grandview
             createMissingList_GV1.Show();
         }
 
+        private void searchStragglersNavBTN_Click(object sender, EventArgs e)
+        {
+            navSelectedPanel.Top = searchStragglersNavBTN.Top;
+
+            hideAllControls();
+            // show user control
+        }
+
         private void updateMissingListNavBTN_Click(object sender, EventArgs e)
         {
             navSelectedPanel.Top = updateMissingListNavBTN.Top;
