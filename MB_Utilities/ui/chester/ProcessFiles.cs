@@ -67,6 +67,7 @@ namespace MB_Utilities.controls.chester
             "Ryan, Devon",
             "Sainval",
             "Trevisan",
+            "Solimini, Elizabeth", // Elizabeth Trevisan name change
             "Ware",
         };
 
