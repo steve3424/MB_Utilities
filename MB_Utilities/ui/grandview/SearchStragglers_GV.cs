@@ -15,6 +15,16 @@ namespace MB_Utilities.ui.grandview
         public SearchStragglers_GV()
         {
             InitializeComponent();
+
+            // check TD at start
+            for (int i=0; i < checkedListBox1.Items.Count; ++i)
+            {
+                string itemName = checkedListBox1.Items[i].ToString();
+                if (itemName == "TD")
+                {
+                    checkedListBox1.SetItemChecked(i, true);
+                }
+            }
         }
     }
 }
