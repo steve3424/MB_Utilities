@@ -84,6 +84,7 @@
             this.chooseMissingListBTN.TabIndex = 56;
             this.chooseMissingListBTN.Text = "Choose Missing List";
             this.chooseMissingListBTN.UseVisualStyleBackColor = true;
+            this.chooseMissingListBTN.Click += new System.EventHandler(this.chooseMissingListBTN_Click);
             // 
             // saveFileToPathField
             // 
@@ -104,6 +105,7 @@
             this.saveFileToBTN.TabIndex = 58;
             this.saveFileToBTN.Text = "Save File To";
             this.saveFileToBTN.UseVisualStyleBackColor = true;
+            this.saveFileToBTN.Click += new System.EventHandler(this.saveFileToBTN_Click);
             // 
             // chooseListsLabel
             // 

@@ -26,5 +26,31 @@ namespace MB_Utilities.ui.grandview
                 }
             }
         }
+
+
+        /************* BUTTON CLICK HANDLERS ******************/
+
+        private void chooseMissingListBTN_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog() { Filter = "Excel Sheet (.xlsx)|*.xlsx" })
+            {
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    missingListPathField.Text = openFileDialog.FileName;
+                }
+            }
+        }
+
+        private void saveFileToBTN_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+            {
+                folderBrowserDialog.SelectedPath = saveFileToPathField.Text;
+                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                {
+                    saveFileToPathField.Text = folderBrowserDialog.SelectedPath;
+                }
+            }
+        }
     }
 }
