@@ -127,7 +127,7 @@
             this.missingListOutput.RowHeadersWidth = 51;
             this.missingListOutput.RowTemplate.Height = 24;
             this.missingListOutput.Size = new System.Drawing.Size(755, 263);
-            this.missingListOutput.TabIndex = 17;
+            this.missingListOutput.TabIndex = 10;
             this.missingListOutput.MouseClick += new System.Windows.Forms.MouseEventHandler(this.missingListOutput_MouseClick);
             // 
             // missingVoidedTabControl
@@ -142,7 +142,7 @@
             this.missingVoidedTabControl.Name = "missingVoidedTabControl";
             this.missingVoidedTabControl.SelectedIndex = 0;
             this.missingVoidedTabControl.Size = new System.Drawing.Size(775, 319);
-            this.missingVoidedTabControl.TabIndex = 35;
+            this.missingVoidedTabControl.TabIndex = 9;
             // 
             // missingTab
             // 
@@ -178,7 +178,7 @@
             this.voidedListOutput.RowHeadersWidth = 51;
             this.voidedListOutput.RowTemplate.Height = 24;
             this.voidedListOutput.Size = new System.Drawing.Size(755, 263);
-            this.voidedListOutput.TabIndex = 21;
+            this.voidedListOutput.TabIndex = 11;
             this.voidedListOutput.MouseClick += new System.Windows.Forms.MouseEventHandler(this.voidedListOutput_MouseClick);
             // 
             // missingTotalLabel

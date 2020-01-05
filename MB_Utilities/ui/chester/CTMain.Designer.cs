@@ -214,11 +214,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.processFiles1);
             this.Controls.Add(this.loadDays1);
             this.Controls.Add(this.updateMissingList1);
             this.Controls.Add(this.createMissingList1);
             this.Controls.Add(this.processStragglers1);
-            this.Controls.Add(this.processFiles1);
             this.Controls.Add(this.ctNav);
             this.Name = "CTMain";
             this.Size = new System.Drawing.Size(1006, 692);

@@ -52,7 +52,7 @@
             this.saveFileToBTN.Location = new System.Drawing.Point(308, 245);
             this.saveFileToBTN.Name = "saveFileToBTN";
             this.saveFileToBTN.Size = new System.Drawing.Size(198, 40);
-            this.saveFileToBTN.TabIndex = 43;
+            this.saveFileToBTN.TabIndex = 6;
             this.saveFileToBTN.Text = "Save File To";
             this.saveFileToBTN.UseVisualStyleBackColor = true;
             this.saveFileToBTN.Click += new System.EventHandler(this.saveFileToBTN_Click);
@@ -73,7 +73,7 @@
             this.chooseCodingLogFileBTN.Location = new System.Drawing.Point(308, 116);
             this.chooseCodingLogFileBTN.Name = "chooseCodingLogFileBTN";
             this.chooseCodingLogFileBTN.Size = new System.Drawing.Size(198, 40);
-            this.chooseCodingLogFileBTN.TabIndex = 42;
+            this.chooseCodingLogFileBTN.TabIndex = 5;
             this.chooseCodingLogFileBTN.Text = "Choose Coding Log File";
             this.chooseCodingLogFileBTN.UseVisualStyleBackColor = true;
             this.chooseCodingLogFileBTN.Click += new System.EventHandler(this.chooseCodingLogFileBTN_Click);
@@ -84,7 +84,7 @@
             this.createListsBTN.Location = new System.Drawing.Point(308, 420);
             this.createListsBTN.Name = "createListsBTN";
             this.createListsBTN.Size = new System.Drawing.Size(198, 40);
-            this.createListsBTN.TabIndex = 44;
+            this.createListsBTN.TabIndex = 7;
             this.createListsBTN.Text = "Create Lists";
             this.createListsBTN.UseVisualStyleBackColor = true;
             this.createListsBTN.Click += new System.EventHandler(this.createListsBTN_Click);

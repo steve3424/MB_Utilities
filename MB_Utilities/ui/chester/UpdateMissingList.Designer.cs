@@ -92,7 +92,7 @@
             this.chooseMissingListBTN.Location = new System.Drawing.Point(309, 103);
             this.chooseMissingListBTN.Name = "chooseMissingListBTN";
             this.chooseMissingListBTN.Size = new System.Drawing.Size(198, 40);
-            this.chooseMissingListBTN.TabIndex = 7;
+            this.chooseMissingListBTN.TabIndex = 6;
             this.chooseMissingListBTN.Text = "Choose Missing List";
             this.chooseMissingListBTN.UseVisualStyleBackColor = true;
             this.chooseMissingListBTN.Click += new System.EventHandler(this.chooseMissingListBTN_Click);
@@ -113,7 +113,7 @@
             this.chooseUnbilledReportBTN.Location = new System.Drawing.Point(298, 229);
             this.chooseUnbilledReportBTN.Name = "chooseUnbilledReportBTN";
             this.chooseUnbilledReportBTN.Size = new System.Drawing.Size(221, 40);
-            this.chooseUnbilledReportBTN.TabIndex = 6;
+            this.chooseUnbilledReportBTN.TabIndex = 7;
             this.chooseUnbilledReportBTN.Text = "Choose Unbilled Report";
             this.chooseUnbilledReportBTN.UseVisualStyleBackColor = true;
             this.chooseUnbilledReportBTN.Click += new System.EventHandler(this.chooseUnbilledReportBTN_Click);

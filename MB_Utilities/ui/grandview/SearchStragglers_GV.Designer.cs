@@ -63,7 +63,7 @@
             this.checkedListBox1.Location = new System.Drawing.Point(378, 389);
             this.checkedListBox1.Name = "checkedListBox1";
             this.checkedListBox1.Size = new System.Drawing.Size(110, 154);
-            this.checkedListBox1.TabIndex = 51;
+            this.checkedListBox1.TabIndex = 7;
             // 
             // missingListPathField
             // 
@@ -81,7 +81,7 @@
             this.chooseMissingListBTN.Location = new System.Drawing.Point(309, 103);
             this.chooseMissingListBTN.Name = "chooseMissingListBTN";
             this.chooseMissingListBTN.Size = new System.Drawing.Size(198, 40);
-            this.chooseMissingListBTN.TabIndex = 56;
+            this.chooseMissingListBTN.TabIndex = 5;
             this.chooseMissingListBTN.Text = "Choose Missing List";
             this.chooseMissingListBTN.UseVisualStyleBackColor = true;
             this.chooseMissingListBTN.Click += new System.EventHandler(this.chooseMissingListBTN_Click);
@@ -102,7 +102,7 @@
             this.saveFileToBTN.Location = new System.Drawing.Point(309, 226);
             this.saveFileToBTN.Name = "saveFileToBTN";
             this.saveFileToBTN.Size = new System.Drawing.Size(198, 40);
-            this.saveFileToBTN.TabIndex = 58;
+            this.saveFileToBTN.TabIndex = 6;
             this.saveFileToBTN.Text = "Save File To";
             this.saveFileToBTN.UseVisualStyleBackColor = true;
             this.saveFileToBTN.Click += new System.EventHandler(this.saveFileToBTN_Click);
@@ -123,7 +123,7 @@
             this.createListsBTN.Location = new System.Drawing.Point(309, 549);
             this.createListsBTN.Name = "createListsBTN";
             this.createListsBTN.Size = new System.Drawing.Size(198, 40);
-            this.createListsBTN.TabIndex = 61;
+            this.createListsBTN.TabIndex = 8;
             this.createListsBTN.Text = "Create Lists";
             this.createListsBTN.UseVisualStyleBackColor = true;
             this.createListsBTN.Click += new System.EventHandler(this.createListsBTN_Click);

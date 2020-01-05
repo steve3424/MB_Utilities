@@ -120,8 +120,7 @@
             this.stragglerListOutput.RowHeadersWidth = 51;
             this.stragglerListOutput.RowTemplate.Height = 24;
             this.stragglerListOutput.Size = new System.Drawing.Size(755, 263);
-            this.stragglerListOutput.TabIndex = 40;
-            this.stragglerListOutput.TabStop = false;
+            this.stragglerListOutput.TabIndex = 11;
             this.stragglerListOutput.MouseClick += new System.Windows.Forms.MouseEventHandler(this.stragglerListOutput_MouseClick);
             // 
             // createStragglerListBTN
@@ -130,7 +129,7 @@
             this.createStragglerListBTN.Location = new System.Drawing.Point(309, 350);
             this.createStragglerListBTN.Name = "createStragglerListBTN";
             this.createStragglerListBTN.Size = new System.Drawing.Size(198, 40);
-            this.createStragglerListBTN.TabIndex = 9;
+            this.createStragglerListBTN.TabIndex = 10;
             this.createStragglerListBTN.Text = "Create Straggler List";
             this.createStragglerListBTN.UseVisualStyleBackColor = true;
             this.createStragglerListBTN.Click += new System.EventHandler(this.createStragglerListBTN_Click);
@@ -153,7 +152,7 @@
             this.deleteRowsCheckBox.Location = new System.Drawing.Point(157, 368);
             this.deleteRowsCheckBox.Name = "deleteRowsCheckBox";
             this.deleteRowsCheckBox.Size = new System.Drawing.Size(110, 21);
-            this.deleteRowsCheckBox.TabIndex = 42;
+            this.deleteRowsCheckBox.TabIndex = 9;
             this.deleteRowsCheckBox.Text = "delete rows?";
             this.deleteRowsCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -163,12 +162,12 @@
             this.rightClickMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyRightClickMenuItem});
             this.rightClickMenu.Name = "rightClickMenu";
-            this.rightClickMenu.Size = new System.Drawing.Size(211, 56);
+            this.rightClickMenu.Size = new System.Drawing.Size(113, 28);
             // 
             // copyRightClickMenuItem
             // 
             this.copyRightClickMenuItem.Name = "copyRightClickMenuItem";
-            this.copyRightClickMenuItem.Size = new System.Drawing.Size(210, 24);
+            this.copyRightClickMenuItem.Size = new System.Drawing.Size(112, 24);
             this.copyRightClickMenuItem.Text = "Copy";
             this.copyRightClickMenuItem.Click += new System.EventHandler(this.copyRightClickMenuItem_Click);
             // 

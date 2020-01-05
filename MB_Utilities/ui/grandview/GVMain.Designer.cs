@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.gvNav = new System.Windows.Forms.Panel();
+            this.searchStragglersNavBTN = new System.Windows.Forms.Button();
             this.loadDaysNavBTN = new System.Windows.Forms.Button();
             this.createMissingNavBTN = new System.Windows.Forms.Button();
             this.navSelectedPanel = new System.Windows.Forms.Panel();
             this.hospitalTitlePanel = new System.Windows.Forms.Panel();
             this.hospitalTitle = new System.Windows.Forms.Label();
             this.updateMissingListNavBTN = new System.Windows.Forms.Button();
-            this.searchStragglersNavBTN = new System.Windows.Forms.Button();
             this.loadDays_GV1 = new MB_Utilities.ui.grandview.LoadDays_GV();
             this.createMissingList_GV1 = new MB_Utilities.ui.grandview.CreateMissingList_GV();
             this.updateMissingList_GV1 = new MB_Utilities.ui.grandview.UpdateMissingList_GV();
@@ -59,6 +59,22 @@
             this.gvNav.Size = new System.Drawing.Size(190, 692);
             this.gvNav.TabIndex = 1;
             // 
+            // searchStragglersNavBTN
+            // 
+            this.searchStragglersNavBTN.FlatAppearance.BorderSize = 0;
+            this.searchStragglersNavBTN.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightGray;
+            this.searchStragglersNavBTN.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.searchStragglersNavBTN.Font = new System.Drawing.Font("Calibri", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.searchStragglersNavBTN.ForeColor = System.Drawing.Color.Black;
+            this.searchStragglersNavBTN.Location = new System.Drawing.Point(3, 118);
+            this.searchStragglersNavBTN.Name = "searchStragglersNavBTN";
+            this.searchStragglersNavBTN.Size = new System.Drawing.Size(177, 50);
+            this.searchStragglersNavBTN.TabIndex = 2;
+            this.searchStragglersNavBTN.Text = "Search Stragglers";
+            this.searchStragglersNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.searchStragglersNavBTN.UseVisualStyleBackColor = true;
+            this.searchStragglersNavBTN.Click += new System.EventHandler(this.searchStragglersNavBTN_Click);
+            // 
             // loadDaysNavBTN
             // 
             this.loadDaysNavBTN.FlatAppearance.BorderSize = 0;
@@ -69,7 +85,7 @@
             this.loadDaysNavBTN.Location = new System.Drawing.Point(3, 248);
             this.loadDaysNavBTN.Name = "loadDaysNavBTN";
             this.loadDaysNavBTN.Size = new System.Drawing.Size(177, 50);
-            this.loadDaysNavBTN.TabIndex = 3;
+            this.loadDaysNavBTN.TabIndex = 4;
             this.loadDaysNavBTN.Text = "Load Days";
             this.loadDaysNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.loadDaysNavBTN.UseVisualStyleBackColor = true;
@@ -85,7 +101,7 @@
             this.createMissingNavBTN.Location = new System.Drawing.Point(3, 56);
             this.createMissingNavBTN.Name = "createMissingNavBTN";
             this.createMissingNavBTN.Size = new System.Drawing.Size(177, 50);
-            this.createMissingNavBTN.TabIndex = 2;
+            this.createMissingNavBTN.TabIndex = 1;
             this.createMissingNavBTN.Text = "Create Missing List";
             this.createMissingNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.createMissingNavBTN.UseVisualStyleBackColor = true;
@@ -129,27 +145,11 @@
             this.updateMissingListNavBTN.Location = new System.Drawing.Point(3, 183);
             this.updateMissingListNavBTN.Name = "updateMissingListNavBTN";
             this.updateMissingListNavBTN.Size = new System.Drawing.Size(177, 50);
-            this.updateMissingListNavBTN.TabIndex = 1;
+            this.updateMissingListNavBTN.TabIndex = 3;
             this.updateMissingListNavBTN.Text = "Update Missing List";
             this.updateMissingListNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.updateMissingListNavBTN.UseVisualStyleBackColor = true;
             this.updateMissingListNavBTN.Click += new System.EventHandler(this.updateMissingListNavBTN_Click);
-            // 
-            // searchStragglersNavBTN
-            // 
-            this.searchStragglersNavBTN.FlatAppearance.BorderSize = 0;
-            this.searchStragglersNavBTN.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightGray;
-            this.searchStragglersNavBTN.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.searchStragglersNavBTN.Font = new System.Drawing.Font("Calibri", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.searchStragglersNavBTN.ForeColor = System.Drawing.Color.Black;
-            this.searchStragglersNavBTN.Location = new System.Drawing.Point(3, 118);
-            this.searchStragglersNavBTN.Name = "searchStragglersNavBTN";
-            this.searchStragglersNavBTN.Size = new System.Drawing.Size(177, 50);
-            this.searchStragglersNavBTN.TabIndex = 4;
-            this.searchStragglersNavBTN.Text = "Search Stragglers";
-            this.searchStragglersNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.searchStragglersNavBTN.UseVisualStyleBackColor = true;
-            this.searchStragglersNavBTN.Click += new System.EventHandler(this.searchStragglersNavBTN_Click);
             // 
             // loadDays_GV1
             // 

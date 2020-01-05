@@ -66,7 +66,7 @@
             this.chooseLogFileBTN.Location = new System.Drawing.Point(309, 121);
             this.chooseLogFileBTN.Name = "chooseLogFileBTN";
             this.chooseLogFileBTN.Size = new System.Drawing.Size(198, 40);
-            this.chooseLogFileBTN.TabIndex = 24;
+            this.chooseLogFileBTN.TabIndex = 5;
             this.chooseLogFileBTN.Text = "Choose Log File";
             this.chooseLogFileBTN.UseVisualStyleBackColor = true;
             this.chooseLogFileBTN.Click += new System.EventHandler(this.chooseLogFileBTN_Click);
@@ -87,7 +87,7 @@
             this.createMissingListBTN.Location = new System.Drawing.Point(309, 296);
             this.createMissingListBTN.Name = "createMissingListBTN";
             this.createMissingListBTN.Size = new System.Drawing.Size(198, 40);
-            this.createMissingListBTN.TabIndex = 35;
+            this.createMissingListBTN.TabIndex = 6;
             this.createMissingListBTN.Text = "Create Missing List";
             this.createMissingListBTN.UseVisualStyleBackColor = true;
             this.createMissingListBTN.Click += new System.EventHandler(this.createMissingListBTN_Click);
@@ -124,7 +124,7 @@
             this.missingVoidedTabControl.Name = "missingVoidedTabControl";
             this.missingVoidedTabControl.SelectedIndex = 0;
             this.missingVoidedTabControl.Size = new System.Drawing.Size(775, 319);
-            this.missingVoidedTabControl.TabIndex = 46;
+            this.missingVoidedTabControl.TabIndex = 7;
             // 
             // missingTab
             // 
@@ -149,7 +149,7 @@
             this.missingListOutput.RowHeadersWidth = 51;
             this.missingListOutput.RowTemplate.Height = 24;
             this.missingListOutput.Size = new System.Drawing.Size(755, 263);
-            this.missingListOutput.TabIndex = 17;
+            this.missingListOutput.TabIndex = 8;
             this.missingListOutput.MouseClick += new System.Windows.Forms.MouseEventHandler(this.missingListOutput_MouseClick);
             // 
             // voidedTab
@@ -175,7 +175,7 @@
             this.voidedListOutput.RowHeadersWidth = 51;
             this.voidedListOutput.RowTemplate.Height = 24;
             this.voidedListOutput.Size = new System.Drawing.Size(755, 263);
-            this.voidedListOutput.TabIndex = 21;
+            this.voidedListOutput.TabIndex = 9;
             this.voidedListOutput.MouseClick += new System.Windows.Forms.MouseEventHandler(this.voidedListOutput_MouseClick);
             // 
             // rightClickMenu
