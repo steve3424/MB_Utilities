@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using OfficeOpenXml;
+using MB_Utilities.utils;
 
 
 namespace MB_Utilities.ui.grandview
@@ -37,7 +38,7 @@ namespace MB_Utilities.ui.grandview
             InitializeComponent();
 
             // check TD at start
-            for (int i=0; i < checkedListBox1.Items.Count; ++i)
+            for (int i = 0; i < checkedListBox1.Items.Count; ++i)
             {
                 string itemName = checkedListBox1.Items[i].ToString();
                 if (itemName == "TD")
@@ -94,10 +95,135 @@ namespace MB_Utilities.ui.grandview
             }
             else
             {
-                MessageBox.Show("Ready!!");
+                List<string> subListIDs = new List<string>();
+                foreach (object checkedItem in checkedListBox1.CheckedItems)
+                {
+                    subListIDs.Add(checkedListBox1.GetItemText(checkedItem));
+                }
+
+                List<SubList> subLists = createSubLists(subListIDs);
+                createLogFile(subLists);
+
+                MessageBox.Show("Done!!");
             }
 
             enableUI();
+        }
+
+        private void createLogFile(List<SubList> subLists)
+        {
+            using (StreamWriter sw = File.CreateText(saveFileToPathField.Text + "\\gv_stragglers.txt"))
+            {
+                foreach (SubList subList in subLists)
+                {
+                    // put each dictionary entry into list, then sort by "rowNumber"
+                    List<Dictionary<string, string>> stragglerList = new List<Dictionary<string, string>>();
+                    foreach (int key in subList.chartInfo.Keys)
+                    {
+                        stragglerList.Add(subList.chartInfo[key]);
+                    }
+                    List<Dictionary<string, string>> sortedStragglerList = stragglerList.OrderBy(x => x["rowNumber"])
+                                                                   .ToList<Dictionary<string, string>>();
+
+                    // write each entry to file 
+                    foreach (var straggler in sortedStragglerList)
+                    {
+                        string date = straggler["date"];
+                        string chartNum = straggler["chartNum"];
+                        string name = straggler["patientName"];
+                        string logCode = "RG";
+
+                        string lineToWrite = string.Join(",", date, chartNum, name, logCode);
+                        sw.WriteLine(lineToWrite);
+                    }
+                }
+            }
+        }
+
+
+        /************* SUB LIST FUNCTIONS ******************/
+
+        private List<SubList> createSubLists(List<string> subListsToCreate)
+        {
+            List<SubList> subLists = new List<SubList>();
+
+
+            FileInfo path = new FileInfo(missingListPathField.Text);
+            using (ExcelPackage package = new ExcelPackage(path))
+            using (ExcelWorksheet worksheet = package.Workbook.Worksheets[1])
+            {
+                foreach (string subListID in subListsToCreate)
+                {
+                    SubList newSubList = new SubList();
+                    newSubList.name = subListID;
+                    newSubList.startRow = findStartOfList(worksheet, subListID);
+                    newSubList.endRow = findEndOfList(worksheet, subListID);
+                    newSubList.chartInfo = loadChartInfo(worksheet, newSubList);
+                    newSubList.totalCharts = worksheet.Cells[newSubList.endRow, 3].GetValue<int>();
+
+                    subLists.Add(newSubList);
+                }
+            }
+            return subLists;
+        }
+
+        private int findStartOfList(ExcelWorksheet worksheet, string subListID)
+        {
+            int start = 1;
+            string cellValue = worksheet.Cells[start, 1].GetValue<string>();
+            while (!cellValue.Contains(subListID))
+            {
+                start++;
+                cellValue = worksheet.Cells[start, 1].GetValue<string>();
+                while (cellValue == null)
+                {
+                    start++;
+                    cellValue = worksheet.Cells[start, 1].GetValue<string>();
+                }
+            }
+            start += 2;
+            return start;
+        }
+
+        private int findEndOfList(ExcelWorksheet worksheet, string subListID)
+        {
+            int end = 1;
+            string cellValue = worksheet.Cells[end, 1].GetValue<string>();
+            while (!cellValue.Contains(subListID) || !cellValue.Contains("Total:"))
+            {
+                end++;
+                cellValue = worksheet.Cells[end, 1].GetValue<string>();
+                while (cellValue == null)
+                {
+                    end++;
+                    cellValue = worksheet.Cells[end, 1].GetValue<string>();
+                }
+            }
+            return end;
+        }
+
+        private Dictionary<int, Dictionary<string, string>> loadChartInfo(ExcelWorksheet worksheet, SubList subList)
+        {
+            Dictionary<int, Dictionary<string, string>> chartInfo = new Dictionary<int, Dictionary<string, string>>();
+
+            for (int row = subList.startRow; row < subList.endRow; row++)
+            {
+                string chartNum = worksheet.Cells[row, 1].GetValue<string>();
+                string patientName = worksheet.Cells[row, 2].GetValue<string>();
+                string date = worksheet.Cells[row, 3].GetValue<DateTime>().ToShortDateString();
+
+                Dictionary<string, string> chartRowNameDate = new Dictionary<string, string>()
+                {
+                    { "chartNum", chartNum },
+                    { "rowNumber", row.ToString()},
+                    { "patientName", patientName},
+                    { "date", date}
+                };
+                chartInfo.Add(row, chartRowNameDate);
+
+                // maybe add exception handling for possible blank cells or cells with bad chart numbers ??
+            }
+            return chartInfo;
         }
 
         /************* UTILITY FUNCTIONS ******************/
@@ -155,7 +281,6 @@ namespace MB_Utilities.ui.grandview
             }
             return false;
         }
-
 
         private void disableUI()
         {
