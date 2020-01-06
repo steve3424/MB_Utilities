@@ -66,7 +66,7 @@
             this.searchStragglersNavBTN.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.searchStragglersNavBTN.Font = new System.Drawing.Font("Calibri", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.searchStragglersNavBTN.ForeColor = System.Drawing.Color.Black;
-            this.searchStragglersNavBTN.Location = new System.Drawing.Point(3, 118);
+            this.searchStragglersNavBTN.Location = new System.Drawing.Point(3, 56);
             this.searchStragglersNavBTN.Name = "searchStragglersNavBTN";
             this.searchStragglersNavBTN.Size = new System.Drawing.Size(177, 50);
             this.searchStragglersNavBTN.TabIndex = 2;
@@ -98,7 +98,7 @@
             this.createMissingNavBTN.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.createMissingNavBTN.Font = new System.Drawing.Font("Calibri", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.createMissingNavBTN.ForeColor = System.Drawing.Color.Black;
-            this.createMissingNavBTN.Location = new System.Drawing.Point(3, 56);
+            this.createMissingNavBTN.Location = new System.Drawing.Point(3, 118);
             this.createMissingNavBTN.Name = "createMissingNavBTN";
             this.createMissingNavBTN.Size = new System.Drawing.Size(177, 50);
             this.createMissingNavBTN.TabIndex = 1;

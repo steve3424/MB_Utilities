@@ -17,7 +17,7 @@ namespace MB_Utilities.ui.grandview
             InitializeComponent();
 
             hideAllControls();
-            createMissingList_GV1.Show();
+            searchStragglers_GV1.Show();
         }
 
         private void createMissingNavBTN_Click(object sender, EventArgs e)
