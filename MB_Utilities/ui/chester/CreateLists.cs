@@ -56,7 +56,29 @@ namespace MB_Utilities.ui.chester
 
         private void createListsBTN_Click(object sender, EventArgs e)
         {
+            disableUI();
 
+            enableUI();
+        }
+
+
+        /************* UTILITY FUNCTIONS ******************/
+        private void disableUI()
+        {
+            chooseMissingListBTN.Enabled = false;
+            chooseLogFileBTN.Enabled = false;
+            chooseFileFolderBTN.Enabled = false;
+            createListsBTN.Enabled = false;
+            deleteRowsCheckBox.Enabled = false;
+        }
+
+        private void enableUI()
+        {
+            chooseMissingListBTN.Enabled = true;
+            chooseLogFileBTN.Enabled = true;
+            chooseFileFolderBTN.Enabled = true;
+            createListsBTN.Enabled = true;
+            deleteRowsCheckBox.Enabled = true;
         }
     }
 }
