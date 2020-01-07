@@ -21,7 +21,7 @@ namespace MB_Utilities.controls.chester
     public partial class ProcessStragglers : UserControl
     {
         private const int RENAME_WARNING = 0;
-        private const int CREATE_LIST_WARNING = 1;
+        //private const int CREATE_LIST_WARNING = 1;
 
         // state of file
         private const int FILE_READY = 0;
@@ -108,6 +108,7 @@ namespace MB_Utilities.controls.chester
             enableUI();
         }
 
+        /*
         private void createStragglerListBTN_Click(object sender, EventArgs e)
         {
             disableUI();
@@ -137,6 +138,7 @@ namespace MB_Utilities.controls.chester
             }
             enableUI();
         }
+        */
 
 
 
@@ -309,6 +311,7 @@ namespace MB_Utilities.controls.chester
             return chartInfo;
         }
 
+        /*
         private void updateMissingList(List<SubList> subLists, List<int> rowsToDelete)
         {
             FileInfo path = new FileInfo(missingListPathField.Text);
@@ -346,7 +349,9 @@ namespace MB_Utilities.controls.chester
                 }
             }
         }
+        */
 
+        /*
         private void outputStragglerList(List<Dictionary<string, string>> stragglerList)
         {
             using (DataTable stragglerListDataTable = new DataTable())
@@ -366,7 +371,9 @@ namespace MB_Utilities.controls.chester
                 stragglersTotalLabel.Text = "Total: " + stragglerList.Count.ToString();
             }
         }
+        */
 
+        /*
         private List<int> getRowsToDelete(List<Dictionary<string, string>> stragglerList)
         {
             List<int> rowsToDelete = new List<int>();
@@ -382,6 +389,7 @@ namespace MB_Utilities.controls.chester
 
             return rowsToDelete;
         }
+        */
 
         private int findStartOfList(ExcelWorksheet worksheet, string subListID)
         {
@@ -463,7 +471,7 @@ namespace MB_Utilities.controls.chester
             chooseMissingListBTN.Enabled = false;
             chooseFileFolderBTN.Enabled = false;
             renameFilesBTN.Enabled = false;
-            createStragglerListBTN.Enabled = false;
+            //createStragglerListBTN.Enabled = false;
         }
 
         private void enableUI()
@@ -471,7 +479,7 @@ namespace MB_Utilities.controls.chester
             chooseMissingListBTN.Enabled = true;
             chooseFileFolderBTN.Enabled = true;
             renameFilesBTN.Enabled = true;
-            createStragglerListBTN.Enabled = true;
+            //createStragglerListBTN.Enabled = true;
         }
 
         private DialogResult showWarning(int warning)
@@ -486,11 +494,13 @@ namespace MB_Utilities.controls.chester
                 "If the charts for your day are also in this folder it will rename all of them, which you don't want.\n\n" +
                 "Are you sure you are ready to continue?";
                     return MessageBox.Show(renameMessage, title, buttons);
+                /*
                 case CREATE_LIST_WARNING:
                     string createListMessage = "This program will remove all of the charts from the missing list.\n\n" +
                 "Make sure you copy the list once it is run because you will not be able to run it again.\n\n" +
                 "Are you sure you are ready to continue?";
                     return MessageBox.Show(createListMessage, title, buttons);
+                */
                 default:
                     return DialogResult.No;
             }
@@ -535,6 +545,7 @@ namespace MB_Utilities.controls.chester
 
 
         /************* COPY OPERATION FUNCTIONS ******************/
+        /*
         private void stragglerListOutput_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right && stragglerListOutput.Rows.Count != 0)
@@ -548,5 +559,6 @@ namespace MB_Utilities.controls.chester
         {
             Clipboard.SetDataObject(this.stragglerListOutput.GetClipboardContent());
         }
+        */
     }
 }
