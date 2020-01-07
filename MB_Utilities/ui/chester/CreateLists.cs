@@ -12,6 +12,8 @@ namespace MB_Utilities.ui.chester
 {
     public partial class CreateLists : UserControl
     {
+        private const int DELETE_ROWS_WARNING = 0;
+
         public CreateLists()
         {
             InitializeComponent();
@@ -58,6 +60,17 @@ namespace MB_Utilities.ui.chester
         {
             disableUI();
 
+            DialogResult warningSelection = DialogResult.No;
+            if (deleteRowsCheckBox.Checked)
+            {
+                warningSelection = showWarning(DELETE_ROWS_WARNING);
+            }
+
+            if (warningSelection == DialogResult.Yes)
+            {
+                // do stuff
+            }
+
             enableUI();
         }
 
@@ -79,6 +92,22 @@ namespace MB_Utilities.ui.chester
             chooseFileFolderBTN.Enabled = true;
             createListsBTN.Enabled = true;
             deleteRowsCheckBox.Enabled = true;
+        }
+
+        private DialogResult showWarning(int warning)
+        {
+            string title = "Warning";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+
+            switch (warning)
+            {
+                case DELETE_ROWS_WARNING:
+                    string createListMessage = "This program will remove all of the charts from the missing list.\n\n" +
+                "Are you sure you are ready to continue?";
+                    return MessageBox.Show(createListMessage, title, buttons);
+                default:
+                    return DialogResult.No;
+            }
         }
     }
 }
