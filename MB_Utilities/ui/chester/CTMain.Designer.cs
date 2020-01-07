@@ -169,7 +169,7 @@
             this.processFilesNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.processFilesNavBTN.UseVisualStyleBackColor = true;
             this.processFilesNavBTN.Click += new System.EventHandler(this.processFilesNavBTN_Click);
-            // 
+            //
             // loadDays1
             // 
             this.loadDays1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -201,7 +201,7 @@
             this.processStragglers1.Name = "processStragglers1";
             this.processStragglers1.Size = new System.Drawing.Size(816, 692);
             this.processStragglers1.TabIndex = 2;
-            // 
+            //
             // processFiles1
             // 
             this.processFiles1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -209,7 +209,7 @@
             this.processFiles1.Name = "processFiles1";
             this.processFiles1.Size = new System.Drawing.Size(816, 692);
             this.processFiles1.TabIndex = 1;
-            // 
+            //
             // CTMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
