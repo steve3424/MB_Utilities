@@ -34,14 +34,14 @@
             this.hospitalTitle = new System.Windows.Forms.Label();
             this.loadDaysNavBTN = new System.Windows.Forms.Button();
             this.updateMissingNavBTN = new System.Windows.Forms.Button();
-            this.createMissingNavBTN = new System.Windows.Forms.Button();
             this.processStragglersNavBTN = new System.Windows.Forms.Button();
             this.processFilesNavBTN = new System.Windows.Forms.Button();
-            this.loadDays1 = new MB_Utilities.controls.chester.LoadDays();
-            this.updateMissingList1 = new MB_Utilities.controls.chester.UpdateMissingList();
-            this.createMissingList1 = new MB_Utilities.controls.chester.CreateMissingList();
             this.processStragglers1 = new MB_Utilities.controls.chester.ProcessStragglers();
             this.processFiles1 = new MB_Utilities.controls.chester.ProcessFiles();
+            this.loadDays1 = new MB_Utilities.controls.chester.LoadDays();
+            this.updateMissingList1 = new MB_Utilities.controls.chester.UpdateMissingList();
+            this.createLists1 = new MB_Utilities.ui.chester.CreateLists();
+            this.createListsNavBTN = new System.Windows.Forms.Button();
             this.ctNav.SuspendLayout();
             this.hospitalTitlePanel.SuspendLayout();
             this.SuspendLayout();
@@ -49,11 +49,11 @@
             // ctNav
             // 
             this.ctNav.BackColor = System.Drawing.SystemColors.Control;
+            this.ctNav.Controls.Add(this.createListsNavBTN);
             this.ctNav.Controls.Add(this.navSelectedPanel);
             this.ctNav.Controls.Add(this.hospitalTitlePanel);
             this.ctNav.Controls.Add(this.loadDaysNavBTN);
             this.ctNav.Controls.Add(this.updateMissingNavBTN);
-            this.ctNav.Controls.Add(this.createMissingNavBTN);
             this.ctNav.Controls.Add(this.processStragglersNavBTN);
             this.ctNav.Controls.Add(this.processFilesNavBTN);
             this.ctNav.Dock = System.Windows.Forms.DockStyle.Left;
@@ -122,22 +122,6 @@
             this.updateMissingNavBTN.UseVisualStyleBackColor = true;
             this.updateMissingNavBTN.Click += new System.EventHandler(this.updateMissingNavBTN_Click);
             // 
-            // createMissingNavBTN
-            // 
-            this.createMissingNavBTN.FlatAppearance.BorderSize = 0;
-            this.createMissingNavBTN.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightGray;
-            this.createMissingNavBTN.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.createMissingNavBTN.Font = new System.Drawing.Font("Calibri", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.createMissingNavBTN.ForeColor = System.Drawing.Color.Black;
-            this.createMissingNavBTN.Location = new System.Drawing.Point(3, 183);
-            this.createMissingNavBTN.Name = "createMissingNavBTN";
-            this.createMissingNavBTN.Size = new System.Drawing.Size(177, 50);
-            this.createMissingNavBTN.TabIndex = 3;
-            this.createMissingNavBTN.Text = "Create Missing List";
-            this.createMissingNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.createMissingNavBTN.UseVisualStyleBackColor = true;
-            this.createMissingNavBTN.Click += new System.EventHandler(this.createMissingNavBTN_Click);
-            // 
             // processStragglersNavBTN
             // 
             this.processStragglersNavBTN.FlatAppearance.BorderSize = 0;
@@ -169,7 +153,23 @@
             this.processFilesNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.processFilesNavBTN.UseVisualStyleBackColor = true;
             this.processFilesNavBTN.Click += new System.EventHandler(this.processFilesNavBTN_Click);
-            //
+            // 
+            // processStragglers1
+            // 
+            this.processStragglers1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.processStragglers1.Location = new System.Drawing.Point(190, 0);
+            this.processStragglers1.Name = "processStragglers1";
+            this.processStragglers1.Size = new System.Drawing.Size(816, 692);
+            this.processStragglers1.TabIndex = 2;
+            // 
+            // processFiles1
+            // 
+            this.processFiles1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.processFiles1.Location = new System.Drawing.Point(190, 0);
+            this.processFiles1.Name = "processFiles1";
+            this.processFiles1.Size = new System.Drawing.Size(816, 692);
+            this.processFiles1.TabIndex = 1;
+            // 
             // loadDays1
             // 
             this.loadDays1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -186,39 +186,39 @@
             this.updateMissingList1.Size = new System.Drawing.Size(816, 692);
             this.updateMissingList1.TabIndex = 4;
             // 
-            // createMissingList1
+            // createLists1
             // 
-            this.createMissingList1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.createMissingList1.Location = new System.Drawing.Point(190, 0);
-            this.createMissingList1.Name = "createMissingList1";
-            this.createMissingList1.Size = new System.Drawing.Size(816, 692);
-            this.createMissingList1.TabIndex = 3;
+            this.createLists1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.createLists1.Location = new System.Drawing.Point(190, 0);
+            this.createLists1.Name = "createLists1";
+            this.createLists1.Size = new System.Drawing.Size(816, 692);
+            this.createLists1.TabIndex = 6;
             // 
-            // processStragglers1
+            // createListsNavBTN
             // 
-            this.processStragglers1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.processStragglers1.Location = new System.Drawing.Point(190, 0);
-            this.processStragglers1.Name = "processStragglers1";
-            this.processStragglers1.Size = new System.Drawing.Size(816, 692);
-            this.processStragglers1.TabIndex = 2;
-            //
-            // processFiles1
+            this.createListsNavBTN.FlatAppearance.BorderSize = 0;
+            this.createListsNavBTN.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightGray;
+            this.createListsNavBTN.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.createListsNavBTN.Font = new System.Drawing.Font("Calibri", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.createListsNavBTN.ForeColor = System.Drawing.Color.Black;
+            this.createListsNavBTN.Location = new System.Drawing.Point(3, 183);
+            this.createListsNavBTN.Name = "createListsNavBTN";
+            this.createListsNavBTN.Size = new System.Drawing.Size(177, 50);
+            this.createListsNavBTN.TabIndex = 6;
+            this.createListsNavBTN.Text = "Create Lists";
+            this.createListsNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.createListsNavBTN.UseVisualStyleBackColor = true;
+            this.createListsNavBTN.Click += new System.EventHandler(this.createListsNavBTN_Click);
             // 
-            this.processFiles1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.processFiles1.Location = new System.Drawing.Point(190, 0);
-            this.processFiles1.Name = "processFiles1";
-            this.processFiles1.Size = new System.Drawing.Size(816, 692);
-            this.processFiles1.TabIndex = 1;
-            //
             // CTMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.createLists1);
+            this.Controls.Add(this.processStragglers1);
             this.Controls.Add(this.processFiles1);
             this.Controls.Add(this.loadDays1);
             this.Controls.Add(this.updateMissingList1);
-            this.Controls.Add(this.createMissingList1);
-            this.Controls.Add(this.processStragglers1);
             this.Controls.Add(this.ctNav);
             this.Name = "CTMain";
             this.Size = new System.Drawing.Size(1006, 692);
@@ -234,7 +234,6 @@
         private System.Windows.Forms.Panel ctNav;
         private System.Windows.Forms.Button processFilesNavBTN;
         private System.Windows.Forms.Button processStragglersNavBTN;
-        private System.Windows.Forms.Button createMissingNavBTN;
         private System.Windows.Forms.Button updateMissingNavBTN;
         private System.Windows.Forms.Button loadDaysNavBTN;
         private System.Windows.Forms.Label hospitalTitle;
@@ -242,8 +241,9 @@
         private System.Windows.Forms.Panel navSelectedPanel;
         private controls.chester.ProcessFiles processFiles1;
         private controls.chester.ProcessStragglers processStragglers1;
-        private controls.chester.CreateMissingList createMissingList1;
         private controls.chester.UpdateMissingList updateMissingList1;
         private controls.chester.LoadDays loadDays1;
+        private CreateLists createLists1;
+        private System.Windows.Forms.Button createListsNavBTN;
     }
 }

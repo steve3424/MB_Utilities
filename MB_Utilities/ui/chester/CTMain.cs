@@ -36,12 +36,12 @@ namespace MB_Utilities.ui.chester
             processStragglers1.Show();
         }
 
-        private void createMissingNavBTN_Click(object sender, EventArgs e)
+        private void createListsNavBTN_Click(object sender, EventArgs e)
         {
-            navSelectedPanel.Top = createMissingNavBTN.Top;
+            navSelectedPanel.Top = createLists1.Top;
 
             hideAllControls();
-            createMissingList1.Show();
+            createLists1.Show();
         }
 
         private void updateMissingNavBTN_Click(object sender, EventArgs e)
@@ -64,7 +64,7 @@ namespace MB_Utilities.ui.chester
         {
             processFiles1.Hide();
             processStragglers1.Hide();
-            createMissingList1.Hide();
+            createLists1.Hide();
             updateMissingList1.Hide();
             loadDays1.Hide();
         }
