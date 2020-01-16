@@ -108,11 +108,96 @@ namespace MB_Utilities.ui.chester
                 }
                 else
                 {
-                    // do stuff
+                    HashSet<int> fileNames = loadFileNames();
+                    Dictionary<int, Dictionary<string, string>> logFile = loadLogFile();
+                    SortedDictionary<int, Dictionary<string, string>> missingList = createMissingList(logFile, fileNames);
+                    SortedDictionary<int, Dictionary<string, string>> voidedList = createVoidedList(logFile, fileNames);
                 }
             }
 
             enableUI();
+        }
+
+
+        /************* MISSING AND VOIDED LIST FUNCTIONS ******************/
+
+        private HashSet<int> loadFileNames()
+        {
+            HashSet<int> fileNames = new HashSet<int>();
+            foreach (string file in Directory.EnumerateFiles(folderPathField.Text, "*.pdf"))
+            {
+                string fileName = Path.GetFileNameWithoutExtension(file);
+                int chartNum = Int32.Parse(fileName);
+
+                fileNames.Add(chartNum);
+            }
+            return fileNames;
+        }
+
+        private Dictionary<int, Dictionary<string, string>> loadLogFile()
+        {
+            Dictionary<int, Dictionary<string, string>> logFile = new Dictionary<int, Dictionary<string, string>>();
+
+            string[] lines = File.ReadAllLines(logFilePathField.Text);
+            foreach (string line in lines)
+            {
+                string[] chartInfo = line.Split(',');
+                int chartNum = Int32.Parse(chartInfo[1]);
+                string date = chartInfo[0];
+                string lastName = chartInfo[2];
+                string firstName = chartInfo[3];
+                string logCode = chartInfo[4];
+                Dictionary<string, string> info = new Dictionary<string, string>()
+                {
+                    {"date", date },
+                    {"lastName", lastName },
+                    {"firstName", firstName },
+                    {"logCode", logCode },
+                    {"missing", "" }
+                };
+                logFile.Add(chartNum, info);
+            }
+            return logFile;
+        }
+
+        private SortedDictionary<int, Dictionary<string, string>> createMissingList(Dictionary<int, Dictionary<string, string>> logFile, HashSet<int> fileNames)
+        {
+            SortedDictionary<int, Dictionary<string, string>> missingList = new SortedDictionary<int, Dictionary<string, string>>();
+            foreach (int logNum in logFile.Keys)
+            {
+                if (!fileNames.Contains(logNum))
+                {
+                    // chart is missing AND is RG or already modified to TD
+                    if (logFile[logNum]["logCode"] == "RG" || logFile[logNum]["logCode"] == "TD")
+                    {
+                        missingList.Add(logNum, logFile[logNum]);
+                    }
+                }
+            }
+            return missingList;
+        }
+
+        private SortedDictionary<int, Dictionary<string, string>> createVoidedList(Dictionary<int, Dictionary<string, string>> logFile, HashSet<int> fileNames)
+        {
+            SortedDictionary<int, Dictionary<string, string>> voidedList = new SortedDictionary<int, Dictionary<string, string>>();
+            foreach (int logNum in logFile.Keys)
+            {
+                if (!fileNames.Contains(logNum))
+                {
+                    // log code CAN'T be RG or TD
+                    if (!(logFile[logNum]["logCode"] == "RG") && !(logFile[logNum]["logCode"] == "TD"))
+                    {
+                        logFile[logNum]["missing"] = "-";
+                        voidedList.Add(logNum, logFile[logNum]);
+                    }
+                }
+                else if (logFile[logNum]["logCode"] != "RG")
+                {
+                    // chart is found, but is not a voided code
+                    voidedList.Add(logNum, logFile[logNum]);
+                }
+            }
+            return voidedList;
         }
 
 
