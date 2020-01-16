@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using OfficeOpenXml;
+using MB_Utilities.utils;
 
 namespace MB_Utilities.ui.chester
 {
@@ -108,10 +109,19 @@ namespace MB_Utilities.ui.chester
                 }
                 else
                 {
+                    // create missing and voided lists
                     HashSet<int> fileNames = loadFileNames();
                     Dictionary<int, Dictionary<string, string>> logFile = loadLogFile();
                     SortedDictionary<int, Dictionary<string, string>> missingList = createMissingList(logFile, fileNames);
                     SortedDictionary<int, Dictionary<string, string>> voidedList = createVoidedList(logFile, fileNames);
+
+                    // create straggler list
+                    List<string> subListIDs = new List<string>() { "ME", "PM", "TD" };
+                    List<SubList> subLists = createSubLists(subListIDs);
+                    List<Dictionary<string, string>> stragglerList = createStragglerList(subLists);
+                    List<int> rowsToDelete = getRowsToDelete(stragglerList);
+                    updateMissingList(subLists, rowsToDelete);
+
                 }
             }
 
@@ -198,6 +208,173 @@ namespace MB_Utilities.ui.chester
                 }
             }
             return voidedList;
+        }
+
+
+        /************* STRAGGLER LIST FUNCTIONS ******************/
+
+        private List<SubList> createSubLists(List<string> subListsToCreate)
+        {
+            List<SubList> subLists = new List<SubList>();
+
+
+            FileInfo path = new FileInfo(missingListPathField.Text);
+            using (ExcelPackage package = new ExcelPackage(path))
+            using (ExcelWorksheet worksheet = package.Workbook.Worksheets[1])
+            {
+                foreach (string subListID in subListsToCreate)
+                {
+                    SubList newSubList = new SubList();
+                    newSubList.name = subListID;
+                    newSubList.startRow = findStartOfList(worksheet, subListID);
+                    newSubList.endRow = findEndOfList(worksheet, subListID);
+                    newSubList.chartInfo = loadChartInfo(worksheet, newSubList);
+                    newSubList.totalCharts = worksheet.Cells[newSubList.endRow, 3].GetValue<int>();
+
+                    subLists.Add(newSubList);
+                }
+            }
+            return subLists;
+        }
+
+        private int findStartOfList(ExcelWorksheet worksheet, string subListID)
+        {
+            int start = 1;
+            string cellValue = worksheet.Cells[start, 1].GetValue<string>();
+            while (!cellValue.Contains(subListID))
+            {
+                start++;
+                cellValue = worksheet.Cells[start, 1].GetValue<string>();
+                while (cellValue == null)
+                {
+                    start++;
+                    cellValue = worksheet.Cells[start, 1].GetValue<string>();
+                }
+            }
+            start += 2;
+            return start;
+        }
+
+        private int findEndOfList(ExcelWorksheet worksheet, string subListID)
+        {
+            int end = 1;
+            string cellValue = worksheet.Cells[end, 1].GetValue<string>();
+            while (!cellValue.Contains(subListID) || !cellValue.Contains("Total:"))
+            {
+                end++;
+                cellValue = worksheet.Cells[end, 1].GetValue<string>();
+                while (cellValue == null)
+                {
+                    end++;
+                    cellValue = worksheet.Cells[end, 1].GetValue<string>();
+                }
+            }
+            return end;
+        }
+
+        private Dictionary<int, Dictionary<string, string>> loadChartInfo(ExcelWorksheet worksheet, SubList subList)
+        {
+            Dictionary<int, Dictionary<string, string>> chartInfo = new Dictionary<int, Dictionary<string, string>>();
+
+            for (int row = subList.startRow; row < subList.endRow; row++)
+            {
+                int chartNum = worksheet.Cells[row, 1].GetValue<int>();
+                string patientName = worksheet.Cells[row, 2].GetValue<string>();
+                string date = worksheet.Cells[row, 3].GetValue<DateTime>().ToShortDateString();
+
+                Dictionary<string, string> chartRowNameDate = new Dictionary<string, string>()
+                {
+                    { "chartNum", chartNum.ToString() },
+                    { "rowNumber", row.ToString()},
+                    { "patientName", patientName},
+                    { "date", date}
+                };
+                chartInfo.Add(chartNum, chartRowNameDate);
+
+                // maybe add exception handling for possible blank cells or cells with bad chart numbers ??
+            }
+            return chartInfo;
+        }
+
+        private List<Dictionary<string, string>> createStragglerList(List<SubList> subLists)
+        {
+            List<Dictionary<string, string>> stragglerList = new List<Dictionary<string, string>>();
+
+            foreach (string file in Directory.EnumerateFiles(folderPathField.Text, "*.pdf"))
+            {
+                string fileName = Path.GetFileNameWithoutExtension(file);
+                int chartNum = Int32.Parse(fileName);
+
+                foreach (SubList subList in subLists)
+                {
+                    if (subList.chartInfo.ContainsKey(chartNum))
+                    {
+                        stragglerList.Add(subList.chartInfo[chartNum]);
+                        subList.totalCharts -= 1;
+                    }
+                }
+            }
+
+            // sort by "date", then by "chartNum"
+            List<Dictionary<string, string>> sortedStragglerList = stragglerList.OrderBy(x => Convert.ToDateTime(x["date"]))
+                                                                   .ThenBy(x => x["chartNum"])
+                                                                   .ToList<Dictionary<string, string>>();
+
+            return sortedStragglerList;
+        }
+
+        private List<int> getRowsToDelete(List<Dictionary<string, string>> stragglerList)
+        {
+            List<int> rowsToDelete = new List<int>();
+
+            foreach (var chartInfo in stragglerList)
+            {
+                int rowNumber = Int32.Parse(chartInfo["rowNumber"]);
+                rowsToDelete.Add(rowNumber);
+            }
+
+            rowsToDelete.Sort();
+            rowsToDelete.Reverse();
+
+            return rowsToDelete;
+        }
+
+        private void updateMissingList(List<SubList> subLists, List<int> rowsToDelete)
+        {
+            FileInfo path = new FileInfo(missingListPathField.Text);
+            using (ExcelPackage package = new ExcelPackage(path))
+            using (ExcelWorksheet worksheet = package.Workbook.Worksheets[1])
+            {
+                if (deleteRowsCheckBox.Checked)
+                {
+                    foreach (SubList subList in subLists)
+                    {
+                        int rowWithTotal = subList.endRow;
+                        worksheet.Cells[rowWithTotal, 3].Value = subList.totalCharts;
+                    }
+
+                    foreach (int row in rowsToDelete)
+                    {
+                        worksheet.DeleteRow(row);
+                    }
+                }
+                else
+                {
+                    foreach (int row in rowsToDelete)
+                    {
+                        worksheet.Row(row).Style.Font.Bold = true;
+                    }
+                }
+
+                try
+                {
+                    package.Save();
+                }
+                catch (InvalidOperationException)
+                {
+                    showErrorMessage(CANNOT_SAVE_MISSING_LIST);
+                }
+            }
         }
 
 
