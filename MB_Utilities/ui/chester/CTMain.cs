@@ -38,7 +38,7 @@ namespace MB_Utilities.ui.chester
 
         private void createListsNavBTN_Click(object sender, EventArgs e)
         {
-            navSelectedPanel.Top = createLists1.Top;
+            navSelectedPanel.Top = createListsNavBTN.Top;
 
             hideAllControls();
             createLists1.Show();
