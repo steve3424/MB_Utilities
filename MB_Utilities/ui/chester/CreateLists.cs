@@ -148,7 +148,7 @@ namespace MB_Utilities.ui.chester
         private bool createLists(SortedDictionary<int, Dictionary<string, string>> missingList, SortedDictionary<int, Dictionary<string, string>> voidedList, List<Dictionary<string, string>> stragglerList)
         {
             // get date of service
-            DateTime date = Convert.ToDateTime(missingList[missingList.Keys.First()]["date"]);
+            DateTime date = DateTime.ParseExact(missingList[missingList.Keys.First()]["date"], "yyyyMMdd", null);
             string dateOfService = date.ToString(@"MM-dd-yy");
 
             try
