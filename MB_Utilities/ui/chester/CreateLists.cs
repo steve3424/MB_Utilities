@@ -128,11 +128,16 @@ namespace MB_Utilities.ui.chester
                     {
                         List<int> rowsToDelete = getRowsToDelete(stragglerList);
                         updateMissingList(subLists, rowsToDelete);
-                        MessageBox.Show("Done!!");
+
+                        missingTotalLabel.Text = "Missing Total: " + missingList.Keys.Count;
+                        voidedTotalLabel.Text = "Voided Total: " + voidedList.Keys.Count;
+                        stragglersTotalLabel.Text = "Straggler Total: " + stragglerList.Count;
+
+                        MessageBox.Show("Lists created!!");
                     }
                     else
                     {
-                        MessageBox.Show("An error occurred so the missing list was not updated.");
+                        MessageBox.Show("An error occurred so the lists were not created and the missing list was not updated. Try again.");
                     }
                 }
             }
@@ -683,8 +688,8 @@ namespace MB_Utilities.ui.chester
                     return;
                 case CANNOT_SAVE_MISSING_LIST:
                     MessageBox.Show("It looks like the missing list is open somewhere else.\n\n" +
-                        "The missing list will not be updated.\n\n" +
-                        "Close the missing list and try again.");
+                        "Your lists have been created, but the missing list was not updated.\n\n" +
+                        "Either update the missing list manually or close it and run the program again.");
                     return;
                 default:
                     MessageBox.Show("An unspecified error occurred.");
