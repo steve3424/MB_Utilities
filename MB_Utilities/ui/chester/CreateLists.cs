@@ -120,146 +120,162 @@ namespace MB_Utilities.ui.chester
                     List<string> subListIDs = new List<string>() { "ME", "PM", "TD" };
                     List<SubList> subLists = createSubLists(subListIDs);
                     List<Dictionary<string, string>> stragglerList = createStragglerList(subLists);
-                    List<int> rowsToDelete = getRowsToDelete(stragglerList);
-                    updateMissingList(subLists, rowsToDelete);
 
                     // create word doc of lists
-                    createLists(missingList, voidedList, stragglerList);
-
-                    MessageBox.Show("Done!!");
+                    bool docCreated = createLists(missingList, voidedList, stragglerList);
+                    
+                    if (docCreated)
+                    {
+                        List<int> rowsToDelete = getRowsToDelete(stragglerList);
+                        updateMissingList(subLists, rowsToDelete);
+                        MessageBox.Show("Done!!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("An error occurred so the missing list was not updated.");
+                    }
                 }
             }
 
             enableUI();
         }
 
-        private void createLists(SortedDictionary<int, Dictionary<string, string>> missingList, SortedDictionary<int, Dictionary<string, string>> voidedList, List<Dictionary<string, string>> stragglerList)
+        private bool createLists(SortedDictionary<int, Dictionary<string, string>> missingList, SortedDictionary<int, Dictionary<string, string>> voidedList, List<Dictionary<string, string>> stragglerList)
         {
             // get date of service
             DateTime date = Convert.ToDateTime(missingList[missingList.Keys.First()]["date"]);
             string dateOfService = date.ToString(@"MM-dd-yy");
 
-            object missing = System.Reflection.Missing.Value;
-            Word.Application application = new Word.Application();
-            Word.Document document = application.Documents.Add(ref missing, ref missing, ref missing, ref missing);
-
-            int missingRows = missingList.Keys.Count;
-            int missingCols = 2;
-            if (missingRows > 0)
+            try
             {
-                // create missing list table
-                Word.Paragraph missingTitle = document.Content.Paragraphs.Add(ref missing);
-                missingTitle.Range.Text = "Missing " + dateOfService;
-                missingTitle.Range.Font.Name = "calibri";
-                missingTitle.Range.Font.Size = 16;
-                missingTitle.Range.Font.Bold = 1;
-                missingTitle.Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
-                missingTitle.Range.InsertParagraphAfter();
+                object missing = System.Reflection.Missing.Value;
+                Word.Application application = new Word.Application();
+                Word.Document document = application.Documents.Add(ref missing, ref missing, ref missing, ref missing);
 
-                Word.Table missingTable = document.Tables.Add(missingTitle.Range, missingRows, missingCols);
-
-                int row = 1;
-                foreach (int chartNum in missingList.Keys)
+                int missingRows = missingList.Keys.Count;
+                int missingCols = 2;
+                if (missingRows > 0)
                 {
-                    // add text
-                    missingTable.Cell(row, 1).Range.Text = chartNum.ToString();
-                    missingTable.Cell(row, 2).Range.Text = missingList[chartNum]["lastName"] + ", " + missingList[chartNum]["firstName"];
+                    // create missing list table
+                    Word.Paragraph missingTitle = document.Content.Paragraphs.Add(ref missing);
+                    missingTitle.Range.Text = "Missing " + dateOfService;
+                    missingTitle.Range.Font.Name = "calibri";
+                    missingTitle.Range.Font.Size = 16;
+                    missingTitle.Range.Font.Bold = 1;
+                    missingTitle.Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+                    missingTitle.Range.InsertParagraphAfter();
 
-                    // format table
-                    missingTable.Rows[row].Range.Font.Bold = 0;
-                    missingTable.Rows[row].Range.Font.Size = 12;
-                    missingTable.Rows[row].Range.Font.Name = "calibri";
-                    for (int i=1; i <= missingCols; ++i)
+                    Word.Table missingTable = document.Tables.Add(missingTitle.Range, missingRows, missingCols);
+
+                    int row = 1;
+                    foreach (int chartNum in missingList.Keys)
                     {
-                        missingTable.Cell(row, i).Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;
+                        // add text
+                        missingTable.Cell(row, 1).Range.Text = chartNum.ToString();
+                        missingTable.Cell(row, 2).Range.Text = missingList[chartNum]["lastName"] + ", " + missingList[chartNum]["firstName"];
+
+                        // format table
+                        missingTable.Rows[row].Range.Font.Bold = 0;
+                        missingTable.Rows[row].Range.Font.Size = 12;
+                        missingTable.Rows[row].Range.Font.Name = "calibri";
+                        for (int i = 1; i <= missingCols; ++i)
+                        {
+                            missingTable.Cell(row, i).Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;
+                        }
+
+                        row++;
                     }
-
-                    row++;
+                    missingTable.Columns.AutoFit();
                 }
-                missingTable.Columns.AutoFit();
+
+
+                int voidedRows = voidedList.Keys.Count;
+                int voidedCols = 4;
+                if (voidedRows > 0)
+                {
+                    // create voided list table
+                    Word.Paragraph voidedTitle = document.Content.Paragraphs.Add(ref missing);
+                    voidedTitle.Range.Text = "Voided " + dateOfService;
+                    voidedTitle.Range.Font.Name = "calibri";
+                    voidedTitle.Range.Font.Size = 16;
+                    voidedTitle.Range.Font.Bold = 1;
+                    voidedTitle.Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+                    voidedTitle.Range.InsertParagraphAfter();
+
+                    Word.Table voidedTable = document.Tables.Add(voidedTitle.Range, voidedRows, voidedCols);
+
+                    int row = 1;
+                    foreach (int chartNum in voidedList.Keys)
+                    {
+                        // add text
+                        voidedTable.Cell(row, 1).Range.Text = voidedList[chartNum]["missing"];
+                        voidedTable.Cell(row, 2).Range.Text = chartNum.ToString();
+                        voidedTable.Cell(row, 3).Range.Text = voidedList[chartNum]["lastName"] + ", " + voidedList[chartNum]["firstName"];
+                        voidedTable.Cell(row, 4).Range.Text = voidedList[chartNum]["logCode"];
+
+                        // format table
+                        voidedTable.Rows[row].Range.Font.Bold = 0;
+                        voidedTable.Rows[row].Range.Font.Size = 12;
+                        voidedTable.Rows[row].Range.Font.Name = "calibri";
+                        for (int i = 1; i <= voidedCols; ++i)
+                        {
+                            voidedTable.Cell(row, i).Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;
+                        }
+                        voidedTable.Cell(row, 4).Range.Font.Bold = 1;
+
+                        row++;
+                    }
+                    voidedTable.Columns.AutoFit();
+                }
+
+                int stragglerRows = stragglerList.Count;
+                int stragglerCols = 3;
+                if (stragglerRows > 0)
+                {
+                    // create straggler list table
+                    Word.Paragraph stragglerTitle = document.Content.Paragraphs.Add(ref missing);
+                    stragglerTitle.Range.Text = "Stragglers " + dateOfService;
+                    stragglerTitle.Range.Font.Name = "calibri";
+                    stragglerTitle.Range.Font.Size = 16;
+                    stragglerTitle.Range.Font.Bold = 1;
+                    stragglerTitle.Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+                    stragglerTitle.Range.InsertParagraphAfter();
+
+                    Word.Table stragglerTable = document.Tables.Add(stragglerTitle.Range, stragglerRows, stragglerCols);
+
+                    int row = 1;
+                    foreach (var patient in stragglerList)
+                    {
+                        // add text
+                        stragglerTable.Cell(row, 1).Range.Text = patient["chartNum"];
+                        stragglerTable.Cell(row, 2).Range.Text = patient["patientName"];
+                        stragglerTable.Cell(row, 3).Range.Text = patient["date"];
+
+                        // format table
+                        stragglerTable.Rows[row].Range.Font.Bold = 0;
+                        stragglerTable.Rows[row].Range.Font.Size = 12;
+                        stragglerTable.Rows[row].Range.Font.Name = "calibri";
+                        for (int i = 1; i <= stragglerCols; ++i)
+                        {
+                            stragglerTable.Cell(row, i).Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;
+                        }
+
+                        row++;
+                    }
+                    stragglerTable.Columns.AutoFit();
+                }
+
+                object fileName = folderPathField.Text + "\\file_lists.docx";
+                document.SaveAs2(ref fileName);
+                document.Close();
+                application.Quit();
             }
-
-
-            int voidedRows = voidedList.Keys.Count;
-            int voidedCols = 4;
-            if (voidedRows > 0)
+            catch (Exception ex)
             {
-                // create voided list table
-                Word.Paragraph voidedTitle = document.Content.Paragraphs.Add(ref missing);
-                voidedTitle.Range.Text = "Voided " + dateOfService;
-                voidedTitle.Range.Font.Name = "calibri";
-                voidedTitle.Range.Font.Size = 16;
-                voidedTitle.Range.Font.Bold = 1;
-                voidedTitle.Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
-                voidedTitle.Range.InsertParagraphAfter();
-
-                Word.Table voidedTable = document.Tables.Add(voidedTitle.Range, voidedRows, voidedCols);
-
-                int row = 1;
-                foreach (int chartNum in voidedList.Keys)
-                {
-                    // add text
-                    voidedTable.Cell(row, 1).Range.Text = voidedList[chartNum]["missing"];
-                    voidedTable.Cell(row, 2).Range.Text = chartNum.ToString();
-                    voidedTable.Cell(row, 3).Range.Text = voidedList[chartNum]["lastName"] + ", " + voidedList[chartNum]["firstName"];
-                    voidedTable.Cell(row, 4).Range.Text = voidedList[chartNum]["logCode"];
-
-                    // format table
-                    voidedTable.Rows[row].Range.Font.Bold = 0;
-                    voidedTable.Rows[row].Range.Font.Size = 12;
-                    voidedTable.Rows[row].Range.Font.Name = "calibri";
-                    for (int i=1; i <= voidedCols; ++i)
-                    {
-                        voidedTable.Cell(row, i).Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;
-                    }
-                    voidedTable.Cell(row, 4).Range.Font.Bold = 1;
-
-                    row++;
-                }
-                voidedTable.Columns.AutoFit();
+                MessageBox.Show(ex.Message);
+                return false;
             }
-
-            int stragglerRows = stragglerList.Count;
-            int stragglerCols = 3;
-            if (stragglerRows > 0)
-            {
-                // create straggler list table
-                Word.Paragraph stragglerTitle = document.Content.Paragraphs.Add(ref missing);
-                stragglerTitle.Range.Text = "Stragglers " + dateOfService;
-                stragglerTitle.Range.Font.Name = "calibri";
-                stragglerTitle.Range.Font.Size = 16;
-                stragglerTitle.Range.Font.Bold = 1;
-                stragglerTitle.Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
-                stragglerTitle.Range.InsertParagraphAfter();
-
-                Word.Table stragglerTable = document.Tables.Add(stragglerTitle.Range, stragglerRows, stragglerCols);
-
-                int row = 1;
-                foreach (var patient in stragglerList)
-                {
-                    // add text
-                    stragglerTable.Cell(row, 1).Range.Text = patient["chartNum"];
-                    stragglerTable.Cell(row, 2).Range.Text = patient["patientName"];
-                    stragglerTable.Cell(row, 3).Range.Text = patient["date"];
-
-                    // format table
-                    stragglerTable.Rows[row].Range.Font.Bold = 0;
-                    stragglerTable.Rows[row].Range.Font.Size = 12;
-                    stragglerTable.Rows[row].Range.Font.Name = "calibri";
-                    for (int i=1; i <= stragglerCols; ++i)
-                    {
-                        stragglerTable.Cell(row, i).Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;
-                    }
-
-                    row++;
-                }
-                stragglerTable.Columns.AutoFit();
-            }
-
-            object fileName = folderPathField.Text + "\\file_lists.docx";
-            document.SaveAs2(ref fileName);
-            document.Close();
-            application.Quit();
+            return true;
         }
 
         /************* MISSING AND VOIDED LIST FUNCTIONS ******************/
