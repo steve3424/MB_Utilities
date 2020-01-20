@@ -129,6 +129,8 @@ namespace MB_Utilities.ui.chester
                         List<int> rowsToDelete = getRowsToDelete(stragglerList);
                         updateMissingList(subLists, rowsToDelete);
 
+                        createTextFile(missingList);
+
                         missingTotalLabel.Text = "Missing Total: " + missingList.Keys.Count;
                         voidedTotalLabel.Text = "Voided Total: " + voidedList.Keys.Count;
                         stragglersTotalLabel.Text = "Straggler Total: " + stragglerList.Count;
@@ -362,6 +364,21 @@ namespace MB_Utilities.ui.chester
                 }
             }
             return voidedList;
+        }
+
+        private void createTextFile(SortedDictionary<int, Dictionary<string, string>> missingList)
+        {
+            // creates text file of missing charts to use in UiPath
+
+            string savePath = folderPathField.Text + "\\missing_list.txt";
+            StreamWriter sw = new StreamWriter(savePath, false);
+
+            foreach (int chartNum in missingList.Keys)
+            {
+                sw.WriteLine(chartNum);
+            }
+            sw.Flush();
+            sw.Close();
         }
 
 
