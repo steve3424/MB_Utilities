@@ -196,6 +196,7 @@ namespace MB_Utilities.ui.chester
                         missingTable.Rows[row].Range.Font.Bold = 0;
                         missingTable.Rows[row].Range.Font.Size = 12;
                         missingTable.Rows[row].Range.Font.Name = "calibri";
+                        missingTable.Rows[row].SetHeight(17.0f, Word.WdRowHeightRule.wdRowHeightExactly);
                         for (int i = 1; i <= missingCols; ++i)
                         {
                             missingTable.Cell(row, i).Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;
@@ -235,6 +236,7 @@ namespace MB_Utilities.ui.chester
                         voidedTable.Rows[row].Range.Font.Bold = 0;
                         voidedTable.Rows[row].Range.Font.Size = 12;
                         voidedTable.Rows[row].Range.Font.Name = "calibri";
+                        voidedTable.Rows[row].SetHeight(17.0f, Word.WdRowHeightRule.wdRowHeightExactly);
                         for (int i = 1; i <= voidedCols; ++i)
                         {
                             voidedTable.Cell(row, i).Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;
@@ -273,6 +275,7 @@ namespace MB_Utilities.ui.chester
                         stragglerTable.Rows[row].Range.Font.Bold = 0;
                         stragglerTable.Rows[row].Range.Font.Size = 12;
                         stragglerTable.Rows[row].Range.Font.Name = "calibri";
+                        stragglerTable.Rows[row].SetHeight(17.0f, Word.WdRowHeightRule.wdRowHeightExactly);
                         for (int i = 1; i <= stragglerCols; ++i)
                         {
                             stragglerTable.Cell(row, i).Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;
