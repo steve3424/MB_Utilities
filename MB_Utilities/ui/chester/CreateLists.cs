@@ -126,13 +126,24 @@ namespace MB_Utilities.ui.chester
                     
                     if (docCreated)
                     {
+                        // if lists are created, we can delete (or bold) the rows on the missing list
                         List<int> rowsToDelete = getRowsToDelete(stragglerList);
                         updateMissingList(subLists, rowsToDelete);
 
+                        // missing list file to be used in UiPath
                         createTextFile(missingList);
 
+                        // output number on each list
                         missingTotalLabel.Text = "Missing Total: " + missingList.Keys.Count;
-                        voidedTotalLabel.Text = "Voided Total: " + voidedList.Keys.Count;
+                        int voidedChartsNotMissing = 0;
+                        foreach (var chartNum in voidedList.Keys)
+                        {
+                            if (voidedList[chartNum]["missing"] != "-")
+                            {
+                                voidedChartsNotMissing++;
+                            }
+                        }
+                        voidedTotalLabel.Text = "Voided Total: " + voidedList.Keys.Count + " (" + voidedChartsNotMissing + ")";
                         stragglersTotalLabel.Text = "Straggler Total: " + stragglerList.Count;
 
                         MessageBox.Show("Lists created!!");
