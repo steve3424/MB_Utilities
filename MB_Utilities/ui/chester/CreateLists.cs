@@ -202,7 +202,7 @@ namespace MB_Utilities.ui.chester
                 {
                     // create voided list table
                     Word.Paragraph voidedTitle = document.Content.Paragraphs.Add(ref missing);
-                    voidedTitle.Range.Text = "Voided " + dateOfService;
+                    voidedTitle.Range.Text = "\nVoided " + dateOfService;
                     voidedTitle.Range.Font.Name = "calibri";
                     voidedTitle.Range.Font.Size = 16;
                     voidedTitle.Range.Font.Bold = 1;
@@ -241,7 +241,7 @@ namespace MB_Utilities.ui.chester
                 {
                     // create straggler list table
                     Word.Paragraph stragglerTitle = document.Content.Paragraphs.Add(ref missing);
-                    stragglerTitle.Range.Text = "Stragglers " + dateOfService;
+                    stragglerTitle.Range.Text = "\nStragglers " + dateOfService;
                     stragglerTitle.Range.Font.Name = "calibri";
                     stragglerTitle.Range.Font.Size = 16;
                     stragglerTitle.Range.Font.Bold = 1;
