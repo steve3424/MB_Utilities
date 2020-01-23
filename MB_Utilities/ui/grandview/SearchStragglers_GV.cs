@@ -116,13 +116,13 @@ namespace MB_Utilities.ui.grandview
             {
                 foreach (SubList subList in subLists)
                 {
-                    // put each dictionary entry into list, then sort by "rowNumber"
+                    // put each dictionary entry into list, then sort by "rowNum"
                     List<Dictionary<string, string>> stragglerList = new List<Dictionary<string, string>>();
-                    foreach (int key in subList.chartInfo.Keys)
+                    foreach (string chartNum in subList.patientInfo.Keys)
                     {
-                        stragglerList.Add(subList.chartInfo[key]);
+                        stragglerList.Add(subList.patientInfo[chartNum]);
                     }
-                    List<Dictionary<string, string>> sortedStragglerList = stragglerList.OrderBy(x => x["rowNumber"])
+                    List<Dictionary<string, string>> sortedStragglerList = stragglerList.OrderBy(x => x["rowNum"])
                                                                    .ToList<Dictionary<string, string>>();
 
                     // write each entry to file 
@@ -139,7 +139,6 @@ namespace MB_Utilities.ui.grandview
                 }
             }
         }
-
 
         /************* SUB LIST FUNCTIONS ******************/
 
@@ -158,8 +157,8 @@ namespace MB_Utilities.ui.grandview
                     newSubList.name = subListID;
                     newSubList.startRow = findStartOfList(worksheet, subListID);
                     newSubList.endRow = findEndOfList(worksheet, subListID);
-                    newSubList.chartInfo = loadChartInfo(worksheet, newSubList);
-                    newSubList.totalCharts = worksheet.Cells[newSubList.endRow, 3].GetValue<int>();
+                    newSubList.patientInfo = loadPatientInfo(worksheet, newSubList);
+                    newSubList.numPatients = worksheet.Cells[newSubList.endRow, 3].GetValue<int>();
 
                     subLists.Add(newSubList);
                 }
@@ -202,29 +201,34 @@ namespace MB_Utilities.ui.grandview
             return end;
         }
 
-        private Dictionary<int, Dictionary<string, string>> loadChartInfo(ExcelWorksheet worksheet, SubList subList)
+        private Dictionary<string, Dictionary<string, string>> loadPatientInfo(ExcelWorksheet worksheet, SubList subList)
         {
-            Dictionary<int, Dictionary<string, string>> chartInfo = new Dictionary<int, Dictionary<string, string>>();
+            Dictionary<string, Dictionary<string, string>> patients = new Dictionary<string, Dictionary<string, string>>();
 
-            for (int row = subList.startRow; row < subList.endRow; row++)
+            int startRow = subList.startRow;
+            int endRow = subList.endRow;
+            for (int row = startRow; row < endRow; ++row)
             {
                 string chartNum = worksheet.Cells[row, 1].GetValue<string>();
                 string patientName = worksheet.Cells[row, 2].GetValue<string>();
                 string date = worksheet.Cells[row, 3].GetValue<DateTime>().ToShortDateString();
 
-                Dictionary<string, string> chartRowNameDate = new Dictionary<string, string>()
+                Dictionary<string, string> patientInfo = new Dictionary<string, string>()
                 {
                     { "chartNum", chartNum },
-                    { "rowNumber", row.ToString()},
+                    { "rowNum", row.ToString()},
                     { "patientName", patientName},
                     { "date", date}
                 };
-                chartInfo.Add(row, chartRowNameDate);
+                patients.Add(chartNum, patientInfo);
 
                 // maybe add exception handling for possible blank cells or cells with bad chart numbers ??
             }
-            return chartInfo;
+            return patients;
         }
+
+
+
 
         /************* UTILITY FUNCTIONS ******************/
 

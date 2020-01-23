@@ -21,23 +21,20 @@ namespace MB_Utilities.controls.chester
     public partial class ProcessStragglers : UserControl
     {
         private const int RENAME_WARNING = 0;
-        //private const int CREATE_LIST_WARNING = 1;
 
-        // state of file
-        private const int FILE_READY = 0;
-        private const int FILE_PATH_EMPTY = 1;
-        private const int FILE_NOT_FOUND = 2;
-        private const int INCORRECT_FILE = 3;
+        // state of missing list
+        private const int MISSING_LIST_READY = 0;
+        private const int MISSING_LIST_PATH_EMPTY = 1;
+        private const int MISSING_LIST_NOT_FOUND = 2;
+        private const int MISSING_LIST_INCORRECT = 3;
+        private const int MISSING_LIST_CANNOT_SAVE = 4;
 
         // state of folder
-        private const int FOLDER_READY = 4;
-        private const int FOLDER_PATH_EMPTY = 5;
-        private const int FOLDER_NOT_FOUND = 6;
-        private const int FOLDER_IS_EMPTY = 7;
-        private const int CONTAINS_BAD_FILE = 8;
-
-        private const int CANNOT_SAVE_MISSING_LIST = 9;
-
+        private const int FOLDER_READY = 5;
+        private const int FOLDER_PATH_EMPTY = 6;
+        private const int FOLDER_NOT_FOUND = 7;
+        private const int FOLDER_IS_EMPTY = 8;
+        private const int CONTAINS_BAD_FILE = 9;
 
         public ProcessStragglers()
         {
@@ -75,12 +72,12 @@ namespace MB_Utilities.controls.chester
 
             if (showWarning(RENAME_WARNING) == DialogResult.Yes)
             {
-                // check state of file and folder before executing
-                int fileState = getFileState();
+                // check state of missing list and files in folder
+                int missingListState = getMissingListState();
                 int folderState = getFolderState();
-                if (fileState != FILE_READY)
+                if (missingListState != MISSING_LIST_READY)
                 {
-                    showErrorMessage(fileState);
+                    showErrorMessage(missingListState);
                 }
                 else if (folderState != FOLDER_READY)
                 {
@@ -88,17 +85,14 @@ namespace MB_Utilities.controls.chester
                 }
                 else
                 {
-                    // continue with rename
-
                     List<string> subListIDs = new List<string>() { "ME", "PM", "SC", "WR", "TD" };
                     List<SubList> subLists = createSubLists(subListIDs);
 
                     foreach (string file in Directory.EnumerateFiles(folderPathField.Text, "*.pdf"))
                     {
                         string fileName = Path.GetFileNameWithoutExtension(file);
-                        int chartNum = Int32.Parse(fileName);
 
-                        string listContainingChart = searchSubLists(subLists, chartNum);
+                        string listContainingChart = searchSubLists(subLists, fileName);
                         renameFile(listContainingChart, file);
                     }
 
@@ -107,58 +101,127 @@ namespace MB_Utilities.controls.chester
             }
             enableUI();
         }
+        
 
-        /*
-        private void createStragglerListBTN_Click(object sender, EventArgs e)
+
+
+        /************* SUB LIST FUNCTIONS ******************/
+
+        private List<SubList> createSubLists(List<string> subListsToCreate)
         {
-            disableUI();
+            List<SubList> subLists = new List<SubList>();
 
-            if (showWarning(CREATE_LIST_WARNING) == DialogResult.Yes)
+
+            FileInfo path = new FileInfo(missingListPathField.Text);
+            using (ExcelPackage package = new ExcelPackage(path))
+            using (ExcelWorksheet worksheet = package.Workbook.Worksheets[1])
             {
-                // check state of file and folder before executing
-                int fileState = getFileState();
-                int folderState = getFolderState();
-                if (fileState != FILE_READY)
+                foreach (string subListID in subListsToCreate)
                 {
-                    showErrorMessage(fileState);
-                }
-                else if (folderState != FOLDER_READY)
-                {
-                    showErrorMessage(folderState);
-                }
-                else
-                {
-                    List<string> subListIDs = new List<string>() { "ME", "PM", "TD"};
-                    List<SubList> subLists = createSubLists(subListIDs);
-                    List<Dictionary<string, string>> stragglerList = createStragglerList(subLists);
-                    List<int> rowsToDelete = getRowsToDelete(stragglerList);
-                    updateMissingList(subLists, rowsToDelete);
-                    outputStragglerList(stragglerList);
+                    SubList newSubList = new SubList();
+                    newSubList.name = subListID;
+                    newSubList.startRow = findStartOfList(worksheet, subListID);
+                    newSubList.endRow = findEndOfList(worksheet, subListID);
+                    newSubList.patientInfo = loadPatientInfo(worksheet, newSubList);
+                    newSubList.numPatients = worksheet.Cells[newSubList.endRow, 3].GetValue<int>();
+
+                    subLists.Add(newSubList);
                 }
             }
-            enableUI();
+            return subLists;
         }
-        */
+
+        private Dictionary<string, Dictionary<string, string>> loadPatientInfo(ExcelWorksheet worksheet, SubList subList)
+        {
+            Dictionary<string, Dictionary<string, string>> patients = new Dictionary<string, Dictionary<string, string>>();
+
+            int startRow = subList.startRow;
+            int endRow = subList.endRow;
+            for (int row = startRow; row < endRow; ++row)
+            {
+                string chartNum = worksheet.Cells[row, 1].GetValue<string>();
+                string patientName = worksheet.Cells[row, 2].GetValue<string>();
+                string date = worksheet.Cells[row, 3].GetValue<DateTime>().ToShortDateString();
+
+                Dictionary<string, string> patientInfo = new Dictionary<string, string>() 
+                {
+                    { "rowNum", row.ToString()},
+                    { "patientName", patientName},
+                    { "date", date}
+                };
+                patients.Add(chartNum, patientInfo);
+
+                // maybe add exception handling for possible blank cells or cells with bad chart numbers ??
+            }
+            return patients;
+        }
+
+        private string searchSubLists(List<SubList> subLists, string fileName)
+        {
+            foreach (SubList subList in subLists)
+            {
+                if (subList.patientInfo.ContainsKey(fileName))
+                {
+                    return subList.name;
+                }
+            }
+            return null;
+        }
+
+        private int findStartOfList(ExcelWorksheet worksheet, string subListID)
+        {
+            int start = 1;
+            string cellValue = worksheet.Cells[start, 1].GetValue<string>();
+            while (!cellValue.Contains(subListID))
+            {
+                start++;
+                cellValue = worksheet.Cells[start, 1].GetValue<string>();
+                while (cellValue == null)
+                {
+                    start++;
+                    cellValue = worksheet.Cells[start, 1].GetValue<string>();
+                }
+            }
+            start += 2;
+            return start;
+        }
+
+        private int findEndOfList(ExcelWorksheet worksheet, string subListID)
+        {
+            int end = 1;
+            string cellValue = worksheet.Cells[end, 1].GetValue<string>();
+            while (!cellValue.Contains(subListID) || !cellValue.Contains("Total:"))
+            {
+                end++;
+                cellValue = worksheet.Cells[end, 1].GetValue<string>();
+                while (cellValue == null)
+                {
+                    end++;
+                    cellValue = worksheet.Cells[end, 1].GetValue<string>();
+                }
+            }
+            return end;
+        }
 
 
 
-        /************* FILE/FOLDER CHECKS ******************/
+        /************* UTILITY FUNCTIONS ******************/
 
-        private int getFileState()
+        private int getMissingListState()
         {
             if (string.IsNullOrEmpty(missingListPathField.Text))
             {
-                return FILE_PATH_EMPTY;
+                return MISSING_LIST_PATH_EMPTY;
             }
             else if (!File.Exists(missingListPathField.Text))
             {
-                return FILE_NOT_FOUND;
+                return MISSING_LIST_NOT_FOUND;
             }
             else if (!correctFile())
             {
-                return INCORRECT_FILE;
+                return MISSING_LIST_INCORRECT;
             }
-            return FILE_READY;
+            return MISSING_LIST_READY;
         }
 
         private int getFolderState()
@@ -201,7 +264,6 @@ namespace MB_Utilities.controls.chester
                     }
                 }
             }
-
             return true;
         }
 
@@ -220,216 +282,10 @@ namespace MB_Utilities.controls.chester
             return true;
         }
 
-
-
-        /************* SUB LIST FUNCTIONS ******************/
-
-        private List<SubList> createSubLists(List<string> subListsToCreate)
-        {
-            List<SubList> subLists = new List<SubList>();
-
-
-            FileInfo path = new FileInfo(missingListPathField.Text);
-            using (ExcelPackage package = new ExcelPackage(path))
-            using (ExcelWorksheet worksheet = package.Workbook.Worksheets[1])
-            {
-                foreach (string subListID in subListsToCreate)
-                {
-                    SubList newSubList = new SubList();
-                    newSubList.name = subListID;
-                    newSubList.startRow = findStartOfList(worksheet, subListID);
-                    newSubList.endRow = findEndOfList(worksheet, subListID);
-                    newSubList.chartInfo = loadChartInfo(worksheet, newSubList);
-                    newSubList.totalCharts = worksheet.Cells[newSubList.endRow, 3].GetValue<int>();
-
-                    subLists.Add(newSubList);
-                }
-            }
-            return subLists;
-        }
-
-        private string searchSubLists(List<SubList> subLists, int chartNum)
-        {
-            foreach (SubList subList in subLists)
-            {
-                if (subList.chartInfo.ContainsKey(chartNum))
-                {
-                    return subList.name;
-                }
-            }
-            return null;
-        }
-
-        private List<Dictionary<string, string>> createStragglerList(List<SubList> subLists)
-        {
-            List<Dictionary<string, string>> stragglerList = new List<Dictionary<string, string>>();
-
-            foreach (string file in Directory.EnumerateFiles(folderPathField.Text, "*.pdf"))
-            {
-                string fileName = Path.GetFileNameWithoutExtension(file);
-                int chartNum = Int32.Parse(fileName);
-
-                foreach (SubList subList in subLists)
-                {
-                    if (subList.chartInfo.ContainsKey(chartNum))
-                    {
-                        stragglerList.Add(subList.chartInfo[chartNum]);
-                        subList.totalCharts -= 1;
-                    }
-                }
-            }
-
-            // sort by "date", then by "chartNum"
-            List<Dictionary<string, string>> sortedStragglerList = stragglerList.OrderBy(x => Convert.ToDateTime(x["date"]))
-                                                                   .ThenBy(x => x["chartNum"])
-                                                                   .ToList<Dictionary<string, string>>();
-
-            return sortedStragglerList;
-        }
-
-        private Dictionary<int, Dictionary<string, string>> loadChartInfo(ExcelWorksheet worksheet, SubList subList)
-        {
-            Dictionary<int, Dictionary<string, string>> chartInfo = new Dictionary<int, Dictionary<string, string>>();
-
-            for (int row = subList.startRow; row < subList.endRow; row++)
-            {
-                int chartNum = worksheet.Cells[row, 1].GetValue<int>();
-                string patientName = worksheet.Cells[row, 2].GetValue<string>();
-                string date = worksheet.Cells[row, 3].GetValue<DateTime>().ToShortDateString();
-
-                Dictionary<string, string> chartRowNameDate = new Dictionary<string, string>() 
-                {
-                    { "chartNum", chartNum.ToString() },
-                    { "rowNumber", row.ToString()},
-                    { "patientName", patientName},
-                    { "date", date}
-                };
-                chartInfo.Add(chartNum, chartRowNameDate);
-
-                // maybe add exception handling for possible blank cells or cells with bad chart numbers ??
-            }
-            return chartInfo;
-        }
-
-        /*
-        private void updateMissingList(List<SubList> subLists, List<int> rowsToDelete)
-        {
-            FileInfo path = new FileInfo(missingListPathField.Text);
-            using (ExcelPackage package = new ExcelPackage(path))
-            using (ExcelWorksheet worksheet = package.Workbook.Worksheets[1])
-            {
-                if (deleteRowsCheckBox.Checked)
-                {
-                    foreach (SubList subList in subLists)
-                    {
-                        int rowWithTotal = subList.endRow;
-                        worksheet.Cells[rowWithTotal, 3].Value = subList.totalCharts;
-                    }
-
-                    foreach (int row in rowsToDelete)
-                    {
-                        worksheet.DeleteRow(row);
-                    }
-                }
-                else
-                {
-                    foreach (int row in rowsToDelete)
-                    {
-                        worksheet.Row(row).Style.Font.Bold = true;
-                    }
-                }
-
-                try
-                {
-                    package.Save();
-                }
-                catch (InvalidOperationException)
-                {
-                    showErrorMessage(CANNOT_SAVE_MISSING_LIST);
-                }
-            }
-        }
-        */
-
-        /*
-        private void outputStragglerList(List<Dictionary<string, string>> stragglerList)
-        {
-            using (DataTable stragglerListDataTable = new DataTable())
-            {
-                stragglerListDataTable.Columns.Add("Chart");
-                stragglerListDataTable.Columns.Add("Patient Name");
-                stragglerListDataTable.Columns.Add("DOS");
-
-                foreach (var chartInfo in stragglerList)
-                {
-                    string patientName = chartInfo["patientName"];
-                    string date = chartInfo["date"];
-
-                    stragglerListDataTable.Rows.Add(chartInfo["chartNum"], patientName, date);
-                }
-                stragglerListOutput.DataSource = stragglerListDataTable;
-                stragglersTotalLabel.Text = "Total: " + stragglerList.Count.ToString();
-            }
-        }
-        */
-
-        /*
-        private List<int> getRowsToDelete(List<Dictionary<string, string>> stragglerList)
-        {
-            List<int> rowsToDelete = new List<int>();
-            
-            foreach (var chartInfo in stragglerList)
-            {
-                int rowNumber = Int32.Parse(chartInfo["rowNumber"]);
-                rowsToDelete.Add(rowNumber);
-            }
-
-            rowsToDelete.Sort();
-            rowsToDelete.Reverse();
-
-            return rowsToDelete;
-        }
-        */
-
-        private int findStartOfList(ExcelWorksheet worksheet, string subListID)
-        {
-            int start = 1;
-            string cellValue = worksheet.Cells[start, 1].GetValue<string>();
-            while (!cellValue.Contains(subListID))
-            {
-                start++;
-                cellValue = worksheet.Cells[start, 1].GetValue<string>();
-                while (cellValue == null)
-                {
-                    start++;
-                    cellValue = worksheet.Cells[start, 1].GetValue<string>();
-                }
-            }
-            start += 2;
-            return start;
-        }
-
-        private int findEndOfList(ExcelWorksheet worksheet, string subListID)
-        {
-            int end = 1;
-            string cellValue = worksheet.Cells[end, 1].GetValue<string>();
-            while (!cellValue.Contains(subListID) || !cellValue.Contains("Total:"))
-            {
-                end++;
-                cellValue = worksheet.Cells[end, 1].GetValue<string>();
-                while (cellValue == null)
-                {
-                    end++;
-                    cellValue = worksheet.Cells[end, 1].GetValue<string>();
-                }
-            }
-            return end;
-        }
-
         private void renameFile(string listContainingChart, string fileToRename)
         {
             // rules on how to rename file when found in a particular list
-            switch(listContainingChart)
+            switch (listContainingChart)
             {
                 case "ME":
                     appendToFileName("ME", fileToRename);
@@ -451,10 +307,6 @@ namespace MB_Utilities.controls.chester
             }
         }
 
-        
-
-        /************* UTILITY FUNCTIONS ******************/
-
         private void appendToFileName(string suffix, string filePath)
         {
             string directory = Path.GetDirectoryName(filePath);
@@ -471,7 +323,6 @@ namespace MB_Utilities.controls.chester
             chooseMissingListBTN.Enabled = false;
             chooseFileFolderBTN.Enabled = false;
             renameFilesBTN.Enabled = false;
-            //createStragglerListBTN.Enabled = false;
         }
 
         private void enableUI()
@@ -479,7 +330,6 @@ namespace MB_Utilities.controls.chester
             chooseMissingListBTN.Enabled = true;
             chooseFileFolderBTN.Enabled = true;
             renameFilesBTN.Enabled = true;
-            //createStragglerListBTN.Enabled = true;
         }
 
         private DialogResult showWarning(int warning)
@@ -494,13 +344,6 @@ namespace MB_Utilities.controls.chester
                 "If the charts for your day are also in this folder it will rename all of them, which you don't want.\n\n" +
                 "Are you sure you are ready to continue?";
                     return MessageBox.Show(renameMessage, title, buttons);
-                /*
-                case CREATE_LIST_WARNING:
-                    string createListMessage = "This program will remove all of the charts from the missing list.\n\n" +
-                "Make sure you copy the list once it is run because you will not be able to run it again.\n\n" +
-                "Are you sure you are ready to continue?";
-                    return MessageBox.Show(createListMessage, title, buttons);
-                */
                 default:
                     return DialogResult.No;
             }
@@ -510,13 +353,13 @@ namespace MB_Utilities.controls.chester
         {
             switch (error)
             {
-                case FILE_PATH_EMPTY:
+                case MISSING_LIST_PATH_EMPTY:
                     MessageBox.Show("Please select a file.");
                     return;
-                case FILE_NOT_FOUND:
+                case MISSING_LIST_NOT_FOUND:
                     MessageBox.Show("The file you selected could not be found.");
                     return;
-                case INCORRECT_FILE:
+                case MISSING_LIST_INCORRECT:
                     MessageBox.Show("This missing list is missing the header 'CT Unbilled Report'. Is this the correct missing list?");
                     return;
                 case FOLDER_PATH_EMPTY:
@@ -531,7 +374,7 @@ namespace MB_Utilities.controls.chester
                 case CONTAINS_BAD_FILE:
                     MessageBox.Show("There was a problem with one or more file names. Please rename the files and try again.");
                     return;
-                case CANNOT_SAVE_MISSING_LIST:
+                case MISSING_LIST_CANNOT_SAVE:
                     MessageBox.Show("It looks like the missing list is open somewhere else.\n\n" +
                         "The straggler list will be created, but the missing list will not be modified.\n\n" +
                         "Close the missing list and try again.");
@@ -541,24 +384,5 @@ namespace MB_Utilities.controls.chester
                     return;
             }
         }
-
-
-
-        /************* COPY OPERATION FUNCTIONS ******************/
-        /*
-        private void stragglerListOutput_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right && stragglerListOutput.Rows.Count != 0)
-            {
-                this.rightClickMenu.Show(this.stragglerListOutput, e.Location);
-                this.rightClickMenu.Show(Cursor.Position);
-            }
-        }
-
-        private void copyRightClickMenuItem_Click(object sender, EventArgs e)
-        {
-            Clipboard.SetDataObject(this.stragglerListOutput.GetClipboardContent());
-        }
-        */
     }
 }

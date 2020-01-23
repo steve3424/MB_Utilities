@@ -11,7 +11,7 @@ namespace MB_Utilities.utils
         public string name;
         public int startRow;
         public int endRow;
-        public int totalCharts;
-        public Dictionary<int, Dictionary<string, string>> chartInfo = new Dictionary<int, Dictionary<string, string>>();
+        public int numPatients;
+        public Dictionary<string, Dictionary<string, string>> patientInfo = new Dictionary<string, Dictionary<string, string>>();
     }
 }
