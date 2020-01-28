@@ -426,20 +426,21 @@ namespace MB_Utilities.ui.chester
 
         private bool createLists(List<Dictionary<string, string>> missingList, List<Dictionary<string, string>> voidedList, List<Dictionary<string, string>> stragglerList)
         {
-            // get date of service
-            DateTime date = DateTime.ParseExact(missingList[0]["date"], "yyyyMMdd", null);
-            string dateOfService = date.ToString(@"MM-dd-yy");
-
             try
             {
                 object missing = System.Reflection.Missing.Value;
                 Word.Application application = new Word.Application();
                 Word.Document document = application.Documents.Add(ref missing, ref missing, ref missing, ref missing);
+                string dateOfService = " ";
 
                 int missingRows = missingList.Count;
                 int missingCols = 2;
                 if (missingRows > 0)
                 {
+                    // get date of service
+                    DateTime date = DateTime.ParseExact(missingList[0]["date"], "yyyyMMdd", null);
+                    dateOfService = date.ToString(@"MM-dd-yy");
+
                     // create table
                     Word.Paragraph missingTitle = document.Content.Paragraphs.Add(ref missing);
                     missingTitle.Range.Text = "Missing " + dateOfService;
@@ -477,6 +478,10 @@ namespace MB_Utilities.ui.chester
                 int voidedCols = 4;
                 if (voidedRows > 0)
                 {
+                    // get date of service again in case missing list was empty
+                    DateTime date = DateTime.ParseExact(voidedList[0]["date"], "yyyyMMdd", null);
+                    dateOfService = date.ToString(@"MM-dd-yy");
+
                     // create voided list table
                     Word.Paragraph voidedTitle = document.Content.Paragraphs.Add(ref missing);
                     voidedTitle.Range.Text = "\nVoided " + dateOfService;
