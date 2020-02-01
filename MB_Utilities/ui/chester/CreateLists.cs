@@ -197,6 +197,9 @@ namespace MB_Utilities.ui.chester
                 };
                 logFile.Add(patientInfo);
             }
+            
+            // log file is not necessarily in number order so it must be sorted by chart num
+            logFile = logFile.OrderBy(x => x["chartNum"]).ToList<Dictionary<string, string>>();
             return logFile;
         }
 
