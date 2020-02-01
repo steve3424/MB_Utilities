@@ -177,7 +177,7 @@ namespace MB_Utilities.ui.chester
         {
             List<Dictionary<string, string>> logFile = new List<Dictionary<string, string>>();
 
-            string[] lines = File.ReadAllLines(logFilePathField.Text);
+            string[] lines = File.ReadAllLines(logFilePathField.Text).Where(line => line != "").ToArray();
             foreach (string line in lines)
             {
                 string[] chartInfo = line.Split(',');
