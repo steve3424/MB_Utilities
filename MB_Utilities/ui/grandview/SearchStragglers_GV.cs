@@ -122,7 +122,7 @@ namespace MB_Utilities.ui.grandview
                     {
                         stragglerList.Add(subList.patientInfo[chartNum]);
                     }
-                    List<Dictionary<string, string>> sortedStragglerList = stragglerList.OrderBy(x => x["rowNum"])
+                    List<Dictionary<string, string>> sortedStragglerList = stragglerList.OrderBy(x => Int32.Parse(x["rowNum"]))
                                                                    .ToList<Dictionary<string, string>>();
 
                     // write each entry to file 
