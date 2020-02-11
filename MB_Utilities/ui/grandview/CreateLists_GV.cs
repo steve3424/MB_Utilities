@@ -26,13 +26,6 @@ namespace MB_Utilities.ui.grandview
         private const int LOG_FILE_PATH_EMPTY = 6;
         private const int LOG_FILE_NOT_FOUND = 7;
 
-        // state of folder
-        private const int FOLDER_READY = 8;
-        private const int FOLDER_PATH_EMPTY = 9;
-        private const int FOLDER_NOT_FOUND = 10;
-        private const int FOLDER_IS_EMPTY = 11;
-        private const int CONTAINS_BAD_FILE = 12;
-
 
         public CreateLists_GV()
         {
@@ -63,18 +56,6 @@ namespace MB_Utilities.ui.grandview
             }
         }
 
-        private void chooseFileFolderBTN_Click(object sender, EventArgs e)
-        {
-            using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
-            {
-                folderBrowserDialog.SelectedPath = folderPathField.Text;
-                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-                {
-                    folderPathField.Text = folderBrowserDialog.SelectedPath;
-                }
-            }
-        }
-
         private void createListsBTN_Click(object sender, EventArgs e)
         {
             disableUI();
@@ -84,7 +65,6 @@ namespace MB_Utilities.ui.grandview
             {
                 warningSelection = showWarning(DELETE_ROWS_WARNING);
             }
-
 
             enableUI();
         }
@@ -97,7 +77,6 @@ namespace MB_Utilities.ui.grandview
         {
             chooseMissingListBTN.Enabled = false;
             chooseLogFileBTN.Enabled = false;
-            chooseFileFolderBTN.Enabled = false;
             createListsBTN.Enabled = false;
             deleteRowsCheckBox.Enabled = false;
         }
@@ -106,7 +85,6 @@ namespace MB_Utilities.ui.grandview
         {
             chooseMissingListBTN.Enabled = true;
             chooseLogFileBTN.Enabled = true;
-            chooseFileFolderBTN.Enabled = true;
             createListsBTN.Enabled = true;
             deleteRowsCheckBox.Enabled = true;
         }
