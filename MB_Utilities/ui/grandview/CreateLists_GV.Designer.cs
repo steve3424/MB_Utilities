@@ -71,6 +71,7 @@
             this.chooseMissingListBTN.TabIndex = 38;
             this.chooseMissingListBTN.Text = "Choose Missing List";
             this.chooseMissingListBTN.UseVisualStyleBackColor = true;
+            this.chooseMissingListBTN.Click += new System.EventHandler(this.chooseMissingListBTN_Click);
             // 
             // logFilePathField
             // 
@@ -91,6 +92,7 @@
             this.chooseLogFileBTN.TabIndex = 40;
             this.chooseLogFileBTN.Text = "Choose Log File";
             this.chooseLogFileBTN.UseVisualStyleBackColor = true;
+            this.chooseLogFileBTN.Click += new System.EventHandler(this.chooseLogFileBTN_Click);
             // 
             // folderPathField
             // 
@@ -111,6 +113,7 @@
             this.chooseFileFolderBTN.TabIndex = 42;
             this.chooseFileFolderBTN.Text = "Choose File Folder";
             this.chooseFileFolderBTN.UseVisualStyleBackColor = true;
+            this.chooseFileFolderBTN.Click += new System.EventHandler(this.chooseFileFolderBTN_Click);
             // 
             // createListsBTN
             // 
@@ -121,6 +124,7 @@
             this.createListsBTN.TabIndex = 44;
             this.createListsBTN.Text = "Create Lists";
             this.createListsBTN.UseVisualStyleBackColor = true;
+            this.createListsBTN.Click += new System.EventHandler(this.createListsBTN_Click);
             // 
             // deleteRowsCheckBox
             // 
