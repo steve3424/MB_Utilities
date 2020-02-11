@@ -193,7 +193,7 @@ namespace MB_Utilities.ui.chester
                     {"lastName", lastName },
                     {"firstName", firstName },
                     {"logCode", logCode },
-                    {"missing", "" }
+                    {"missing", " " }
                 };
                 logFile.Add(patientInfo);
             }
@@ -478,7 +478,7 @@ namespace MB_Utilities.ui.chester
                 }
 
                 int voidedRows = voidedList.Count;
-                int voidedCols = 4;
+                int voidedCols = 3;
                 if (voidedRows > 0)
                 {
                     // get date of service again in case missing list was empty
@@ -500,10 +500,9 @@ namespace MB_Utilities.ui.chester
                     foreach (var patientInfo in voidedList)
                     {
                         // add text
-                        voidedTable.Cell(row, 1).Range.Text = patientInfo["missing"];
-                        voidedTable.Cell(row, 2).Range.Text = patientInfo["chartNum"];
-                        voidedTable.Cell(row, 3).Range.Text = patientInfo["lastName"] + ", " + patientInfo["firstName"];
-                        voidedTable.Cell(row, 4).Range.Text = patientInfo["logCode"];
+                        voidedTable.Cell(row, 1).Range.Text = patientInfo["missing"] + "  " + patientInfo["chartNum"];
+                        voidedTable.Cell(row, 2).Range.Text = patientInfo["lastName"] + ", " + patientInfo["firstName"];
+                        voidedTable.Cell(row, 3).Range.Text = patientInfo["logCode"];
 
                         // format table
                         voidedTable.Rows[row].Range.Font.Bold = 0;
@@ -514,7 +513,7 @@ namespace MB_Utilities.ui.chester
                         {
                             voidedTable.Cell(row, i).Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;
                         }
-                        voidedTable.Cell(row, 4).Range.Font.Bold = 1;
+                        voidedTable.Cell(row, 3).Range.Font.Bold = 1;
 
                         row++;
                     }
