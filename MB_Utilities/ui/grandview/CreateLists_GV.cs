@@ -79,6 +79,12 @@ namespace MB_Utilities.ui.grandview
         {
             disableUI();
 
+            DialogResult warningSelection = DialogResult.Yes;
+            if (deleteRowsCheckBox.Checked)
+            {
+                warningSelection = showWarning(DELETE_ROWS_WARNING);
+            }
+
 
             enableUI();
         }
@@ -103,6 +109,22 @@ namespace MB_Utilities.ui.grandview
             chooseFileFolderBTN.Enabled = true;
             createListsBTN.Enabled = true;
             deleteRowsCheckBox.Enabled = true;
+        }
+
+        private DialogResult showWarning(int warning)
+        {
+            string title = "Warning";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+
+            switch (warning)
+            {
+                case DELETE_ROWS_WARNING:
+                    string createListMessage = "This program will remove all of the charts from the missing list.\n\n" +
+                "Are you sure you are ready to continue?";
+                    return MessageBox.Show(createListMessage, title, buttons);
+                default:
+                    return DialogResult.No;
+            }
         }
     }
 }
