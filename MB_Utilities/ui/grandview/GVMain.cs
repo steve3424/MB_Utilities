@@ -20,12 +20,13 @@ namespace MB_Utilities.ui.grandview
             searchStragglers_GV1.Show();
         }
 
-        private void createMissingNavBTN_Click(object sender, EventArgs e)
+        private void createListsNavBTN_Click(object sender, EventArgs e)
         {
-            navSelectedPanel.Top = createMissingNavBTN.Top;
+            navSelectedPanel.Top = createListsNavBTN.Top;
 
             hideAllControls();
-            createMissingList_GV1.Show();
+            createLists_GV1.Show();
+
         }
 
         private void searchStragglersNavBTN_Click(object sender, EventArgs e)
@@ -54,8 +55,8 @@ namespace MB_Utilities.ui.grandview
 
         private void hideAllControls()
         {
-            createMissingList_GV1.Hide();
             searchStragglers_GV1.Hide();
+            createLists_GV1.Hide();
             updateMissingList_GV1.Hide();
             loadDays_GV1.Hide();
         }
