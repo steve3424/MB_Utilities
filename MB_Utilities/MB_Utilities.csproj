@@ -160,12 +160,6 @@
     <Compile Include="ui\grandview\CreateLists_GV.Designer.cs">
       <DependentUpon>CreateLists_GV.cs</DependentUpon>
     </Compile>
-    <Compile Include="ui\grandview\CreateMissingList_GV.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ui\grandview\CreateMissingList_GV.Designer.cs">
-      <DependentUpon>CreateMissingList_GV.cs</DependentUpon>
-    </Compile>
     <Compile Include="ui\grandview\GVMain.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -223,9 +217,6 @@
     </Compile>
     <EmbeddedResource Include="ui\grandview\CreateLists_GV.resx">
       <DependentUpon>CreateLists_GV.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ui\grandview\CreateMissingList_GV.resx">
-      <DependentUpon>CreateMissingList_GV.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ui\grandview\GVMain.resx">
       <DependentUpon>GVMain.cs</DependentUpon>

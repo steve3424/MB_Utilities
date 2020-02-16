@@ -83,13 +83,75 @@ namespace MB_Utilities.ui.grandview
                 }
                 else
                 {
-                    // create lists
+                    List<Dictionary<string, string>> logFile = loadLogFile();
+                    List<Dictionary<string, string>> missingList = createMissingList(logFile);
+                    List<Dictionary<string, string>> voidedList = createVoidedList(logFile);
                 }
             }
 
             enableUI();
         }
 
+
+        /************* MISSING AND VOIDED LIST FUNCTIONS ******************/
+
+        private List<Dictionary<string, string>> loadLogFile()
+        {
+            List<Dictionary<string, string>> logFile = new List<Dictionary<string, string>>();
+
+            string[] lines = File.ReadAllLines(logFilePathField.Text).Where(line => line != "").ToArray();
+            foreach (string line in lines)
+            {
+                string[] chartInfo = line.Split(',');
+                string date = chartInfo[0];
+                string chartNum = chartInfo[1];
+                string lastName = chartInfo[2];
+                string firstName = chartInfo[3];
+                string logCode = chartInfo[4];
+                Dictionary<string, string> patientInfo = new Dictionary<string, string>()
+                {
+                    {"date", date },
+                    {"chartNum", chartNum },
+                    {"lastName", lastName },
+                    {"firstName", firstName },
+                    {"logCode", logCode },
+                    {"missing", " " }
+                };
+                logFile.Add(patientInfo);
+            }
+
+            // log file is not necessarily in number order so it must be sorted by chart num
+            logFile = logFile.OrderBy(x => x["chartNum"]).ToList<Dictionary<string, string>>();
+            return logFile;
+        }
+
+        private List<Dictionary<string, string>> createMissingList(List<Dictionary<string, string>> logFile)
+        {
+            List<Dictionary<string, string>> missingList = new List<Dictionary<string, string>>();
+            foreach (var patientInfo in logFile)
+            {
+                // check if this chart is TD, must be modified before running
+                if (patientInfo["logCode"] == "TD")
+                {
+                    missingList.Add(patientInfo);
+                }
+            }
+            return missingList;
+        }
+
+        private List<Dictionary<string, string>> createVoidedList(List<Dictionary<string, string>> logFile)
+        {
+            List<Dictionary<string, string>> voidedList = new List<Dictionary<string, string>>();
+            foreach (var patientInfo in logFile)
+            {
+                // log codes other than RG or TD
+                if (patientInfo["logCode"] != "RG" && patientInfo["logCode"] != "TD")
+                {
+                    voidedList.Add(patientInfo);
+                }
+            }
+            return voidedList;
+        }
 
 
         /************* UTILITY FUNCTIONS ******************/
