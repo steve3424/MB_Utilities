@@ -111,8 +111,8 @@ namespace MB_Utilities.ui.grandview
                     List<Dictionary<string, string>> voidedList = createVoidedList(logFile);
 
                     List<string> subListIDs = new List<string>() { "ME", "PM", "TD" };
-                    // each sublist only contains the stragglers we want to send, not everyone on the missing list
-                    List<SubList> stragglerSubLists = createSubLists(subListIDs);
+                    List<SubList> subLists = createSubLists(subListIDs);
+                    List<Dictionary<string, string>> stragglerList = createStragglerList(subLists);
                 }
             }
 
@@ -271,6 +271,24 @@ namespace MB_Utilities.ui.grandview
             return patients;
         }
 
+        private List<Dictionary<string, string>> createStragglerList(List<SubList> subLists)
+        {
+            List<Dictionary<string, string>> stragglerList = new List<Dictionary<string, string>>();
+
+            foreach (SubList subList in subLists)
+            {
+                foreach (KeyValuePair<string, Dictionary<string, string>> patient in subList.patientInfo)
+                {
+                    stragglerList.Add(patient.Value);
+                }
+            }
+
+            // sort by "date", then by "chartNum"
+            List<Dictionary<string, string>> sortedStragglerList = stragglerList.OrderBy(x => Convert.ToDateTime(x["date"]))
+                                                                   .ThenBy(x => x["chartNum"])
+                                                                   .ToList<Dictionary<string, string>>();
+            return sortedStragglerList;
+        }
 
 
 
