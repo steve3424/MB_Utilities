@@ -38,6 +38,8 @@
             this.stragglersTotalLabel = new System.Windows.Forms.Label();
             this.voidedTotalLabel = new System.Windows.Forms.Label();
             this.missingTotalLabel = new System.Windows.Forms.Label();
+            this.saveFileToBTN = new System.Windows.Forms.Button();
+            this.saveFileToPathField = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // createListsTitle
@@ -52,7 +54,7 @@
             // 
             // missingListPathField
             // 
-            this.missingListPathField.Location = new System.Drawing.Point(111, 170);
+            this.missingListPathField.Location = new System.Drawing.Point(111, 115);
             this.missingListPathField.Name = "missingListPathField";
             this.missingListPathField.ReadOnly = true;
             this.missingListPathField.Size = new System.Drawing.Size(592, 31);
@@ -63,7 +65,7 @@
             // chooseMissingListBTN
             // 
             this.chooseMissingListBTN.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chooseMissingListBTN.Location = new System.Drawing.Point(308, 124);
+            this.chooseMissingListBTN.Location = new System.Drawing.Point(308, 69);
             this.chooseMissingListBTN.Name = "chooseMissingListBTN";
             this.chooseMissingListBTN.Size = new System.Drawing.Size(198, 40);
             this.chooseMissingListBTN.TabIndex = 38;
@@ -73,7 +75,7 @@
             // 
             // logFilePathField
             // 
-            this.logFilePathField.Location = new System.Drawing.Point(111, 298);
+            this.logFilePathField.Location = new System.Drawing.Point(111, 219);
             this.logFilePathField.Name = "logFilePathField";
             this.logFilePathField.ReadOnly = true;
             this.logFilePathField.Size = new System.Drawing.Size(592, 31);
@@ -84,7 +86,7 @@
             // chooseLogFileBTN
             // 
             this.chooseLogFileBTN.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chooseLogFileBTN.Location = new System.Drawing.Point(308, 252);
+            this.chooseLogFileBTN.Location = new System.Drawing.Point(308, 173);
             this.chooseLogFileBTN.Name = "chooseLogFileBTN";
             this.chooseLogFileBTN.Size = new System.Drawing.Size(198, 40);
             this.chooseLogFileBTN.TabIndex = 40;
@@ -145,10 +147,33 @@
             this.missingTotalLabel.TabIndex = 47;
             this.missingTotalLabel.Text = "Missing Total:";
             // 
+            // saveFileToBTN
+            // 
+            this.saveFileToBTN.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.saveFileToBTN.Location = new System.Drawing.Point(308, 282);
+            this.saveFileToBTN.Name = "saveFileToBTN";
+            this.saveFileToBTN.Size = new System.Drawing.Size(198, 40);
+            this.saveFileToBTN.TabIndex = 50;
+            this.saveFileToBTN.Text = "Save File To";
+            this.saveFileToBTN.UseVisualStyleBackColor = true;
+            this.saveFileToBTN.Click += new System.EventHandler(this.saveFileToBTN_Click);
+            // 
+            // saveFileToPathField
+            // 
+            this.saveFileToPathField.Location = new System.Drawing.Point(111, 328);
+            this.saveFileToPathField.Name = "saveFileToPathField";
+            this.saveFileToPathField.ReadOnly = true;
+            this.saveFileToPathField.Size = new System.Drawing.Size(592, 31);
+            this.saveFileToPathField.TabIndex = 51;
+            this.saveFileToPathField.TabStop = false;
+            this.saveFileToPathField.Text = "";
+            // 
             // CreateLists_GV
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.saveFileToPathField);
+            this.Controls.Add(this.saveFileToBTN);
             this.Controls.Add(this.stragglersTotalLabel);
             this.Controls.Add(this.voidedTotalLabel);
             this.Controls.Add(this.missingTotalLabel);
@@ -178,5 +203,7 @@
         private System.Windows.Forms.Label stragglersTotalLabel;
         private System.Windows.Forms.Label voidedTotalLabel;
         private System.Windows.Forms.Label missingTotalLabel;
+        private System.Windows.Forms.Button saveFileToBTN;
+        private System.Windows.Forms.RichTextBox saveFileToPathField;
     }
 }

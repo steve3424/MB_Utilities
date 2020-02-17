@@ -30,6 +30,11 @@ namespace MB_Utilities.ui.grandview
         private const int LOG_FILE_PATH_EMPTY = 6;
         private const int LOG_FILE_NOT_FOUND = 7;
 
+        // state of save folder
+        private const int FOLDER_READY = 8;
+        private const int FOLDER_PATH_EMPTY = 9;
+        private const int FOLDER_NOT_FOUND = 10;
+
 
         public CreateLists_GV()
         {
@@ -60,6 +65,18 @@ namespace MB_Utilities.ui.grandview
             }
         }
 
+        private void saveFileToBTN_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+            {
+                folderBrowserDialog.SelectedPath = saveFileToPathField.Text;
+                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                {
+                    saveFileToPathField.Text = folderBrowserDialog.SelectedPath;
+                }
+            }
+        }
+
         private void createListsBTN_Click(object sender, EventArgs e)
         {
             disableUI();
@@ -74,6 +91,7 @@ namespace MB_Utilities.ui.grandview
             {
                 int missingListState = getMissingListState();
                 int logFileState = getLogFileState();
+                int folderState = getFolderState();
                 if (missingListState != MISSING_LIST_READY)
                 {
                     showErrorMessage(missingListState);
@@ -81,6 +99,10 @@ namespace MB_Utilities.ui.grandview
                 else if (logFileState != LOG_FILE_READY)
                 {
                     showErrorMessage(logFileState);
+                }
+                else if (folderState != FOLDER_READY)
+                {
+                    showErrorMessage(folderState);
                 }
                 else
                 {
@@ -284,6 +306,19 @@ namespace MB_Utilities.ui.grandview
             return LOG_FILE_READY;
         }
 
+        private int getFolderState()
+        {
+            if (string.IsNullOrEmpty(saveFileToPathField.Text))
+            {
+                return FOLDER_PATH_EMPTY;
+            }
+            else if (!Directory.Exists(saveFileToPathField.Text))
+            {
+                return FOLDER_NOT_FOUND;
+            }
+            return FOLDER_READY;
+        }
+
         private bool correctMissingList()
         {
             FileInfo missingListPath = new FileInfo(missingListPathField.Text);
@@ -333,6 +368,12 @@ namespace MB_Utilities.ui.grandview
                     return;
                 case LOG_FILE_NOT_FOUND:
                     MessageBox.Show("The log file you selected could not be found.");
+                    return;
+                case FOLDER_PATH_EMPTY:
+                    MessageBox.Show("Please select a folder.");
+                    return;
+                case FOLDER_NOT_FOUND:
+                    MessageBox.Show("The folder you selected could not be found.");
                     return;
                 case MISSING_LIST_CANNOT_SAVE:
                     MessageBox.Show("It looks like the missing list is open somewhere else.\n\n" +
