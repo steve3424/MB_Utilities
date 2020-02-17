@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Word = Microsoft.Office.Interop.Word;
 
 using OfficeOpenXml;
 using MB_Utilities.utils;
@@ -113,6 +114,8 @@ namespace MB_Utilities.ui.grandview
                     List<string> subListIDs = new List<string>() { "ME", "PM", "TD" };
                     List<SubList> subLists = createSubLists(subListIDs);
                     List<Dictionary<string, string>> stragglerList = createStragglerList(subLists);
+
+                    bool docCreated = docCreated = createLists(missingList, voidedList, stragglerList);
                 }
             }
 
@@ -290,8 +293,158 @@ namespace MB_Utilities.ui.grandview
             return sortedStragglerList;
         }
 
+        private bool createLists(List<Dictionary<string, string>> missingList, List<Dictionary<string, string>> voidedList, List<Dictionary<string, string>> stragglerList)
+        {
+            try
+            {
+                object missing = System.Reflection.Missing.Value;
+                Word.Application application = new Word.Application();
+                Word.Document document = application.Documents.Add(ref missing, ref missing, ref missing, ref missing);
+                string dateOfService = " ";
+
+                int missingRows = missingList.Count;
+                int missingCols = 2;
+                if (missingRows > 0)
+                {
+                    // get date of service
+                    DateTime date = DateTime.ParseExact(missingList[0]["date"], "yyyyMMdd", null);
+                    dateOfService = date.ToString(@"MM-dd-yy");
+
+                    // create table
+                    Word.Paragraph missingTitle = document.Content.Paragraphs.Add(ref missing);
+                    missingTitle.Range.Text = "Missing " + dateOfService;
+                    missingTitle.Range.Font.Name = "calibri";
+                    missingTitle.Range.Font.Size = 16;
+                    missingTitle.Range.Font.Bold = 1;
+                    missingTitle.Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+                    missingTitle.Range.InsertParagraphAfter();
+
+                    Word.Table missingTable = document.Tables.Add(missingTitle.Range, missingRows, missingCols);
+
+                    int row = 1;
+                    foreach (var patientInfo in missingList)
+                    {
+                        // add text
+                        missingTable.Cell(row, 1).Range.Text = patientInfo["chartNum"];
+                        missingTable.Cell(row, 2).Range.Text = patientInfo["lastName"] + ", " + patientInfo["firstName"];
+
+                        // format table
+                        missingTable.Rows[row].Range.Font.Bold = 0;
+                        missingTable.Rows[row].Range.Font.Size = 12;
+                        missingTable.Rows[row].Range.Font.Name = "calibri";
+                        missingTable.Rows[row].SetHeight(17.0f, Word.WdRowHeightRule.wdRowHeightExactly);
+                        for (int i = 1; i <= missingCols; ++i)
+                        {
+                            missingTable.Cell(row, i).Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;
+                        }
+
+                        row++;
+                    }
+                    missingTable.Columns.AutoFit();
+                }
+
+                int voidedRows = voidedList.Count;
+                int voidedCols = 3;
+                if (voidedRows > 0)
+                {
+                    // get date of service again in case missing list was empty
+                    DateTime date = DateTime.ParseExact(voidedList[0]["date"], "yyyyMMdd", null);
+                    dateOfService = date.ToString(@"MM-dd-yy");
+
+                    // create voided list table
+                    Word.Paragraph voidedTitle = document.Content.Paragraphs.Add(ref missing);
+                    voidedTitle.Range.Text = "\nVoided " + dateOfService;
+                    voidedTitle.Range.Font.Name = "calibri";
+                    voidedTitle.Range.Font.Size = 16;
+                    voidedTitle.Range.Font.Bold = 1;
+                    voidedTitle.Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+                    voidedTitle.Range.InsertParagraphAfter();
+
+                    Word.Table voidedTable = document.Tables.Add(voidedTitle.Range, voidedRows, voidedCols);
+
+                    int row = 1;
+                    foreach (var patientInfo in voidedList)
+                    {
+                        // add text
+                        voidedTable.Cell(row, 1).Range.Text = patientInfo["chartNum"];
+                        voidedTable.Cell(row, 2).Range.Text = patientInfo["lastName"] + ", " + patientInfo["firstName"];
+                        voidedTable.Cell(row, 3).Range.Text = patientInfo["logCode"];
+
+                        // format table
+                        voidedTable.Rows[row].Range.Font.Bold = 0;
+                        voidedTable.Rows[row].Range.Font.Size = 12;
+                        voidedTable.Rows[row].Range.Font.Name = "calibri";
+                        voidedTable.Rows[row].SetHeight(17.0f, Word.WdRowHeightRule.wdRowHeightExactly);
+                        for (int i = 1; i <= voidedCols; ++i)
+                        {
+                            voidedTable.Cell(row, i).Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;
+                        }
+                        voidedTable.Cell(row, 3).Range.Font.Bold = 1;
+
+                        row++;
+                    }
+                    voidedTable.Columns.AutoFit();
+                }
+
+                int stragglerRows = stragglerList.Count;
+                int stragglerCols = 3;
+                if (stragglerRows > 0)
+                {
+                    // create straggler list table
+                    Word.Paragraph stragglerTitle = document.Content.Paragraphs.Add(ref missing);
+                    stragglerTitle.Range.Text = "\nStragglers " + dateOfService;
+                    stragglerTitle.Range.Font.Name = "calibri";
+                    stragglerTitle.Range.Font.Size = 16;
+                    stragglerTitle.Range.Font.Bold = 1;
+                    stragglerTitle.Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+                    stragglerTitle.Range.InsertParagraphAfter();
+
+                    Word.Table stragglerTable = document.Tables.Add(stragglerTitle.Range, stragglerRows, stragglerCols);
+
+                    int row = 1;
+                    foreach (var patient in stragglerList)
+                    {
+                        // add text
+                        stragglerTable.Cell(row, 1).Range.Text = patient["chartNum"];
+                        stragglerTable.Cell(row, 2).Range.Text = patient["patientName"];
+                        stragglerTable.Cell(row, 3).Range.Text = patient["date"];
+
+                        // format table
+                        stragglerTable.Rows[row].Range.Font.Bold = 0;
+                        stragglerTable.Rows[row].Range.Font.Size = 12;
+                        stragglerTable.Rows[row].Range.Font.Name = "calibri";
+                        stragglerTable.Rows[row].SetHeight(17.0f, Word.WdRowHeightRule.wdRowHeightExactly);
+                        for (int i = 1; i <= stragglerCols; ++i)
+                        {
+                            stragglerTable.Cell(row, i).Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;
+                        }
+
+                        row++;
+                    }
+                    stragglerTable.Columns.AutoFit();
+                }
+
+                object fileName = saveFileToPathField.Text + "\\file_lists.docx";
+                int fileNum = 1;
+                while (File.Exists(fileName.ToString()))
+                {
+                    fileName = saveFileToPathField.Text + "\\file_lists_" + fileNum.ToString() + ".docx";
+                    fileNum++;
+                }
+                document.SaveAs2(ref fileName);
+                document.Close();
+                application.Quit();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
+            return true;
+        }
 
 
+        
         /************* UTILITY FUNCTIONS ******************/
 
         private int getMissingListState()
