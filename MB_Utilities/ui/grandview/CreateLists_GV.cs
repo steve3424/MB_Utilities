@@ -509,6 +509,7 @@ namespace MB_Utilities.ui.grandview
         {
             chooseMissingListBTN.Enabled = false;
             chooseLogFileBTN.Enabled = false;
+            saveFileToBTN.Enabled = false;
             createListsBTN.Enabled = false;
             deleteRowsCheckBox.Enabled = false;
         }
@@ -517,6 +518,7 @@ namespace MB_Utilities.ui.grandview
         {
             chooseMissingListBTN.Enabled = true;
             chooseLogFileBTN.Enabled = true;
+            saveFileToBTN.Enabled = true;
             createListsBTN.Enabled = true;
             deleteRowsCheckBox.Enabled = true;
         }
