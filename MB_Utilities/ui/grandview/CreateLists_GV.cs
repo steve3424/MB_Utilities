@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using OfficeOpenXml;
+using MB_Utilities.utils;
 
 namespace MB_Utilities.ui.grandview
 {
@@ -86,6 +87,10 @@ namespace MB_Utilities.ui.grandview
                     List<Dictionary<string, string>> logFile = loadLogFile();
                     List<Dictionary<string, string>> missingList = createMissingList(logFile);
                     List<Dictionary<string, string>> voidedList = createVoidedList(logFile);
+
+                    List<string> subListIDs = new List<string>() { "ME", "PM", "TD" };
+                    // each sublist only contains the stragglers we want to send, not everyone on the missing list
+                    List<SubList> stragglerSubLists = createSubLists(subListIDs);
                 }
             }
 
@@ -152,6 +157,99 @@ namespace MB_Utilities.ui.grandview
             }
             return voidedList;
         }
+
+
+        /************* STRAGGLER LIST FUNCTIONS ******************/
+
+        private List<SubList> createSubLists(List<string> subListsToCreate)
+        {
+            List<SubList> subLists = new List<SubList>();
+
+            FileInfo path = new FileInfo(missingListPathField.Text);
+            using (ExcelPackage package = new ExcelPackage(path))
+            using (ExcelWorksheet worksheet = package.Workbook.Worksheets[1])
+            {
+                foreach (string subListID in subListsToCreate)
+                {
+                    SubList newSubList = new SubList();
+                    newSubList.name = subListID;
+                    newSubList.startRow = findStartOfList(worksheet, subListID);
+                    newSubList.endRow = findEndOfList(worksheet, subListID);
+                    newSubList.patientInfo = loadPatientInfo(worksheet, newSubList);
+                    newSubList.numPatients = newSubList.patientInfo.Count;
+
+                    subLists.Add(newSubList);
+                }
+            }
+            return subLists;
+        }
+
+        private int findStartOfList(ExcelWorksheet worksheet, string subListID)
+        {
+            int start = 1;
+            string cellValue = worksheet.Cells[start, 1].GetValue<string>();
+            while (!cellValue.Contains(subListID))
+            {
+                start++;
+                cellValue = worksheet.Cells[start, 1].GetValue<string>();
+                while (cellValue == null)
+                {
+                    start++;
+                    cellValue = worksheet.Cells[start, 1].GetValue<string>();
+                }
+            }
+            start += 2;
+            return start;
+        }
+
+        private int findEndOfList(ExcelWorksheet worksheet, string subListID)
+        {
+            int end = 1;
+            string cellValue = worksheet.Cells[end, 1].GetValue<string>();
+            while (!cellValue.Contains(subListID) || !cellValue.Contains("Total:"))
+            {
+                end++;
+                cellValue = worksheet.Cells[end, 1].GetValue<string>();
+                while (cellValue == null)
+                {
+                    end++;
+                    cellValue = worksheet.Cells[end, 1].GetValue<string>();
+                }
+            }
+            return end;
+        }
+
+        private Dictionary<string, Dictionary<string, string>> loadPatientInfo(ExcelWorksheet worksheet, SubList subList)
+        {
+            // Only loads patient to sublist if the first cell of the row is underlined.
+            // This how to mark which stragglers we want to send
+
+            Dictionary<string, Dictionary<string, string>> patients = new Dictionary<string, Dictionary<string, string>>();
+
+            int startRow = subList.startRow;
+            int endRow = subList.endRow;
+            for (int row = startRow; row < endRow; ++row)
+            {
+                if (worksheet.Cells[row, 1].Style.Font.UnderLine)
+                {
+                    string chartNum = worksheet.Cells[row, 1].GetValue<string>();
+                    string patientName = worksheet.Cells[row, 2].GetValue<string>();
+                    string date = worksheet.Cells[row, 3].GetValue<DateTime>().ToShortDateString();
+
+                    Dictionary<string, string> patientInfo = new Dictionary<string, string>()
+                    {
+                        { "chartNum", chartNum },
+                        { "rowNum", row.ToString()},
+                        { "patientName", patientName},
+                        { "date", date}
+                    };
+                    patients.Add(chartNum, patientInfo);
+                }
+            }
+            return patients;
+        }
+
+
 
 
         /************* UTILITY FUNCTIONS ******************/
