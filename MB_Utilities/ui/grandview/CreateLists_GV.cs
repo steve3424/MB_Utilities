@@ -116,6 +116,20 @@ namespace MB_Utilities.ui.grandview
                     List<Dictionary<string, string>> stragglerList = createStragglerList(subLists);
 
                     bool docCreated = docCreated = createLists(missingList, voidedList, stragglerList);
+
+                    if (docCreated)
+                    {
+                        // output number on each list
+                        missingTotalLabel.Text = "Missing Total: " + missingList.Count;
+                        voidedTotalLabel.Text = "Voided Total: " + voidedList.Count;
+                        stragglersTotalLabel.Text = "Straggler Total: " + stragglerList.Count;
+
+                        MessageBox.Show("Lists created!!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("An error occurred so the lists were not created and the missing list was not updated. Try again.");
+                    }
                 }
             }
 
