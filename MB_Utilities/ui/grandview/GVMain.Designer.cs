@@ -69,7 +69,7 @@
             this.searchStragglersNavBTN.Location = new System.Drawing.Point(3, 56);
             this.searchStragglersNavBTN.Name = "searchStragglersNavBTN";
             this.searchStragglersNavBTN.Size = new System.Drawing.Size(177, 50);
-            this.searchStragglersNavBTN.TabIndex = 2;
+            this.searchStragglersNavBTN.TabIndex = 1;
             this.searchStragglersNavBTN.Text = "Search Stragglers";
             this.searchStragglersNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.searchStragglersNavBTN.UseVisualStyleBackColor = true;
@@ -101,7 +101,7 @@
             this.createListsNavBTN.Location = new System.Drawing.Point(3, 118);
             this.createListsNavBTN.Name = "createListsNavBTN";
             this.createListsNavBTN.Size = new System.Drawing.Size(177, 50);
-            this.createListsNavBTN.TabIndex = 1;
+            this.createListsNavBTN.TabIndex = 2;
             this.createListsNavBTN.Text = "Create Lists";
             this.createListsNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.createListsNavBTN.UseVisualStyleBackColor = true;

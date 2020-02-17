@@ -68,7 +68,7 @@
             this.chooseMissingListBTN.Location = new System.Drawing.Point(308, 86);
             this.chooseMissingListBTN.Name = "chooseMissingListBTN";
             this.chooseMissingListBTN.Size = new System.Drawing.Size(198, 40);
-            this.chooseMissingListBTN.TabIndex = 36;
+            this.chooseMissingListBTN.TabIndex = 6;
             this.chooseMissingListBTN.Text = "Choose Missing List";
             this.chooseMissingListBTN.UseVisualStyleBackColor = true;
             this.chooseMissingListBTN.Click += new System.EventHandler(this.chooseMissingListBTN_Click);
@@ -89,7 +89,7 @@
             this.chooseLogFileBTN.Location = new System.Drawing.Point(308, 183);
             this.chooseLogFileBTN.Name = "chooseLogFileBTN";
             this.chooseLogFileBTN.Size = new System.Drawing.Size(198, 40);
-            this.chooseLogFileBTN.TabIndex = 38;
+            this.chooseLogFileBTN.TabIndex = 7;
             this.chooseLogFileBTN.Text = "Choose Log File";
             this.chooseLogFileBTN.UseVisualStyleBackColor = true;
             this.chooseLogFileBTN.Click += new System.EventHandler(this.chooseLogFileBTN_Click);
@@ -110,7 +110,7 @@
             this.chooseFileFolderBTN.Location = new System.Drawing.Point(308, 282);
             this.chooseFileFolderBTN.Name = "chooseFileFolderBTN";
             this.chooseFileFolderBTN.Size = new System.Drawing.Size(198, 40);
-            this.chooseFileFolderBTN.TabIndex = 40;
+            this.chooseFileFolderBTN.TabIndex = 8;
             this.chooseFileFolderBTN.Text = "Choose File Folder";
             this.chooseFileFolderBTN.UseVisualStyleBackColor = true;
             this.chooseFileFolderBTN.Click += new System.EventHandler(this.chooseFileFolderBTN_Click);
@@ -123,7 +123,7 @@
             this.deleteRowsCheckBox.Location = new System.Drawing.Point(151, 459);
             this.deleteRowsCheckBox.Name = "deleteRowsCheckBox";
             this.deleteRowsCheckBox.Size = new System.Drawing.Size(102, 21);
-            this.deleteRowsCheckBox.TabIndex = 42;
+            this.deleteRowsCheckBox.TabIndex = 9;
             this.deleteRowsCheckBox.Text = "delete rows";
             this.deleteRowsCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -133,7 +133,7 @@
             this.createListsBTN.Location = new System.Drawing.Point(308, 440);
             this.createListsBTN.Name = "createListsBTN";
             this.createListsBTN.Size = new System.Drawing.Size(198, 40);
-            this.createListsBTN.TabIndex = 43;
+            this.createListsBTN.TabIndex = 10;
             this.createListsBTN.Text = "Create Lists";
             this.createListsBTN.UseVisualStyleBackColor = true;
             this.createListsBTN.Click += new System.EventHandler(this.createListsBTN_Click);

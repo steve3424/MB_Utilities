@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.ctNav = new System.Windows.Forms.Panel();
+            this.createListsNavBTN = new System.Windows.Forms.Button();
             this.navSelectedPanel = new System.Windows.Forms.Panel();
             this.hospitalTitlePanel = new System.Windows.Forms.Panel();
             this.hospitalTitle = new System.Windows.Forms.Label();
@@ -41,7 +42,6 @@
             this.loadDays1 = new MB_Utilities.controls.chester.LoadDays();
             this.updateMissingList1 = new MB_Utilities.controls.chester.UpdateMissingList();
             this.createLists1 = new MB_Utilities.ui.chester.CreateLists();
-            this.createListsNavBTN = new System.Windows.Forms.Button();
             this.ctNav.SuspendLayout();
             this.hospitalTitlePanel.SuspendLayout();
             this.SuspendLayout();
@@ -61,6 +61,22 @@
             this.ctNav.Name = "ctNav";
             this.ctNav.Size = new System.Drawing.Size(190, 692);
             this.ctNav.TabIndex = 0;
+            // 
+            // createListsNavBTN
+            // 
+            this.createListsNavBTN.FlatAppearance.BorderSize = 0;
+            this.createListsNavBTN.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightGray;
+            this.createListsNavBTN.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.createListsNavBTN.Font = new System.Drawing.Font("Calibri", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.createListsNavBTN.ForeColor = System.Drawing.Color.Black;
+            this.createListsNavBTN.Location = new System.Drawing.Point(3, 183);
+            this.createListsNavBTN.Name = "createListsNavBTN";
+            this.createListsNavBTN.Size = new System.Drawing.Size(177, 50);
+            this.createListsNavBTN.TabIndex = 3;
+            this.createListsNavBTN.Text = "Create Lists";
+            this.createListsNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.createListsNavBTN.UseVisualStyleBackColor = true;
+            this.createListsNavBTN.Click += new System.EventHandler(this.createListsNavBTN_Click);
             // 
             // navSelectedPanel
             // 
@@ -193,22 +209,6 @@
             this.createLists1.Name = "createLists1";
             this.createLists1.Size = new System.Drawing.Size(816, 692);
             this.createLists1.TabIndex = 6;
-            // 
-            // createListsNavBTN
-            // 
-            this.createListsNavBTN.FlatAppearance.BorderSize = 0;
-            this.createListsNavBTN.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightGray;
-            this.createListsNavBTN.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.createListsNavBTN.Font = new System.Drawing.Font("Calibri", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.createListsNavBTN.ForeColor = System.Drawing.Color.Black;
-            this.createListsNavBTN.Location = new System.Drawing.Point(3, 183);
-            this.createListsNavBTN.Name = "createListsNavBTN";
-            this.createListsNavBTN.Size = new System.Drawing.Size(177, 50);
-            this.createListsNavBTN.TabIndex = 6;
-            this.createListsNavBTN.Text = "Create Lists";
-            this.createListsNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.createListsNavBTN.UseVisualStyleBackColor = true;
-            this.createListsNavBTN.Click += new System.EventHandler(this.createListsNavBTN_Click);
             // 
             // CTMain
             // 
