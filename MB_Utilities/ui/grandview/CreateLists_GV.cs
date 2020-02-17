@@ -119,6 +119,13 @@ namespace MB_Utilities.ui.grandview
 
                     if (docCreated)
                     {
+                        // if lists are created and checkbox is marked, we can delete the rows from the missing list
+                        if (deleteRowsCheckBox.Checked)
+                        {
+                            List<int> rowsToDelete = getRowsToDelete(stragglerList);
+                            updateMissingList(subLists, rowsToDelete);
+                        }
+
                         // output number on each list
                         missingTotalLabel.Text = "Missing Total: " + missingList.Count;
                         voidedTotalLabel.Text = "Voided Total: " + voidedList.Count;
@@ -305,6 +312,52 @@ namespace MB_Utilities.ui.grandview
                                                                    .ThenBy(x => x["chartNum"])
                                                                    .ToList<Dictionary<string, string>>();
             return sortedStragglerList;
+        }
+
+        private List<int> getRowsToDelete(List<Dictionary<string, string>> stragglerList)
+        {
+            List<int> rowsToDelete = new List<int>();
+
+            foreach (var chartInfo in stragglerList)
+            {
+                int rowNumber = Int32.Parse(chartInfo["rowNum"]);
+                rowsToDelete.Add(rowNumber);
+            }
+
+            rowsToDelete.Sort();
+            rowsToDelete.Reverse();
+
+            return rowsToDelete;
+        }
+
+        private void updateMissingList(List<SubList> subLists, List<int> rowsToDelete)
+        {
+            FileInfo path = new FileInfo(missingListPathField.Text);
+            using (ExcelPackage package = new ExcelPackage(path))
+            using (ExcelWorksheet worksheet = package.Workbook.Worksheets[1])
+            {
+                foreach (SubList subList in subLists)
+                {
+                    // get total and subtract the number of patients in each sublist since each sublist only contains the patients we want to delete
+                    int rowWithTotal = subList.endRow;
+                    int total = worksheet.Cells[rowWithTotal, 3].GetValue<int>();
+                    worksheet.Cells[rowWithTotal, 3].Value = total - subList.numPatients;
+                }
+
+                foreach (int row in rowsToDelete)
+                {
+                    worksheet.DeleteRow(row);
+                }
+
+                try
+                {
+                    package.Save();
+                }
+                catch (InvalidOperationException)
+                {
+                    showErrorMessage(MISSING_LIST_CANNOT_SAVE);
+                }
+            }
         }
 
         private bool createLists(List<Dictionary<string, string>> missingList, List<Dictionary<string, string>> voidedList, List<Dictionary<string, string>> stragglerList)
