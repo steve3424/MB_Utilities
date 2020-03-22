@@ -85,7 +85,7 @@ namespace MB_Utilities.controls.chester
                 }
                 else
                 {
-                    List<string> subListIDs = new List<string>() { "ME", "PM", "SC", "WR", "TD" };
+                    List<string> subListIDs = new List<string>() { "ME", "PM", "SC", "SG", "WR", "TD" };
                     List<SubList> subLists = createSubLists(subListIDs);
 
                     foreach (string file in Directory.EnumerateFiles(folderPathField.Text, "*.pdf"))
@@ -295,6 +295,9 @@ namespace MB_Utilities.controls.chester
                     return;
                 case "SC":
                     appendToFileName("SC", fileToRename);
+                    return;
+                case "SG":
+                    appendToFileName("SG", fileToRename);
                     return;
                 case "WR":
                     appendToFileName("WR", fileToRename);
