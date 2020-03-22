@@ -117,7 +117,7 @@ namespace MB_Utilities.ui.chester
                     List<Dictionary<string, string>> voidedList = createVoidedList(logFile, fileNames);
 
                     // create straggler list
-                    List<string> subListIDs = new List<string>() { "ME", "PM", "TD" };
+                    List<string> subListIDs = new List<string>() { "ME", "PM", "SG", "TD" };
                     List<SubList> subLists = createSubLists(subListIDs);
                     List<Dictionary<string, string>> stragglerList = createStragglerList(subLists);
 
