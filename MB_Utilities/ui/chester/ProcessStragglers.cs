@@ -294,7 +294,7 @@ namespace MB_Utilities.controls.chester
                     appendToFileName("PM", fileToRename);
                     return;
                 case "SC":
-                    appendToFileName("SC", fileToRename);
+                    appendToFileName("SC save", fileToRename);
                     return;
                 case "SG":
                     appendToFileName("SG", fileToRename);
