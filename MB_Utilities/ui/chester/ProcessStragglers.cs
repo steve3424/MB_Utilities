@@ -20,6 +20,28 @@ namespace MB_Utilities.controls.chester
 {
     public partial class ProcessStragglers : UserControl
     {
+        // string and column that indicate the end of the UnbilledRegularReport
+        string EOF = "1/1";
+
+        // sublist header and footer strings
+        Dictionary<string, string> header_strings = new Dictionary<string, string>() {
+            {"ME", "ME - MISSING EXAM OR PHYS NOTES"},
+            {"PM", "PM - PROCEDURE NOTE MISSING"},
+            {"SC", "SC - MISSING SIGNATURE BUT CODED"},
+            {"SG", "SG - MISSING SIGNATURE"},
+            {"TD", "TD - MISSING COMPLETE CHART"},
+            {"WR", "need to implement"}
+        };
+
+        Dictionary<string, string> footer_strings = new Dictionary<string, string>() {
+            {"ME", "ME - MISSING EXAM OR PHYS NOTES Total:"},
+            {"PM", "PM - PROCEDURE NOTE MISSING Total:"},
+            {"SC", "SC - MISSING SIGNATURE BUT CODED Total:"},
+            {"SG", "SG - MISSING SIGNATURE Total:"},
+            {"TD", "TD - MISSING COMPLETE CHART Total:"},
+            {"WR", "need to implement"}
+        };
+
         private const int RENAME_WARNING = 0;
 
         // state of missing list
@@ -107,10 +129,10 @@ namespace MB_Utilities.controls.chester
 
         /************* SUB LIST FUNCTIONS ******************/
 
+        // TODO: Maybe check newSubList.startRow to see if list was found and only search for endRow if it was
         private List<SubList> createSubLists(List<string> subListsToCreate)
         {
             List<SubList> subLists = new List<SubList>();
-
 
             FileInfo path = new FileInfo(missingListPathField.Text);
             using (ExcelPackage package = new ExcelPackage(path))
@@ -122,8 +144,7 @@ namespace MB_Utilities.controls.chester
                     newSubList.name = subListID;
                     newSubList.startRow = findStartOfList(worksheet, subListID);
                     newSubList.endRow = findEndOfList(worksheet, subListID);
-                    newSubList.patientInfo = loadPatientInfo(worksheet, newSubList);
-                    newSubList.numPatients = worksheet.Cells[newSubList.endRow, 3].GetValue<int>();
+                    newSubList.patientInfo = loadPatientInfo(worksheet, newSubList.startRow, newSubList.endRow);
 
                     subLists.Add(newSubList);
                 }
@@ -131,17 +152,96 @@ namespace MB_Utilities.controls.chester
             return subLists;
         }
 
-        private Dictionary<string, Dictionary<string, string>> loadPatientInfo(ExcelWorksheet worksheet, SubList subList)
+        /**
+         *  @RETURN =   5 rows ahead of where the header string was found (starts from 1 not 0)
+         *              0 if list was not found
+         *  @worksheet =    unbilled missing list containing all of the lists to be searched
+         *  @subListID =    2 letter log code indicating list to be searched
+         *  
+         *  REQUIRES =  header strings to be in column B(2)
+         *              EOF string to be in column P(16)
+         *              first chart # to be 5 rows after header string
+         */
+         // TODO: Is the first chart # always 5 rows after header string ???
+        private int findStartOfList(ExcelWorksheet worksheet, string subListID)
+        {
+            string cellValue = null;
+            string header = header_strings[subListID];
+            string eof_check = null;
+            int start = 0;
+            while ((cellValue != header) && (eof_check != EOF)) {
+                ++start;
+                cellValue = worksheet.Cells[start, 2].GetValue<string>();
+                eof_check = worksheet.Cells[start, 16].GetValue<string>();
+            }
+
+            if (eof_check == EOF)
+            {
+                start = 0;
+            }
+            else {
+                start += 5;
+            }
+
+            return start;
+        }
+
+        /**
+         *  @RETURN =   row on spreadsheet where footer string was found
+         *              0 if list was not found
+         *  @worksheet =    unbilled missing list containing all of the lists to be searched
+         *  @subListID =    2 letter log code indicating list to be searched
+         *  
+         *  REQUIRES =  footer strings to be in column C(3)
+         *              EOF string to be in column P(16)
+         */
+
+        private int findEndOfList(ExcelWorksheet worksheet, string subListID)
+        {
+            string cellValue = null;
+            string footer = footer_strings[subListID];
+            string eof_check = null;
+            int end = 0;
+            while ((cellValue != footer) && (eof_check != EOF))
+            {
+                ++end;
+                cellValue = worksheet.Cells[end, 3].GetValue<string>();
+                eof_check = worksheet.Cells[end, 16].GetValue<string>();
+            }
+
+            if (eof_check == EOF)
+            {
+                end = 0;
+            }
+
+            return end;
+        }
+
+        /**
+         *  @RETURN =   nested dictionary of chart numbers and patient info
+         *
+         *  @worksheet =    unbilled missing list containing all of the lists to be searched
+         *  @startRow =     beginning of subList
+         *  @endRow =       end of subList
+         *  
+         *  REQUIRES =  chart number to be in column A(1)
+         *              patient name to be in column D(4)
+         *              date of service to be in column G(7)
+         *              any empty list that is passed in to have startRow and endRow both be 0
+         */
+         // TODO: I don't think I need anything other than the chart number for the Process Stragglers step
+        private Dictionary<string, Dictionary<string, string>> loadPatientInfo(ExcelWorksheet worksheet, int startRow, int endRow)
         {
             Dictionary<string, Dictionary<string, string>> patients = new Dictionary<string, Dictionary<string, string>>();
 
-            int startRow = subList.startRow;
-            int endRow = subList.endRow;
             for (int row = startRow; row < endRow; ++row)
             {
                 string chartNum = worksheet.Cells[row, 1].GetValue<string>();
-                string patientName = worksheet.Cells[row, 2].GetValue<string>();
-                string date = worksheet.Cells[row, 3].GetValue<DateTime>().ToShortDateString();
+                if (string.IsNullOrEmpty(chartNum) || string.IsNullOrWhiteSpace(chartNum)) {
+                    continue;
+                }
+                string patientName = worksheet.Cells[row, 4].GetValue<string>();
+                string date = worksheet.Cells[row, 7].GetValue<DateTime>().ToShortDateString();
 
                 Dictionary<string, string> patientInfo = new Dictionary<string, string>() 
                 {
@@ -150,8 +250,6 @@ namespace MB_Utilities.controls.chester
                     { "date", date}
                 };
                 patients.Add(chartNum, patientInfo);
-
-                // maybe add exception handling for possible blank cells or cells with bad chart numbers ??
             }
             return patients;
         }
@@ -168,41 +266,6 @@ namespace MB_Utilities.controls.chester
             return null;
         }
 
-        private int findStartOfList(ExcelWorksheet worksheet, string subListID)
-        {
-            int start = 1;
-            string cellValue = worksheet.Cells[start, 1].GetValue<string>();
-            while (!cellValue.Contains(subListID))
-            {
-                start++;
-                cellValue = worksheet.Cells[start, 1].GetValue<string>();
-                while (cellValue == null)
-                {
-                    start++;
-                    cellValue = worksheet.Cells[start, 1].GetValue<string>();
-                }
-            }
-            start += 2;
-            return start;
-        }
-
-        private int findEndOfList(ExcelWorksheet worksheet, string subListID)
-        {
-            int end = 1;
-            string cellValue = worksheet.Cells[end, 1].GetValue<string>();
-            while (!cellValue.Contains(subListID) || !cellValue.Contains("Total:"))
-            {
-                end++;
-                cellValue = worksheet.Cells[end, 1].GetValue<string>();
-                while (cellValue == null)
-                {
-                    end++;
-                    cellValue = worksheet.Cells[end, 1].GetValue<string>();
-                }
-            }
-            return end;
-        }
-
 
 
         /************* UTILITY FUNCTIONS ******************/
@@ -217,10 +280,12 @@ namespace MB_Utilities.controls.chester
             {
                 return MISSING_LIST_NOT_FOUND;
             }
+            /*
             else if (!correctFile())
             {
                 return MISSING_LIST_INCORRECT;
             }
+            */
             return MISSING_LIST_READY;
         }
 
