@@ -17,13 +17,34 @@ namespace MB_Utilities.ui.chester
 {
     public partial class CreateLists : UserControl
     {
+        // string and column that indicate the end of the UnbilledRegularReport
+        string EOF = "1/1";
+
+        // sublist header and footer strings
+        Dictionary<string, string> header_strings = new Dictionary<string, string>() {
+            {"ME", "ME - MISSING EXAM OR PHYS NOTES"},
+            {"PM", "PM - PROCEDURE NOTE MISSING"},
+            {"SC", "SC - MISSING SIGNATURE BUT CODED"},
+            {"SG", "SG - MISSING SIGNATURE"},
+            {"TD", "TD - MISSING COMPLETE CHART"},
+            {"WR", "need to implement"}
+        };
+
+        Dictionary<string, string> footer_strings = new Dictionary<string, string>() {
+            {"ME", "ME - MISSING EXAM OR PHYS NOTES Total:"},
+            {"PM", "PM - PROCEDURE NOTE MISSING Total:"},
+            {"SC", "SC - MISSING SIGNATURE BUT CODED Total:"},
+            {"SG", "SG - MISSING SIGNATURE Total:"},
+            {"TD", "TD - MISSING COMPLETE CHART Total:"},
+            {"WR", "need to implement"}
+        };
+
         private const int DELETE_ROWS_WARNING = 0;
 
         // state of missing list
         private const int MISSING_LIST_READY = 0;
         private const int MISSING_LIST_PATH_EMPTY = 1;
         private const int MISSING_LIST_NOT_FOUND = 2;
-        private const int MISSING_LIST_INCORRECT = 3;
         private const int MISSING_LIST_CANNOT_SAVE = 4;
 
         // state of log file
@@ -85,73 +106,60 @@ namespace MB_Utilities.ui.chester
         {
             disableUI();
 
-            DialogResult warningSelection = DialogResult.Yes;
-            if (deleteRowsCheckBox.Checked)
+            int missingListState = getMissingListState();
+            int logFileState = getLogFileState();
+            int folderState = getFolderState();
+            if (missingListState != MISSING_LIST_READY)
             {
-                warningSelection = showWarning(DELETE_ROWS_WARNING);
+                showErrorMessage(missingListState);
             }
-
-            if (warningSelection == DialogResult.Yes)
+            else if (logFileState != LOG_FILE_READY)
             {
-                int missingListState = getMissingListState();
-                int logFileState = getLogFileState();
-                int folderState = getFolderState();
-                if (missingListState != MISSING_LIST_READY)
+                showErrorMessage(logFileState);
+            }
+            else if (folderState != FOLDER_READY)
+            {
+                showErrorMessage(folderState);
+            }
+            else
+            {
+                // create missing and voided lists
+                HashSet<string> fileNames = loadFileNames();
+                List<Dictionary<string, string>> logFile = loadLogFile();
+                List<Dictionary<string, string>> missingList = createMissingList(logFile, fileNames);
+                List<Dictionary<string, string>> voidedList = createVoidedList(logFile, fileNames);
+
+                // create straggler list
+                List<string> subListIDs = new List<string>() { "ME", "PM", "SG", "TD", "WR" };
+                List<SubList> subLists = createSubLists(subListIDs);
+                List<Dictionary<string, string>> stragglerList = createStragglerList(subLists);
+
+                // create word doc of lists
+                bool docCreated = createLists(missingList, voidedList, stragglerList);
+
+                if (docCreated)
                 {
-                    showErrorMessage(missingListState);
-                }
-                else if (logFileState != LOG_FILE_READY)
-                {
-                    showErrorMessage(logFileState);
-                }
-                else if (folderState != FOLDER_READY)
-                {
-                    showErrorMessage(folderState);
+                    // missing list file to be used in UiPath
+                    createTextFile(missingList, stragglerList);
+
+                    // output number on each list
+                    missingTotalLabel.Text = "Missing Total: " + missingList.Count;
+                    int voidedChartsNotMissing = 0;
+                    foreach (var patientInfo in voidedList)
+                    {
+                        if (patientInfo["missing"] != "-")
+                        {
+                            voidedChartsNotMissing++;
+                        }
+                    }
+                    voidedTotalLabel.Text = "Voided Total: " + voidedList.Count + " (" + voidedChartsNotMissing + ")";
+                    stragglersTotalLabel.Text = "Straggler Total: " + stragglerList.Count;
+
+                    MessageBox.Show("Lists created!!");
                 }
                 else
                 {
-                    // create missing and voided lists
-                    HashSet<string> fileNames = loadFileNames();
-                    List<Dictionary<string, string>> logFile = loadLogFile();
-                    List<Dictionary<string, string>> missingList = createMissingList(logFile, fileNames);
-                    List<Dictionary<string, string>> voidedList = createVoidedList(logFile, fileNames);
-
-                    // create straggler list
-                    List<string> subListIDs = new List<string>() { "ME", "PM", "SG", "TD" };
-                    List<SubList> subLists = createSubLists(subListIDs);
-                    List<Dictionary<string, string>> stragglerList = createStragglerList(subLists);
-
-                    // create word doc of lists
-                    bool docCreated = createLists(missingList, voidedList, stragglerList);
-                    
-                    if (docCreated)
-                    {
-                        // if lists are created, we can delete (or bold) the rows on the missing list
-                        List<int> rowsToDelete = getRowsToDelete(stragglerList);
-                        updateMissingList(subLists, rowsToDelete);
-
-                        // missing list file to be used in UiPath
-                        createTextFile(missingList);
-
-                        // output number on each list
-                        missingTotalLabel.Text = "Missing Total: " + missingList.Count;
-                        int voidedChartsNotMissing = 0;
-                        foreach (var patientInfo in voidedList)
-                        {
-                            if (patientInfo["missing"] != "-")
-                            {
-                                voidedChartsNotMissing++;
-                            }
-                        }
-                        voidedTotalLabel.Text = "Voided Total: " + voidedList.Count + " (" + voidedChartsNotMissing + ")";
-                        stragglersTotalLabel.Text = "Straggler Total: " + stragglerList.Count;
-
-                        MessageBox.Show("Lists created!!");
-                    }
-                    else
-                    {
-                        MessageBox.Show("An error occurred so the lists were not created and the missing list was not updated. Try again.");
-                    }
+                    MessageBox.Show("An error occurred so the lists were not created. Try again.");
                 }
             }
 
@@ -243,7 +251,7 @@ namespace MB_Utilities.ui.chester
             return voidedList;
         }
 
-        private void createTextFile(List<Dictionary<string, string>> missingList)
+        private void createTextFile(List<Dictionary<string, string>> missingList, List<Dictionary<string, string>> stragglerList)
         {
             // creates text file of missing charts to use in UiPath
 
@@ -252,8 +260,14 @@ namespace MB_Utilities.ui.chester
 
             foreach (var patientInfo in missingList)
             {
-                sw.WriteLine(patientInfo["chartNum"]);
+                sw.WriteLine(patientInfo["chartNum"] + "," + "TD - MISSING COMPLETE CHART");
             }
+
+            foreach (var patientInfo in stragglerList)
+            {
+                sw.WriteLine(patientInfo["chartNum"] + "," + "LS - LOCATED CHART SENT TO CODING");
+            }
+
             sw.Flush();
             sw.Close();
         }
@@ -261,11 +275,9 @@ namespace MB_Utilities.ui.chester
 
 
         /************* STRAGGLER LIST FUNCTIONS ******************/
-
         private List<SubList> createSubLists(List<string> subListsToCreate)
         {
             List<SubList> subLists = new List<SubList>();
-
 
             FileInfo path = new FileInfo(missingListPathField.Text);
             using (ExcelPackage package = new ExcelPackage(path))
@@ -277,8 +289,7 @@ namespace MB_Utilities.ui.chester
                     newSubList.name = subListID;
                     newSubList.startRow = findStartOfList(worksheet, subListID);
                     newSubList.endRow = findEndOfList(worksheet, subListID);
-                    newSubList.patientInfo = loadPatientInfo(worksheet, newSubList);
-                    newSubList.numPatients = worksheet.Cells[newSubList.endRow, 3].GetValue<int>();
+                    newSubList.patientInfo = loadPatientInfo(worksheet, newSubList.startRow, newSubList.endRow);
 
                     subLists.Add(newSubList);
                 }
@@ -286,65 +297,109 @@ namespace MB_Utilities.ui.chester
             return subLists;
         }
 
-        private Dictionary<string, Dictionary<string, string>> loadPatientInfo(ExcelWorksheet worksheet, SubList subList)
-        {
-            Dictionary<string, Dictionary<string, string>> patients = new Dictionary<string, Dictionary<string, string>>();
-
-            int startRow = subList.startRow;
-            int endRow = subList.endRow;
-            for (int row = startRow; row < endRow; ++row)
-            {
-                string chartNum = worksheet.Cells[row, 1].GetValue<string>();
-                string patientName = worksheet.Cells[row, 2].GetValue<string>();
-                string date = worksheet.Cells[row, 3].GetValue<DateTime>().ToShortDateString();
-
-                Dictionary<string, string> patientInfo = new Dictionary<string, string>()
-                {
-                    { "chartNum", chartNum },
-                    { "rowNum", row.ToString()},
-                    { "patientName", patientName},
-                    { "date", date}
-                };
-                patients.Add(chartNum, patientInfo);
-
-                // maybe add exception handling for possible blank cells or cells with bad chart numbers ??
-            }
-            return patients;
-        }
-
+        /**
+         *  @RETURN =   5 rows ahead of where the header string was found (starts from 1 not 0)
+         *              0 if list was not found
+         *  @worksheet =    unbilled missing list containing all of the lists to be searched
+         *  @subListID =    2 letter log code indicating list to be searched
+         *  
+         *  REQUIRES =  header strings to be in column B(2)
+         *              EOF string to be in column P(16)
+         *              first chart # to be 5 rows after header string
+         */
+        // TODO: Is the first chart # always 5 rows after header string ???
         private int findStartOfList(ExcelWorksheet worksheet, string subListID)
         {
-            int start = 1;
-            string cellValue = worksheet.Cells[start, 1].GetValue<string>();
-            while (!cellValue.Contains(subListID))
+            string cellValue = null;
+            string header = header_strings[subListID];
+            string eof_check = null;
+            int start = 0;
+            while ((cellValue != header) && (eof_check != EOF))
             {
-                start++;
-                cellValue = worksheet.Cells[start, 1].GetValue<string>();
-                while (cellValue == null)
-                {
-                    start++;
-                    cellValue = worksheet.Cells[start, 1].GetValue<string>();
-                }
+                ++start;
+                cellValue = worksheet.Cells[start, 2].GetValue<string>();
+                eof_check = worksheet.Cells[start, 16].GetValue<string>();
             }
-            start += 2;
+
+            if (eof_check == EOF)
+            {
+                start = 0;
+            }
+            else
+            {
+                start += 5;
+            }
+
             return start;
         }
 
+        /**
+         *  @RETURN =   row on spreadsheet where footer string was found
+         *              0 if list was not found
+         *  @worksheet =    unbilled missing list containing all of the lists to be searched
+         *  @subListID =    2 letter log code indicating list to be searched
+         *  
+         *  REQUIRES =  footer strings to be in column C(3)
+         *              EOF string to be in column P(16)
+         */
+
         private int findEndOfList(ExcelWorksheet worksheet, string subListID)
         {
-            int end = 1;
-            string cellValue = worksheet.Cells[end, 1].GetValue<string>();
-            while (!cellValue.Contains(subListID) || !cellValue.Contains("Total:"))
+            string cellValue = null;
+            string footer = footer_strings[subListID];
+            string eof_check = null;
+            int end = 0;
+            while ((cellValue != footer) && (eof_check != EOF))
             {
-                end++;
-                cellValue = worksheet.Cells[end, 1].GetValue<string>();
-                while (cellValue == null)
-                {
-                    end++;
-                    cellValue = worksheet.Cells[end, 1].GetValue<string>();
-                }
+                ++end;
+                cellValue = worksheet.Cells[end, 3].GetValue<string>();
+                eof_check = worksheet.Cells[end, 16].GetValue<string>();
             }
+
+            if (eof_check == EOF)
+            {
+                end = 0;
+            }
+
             return end;
+        }
+
+        /**
+         *  @RETURN =   nested dictionary of chart numbers and patient info
+         *
+         *  @worksheet =    unbilled missing list containing all of the lists to be searched
+         *  @startRow =     beginning of subList
+         *  @endRow =       end of subList
+         *  
+         *  REQUIRES =  chart number to be in column A(1)
+         *              patient name to be in column D(4)
+         *              date of service to be in column G(7)
+         *              any empty list that is passed in to have startRow and endRow both be 0
+         */
+        private Dictionary<string, Dictionary<string, string>> loadPatientInfo(ExcelWorksheet worksheet, int startRow, int endRow)
+        {
+            Dictionary<string, Dictionary<string, string>> patients = new Dictionary<string, Dictionary<string, string>>();
+
+            for (int row = startRow; row < endRow; ++row)
+            {
+                string chartNum = worksheet.Cells[row, 1].GetValue<string>();
+                if (string.IsNullOrEmpty(chartNum) || string.IsNullOrWhiteSpace(chartNum))
+                {
+                    continue;
+                }
+                string patientName = worksheet.Cells[row, 4].GetValue<string>();
+                string date = worksheet.Cells[row, 7].GetValue<DateTime>().ToShortDateString();
+
+                Dictionary<string, string> patientInfo = new Dictionary<string, string>()
+                {
+                    { "rowNum", row.ToString()},
+                    { "patientName", patientName},
+                    { "date", date},
+                    { "chartNum", chartNum }
+                };
+                patients.Add(chartNum, patientInfo);
+            }
+            return patients;
         }
 
         private List<Dictionary<string, string>> createStragglerList(List<SubList> subLists)
@@ -360,14 +415,13 @@ namespace MB_Utilities.ui.chester
                     if (subList.patientInfo.ContainsKey(fileName))
                     {
                         stragglerList.Add(subList.patientInfo[fileName]);
-                        subList.numPatients -= 1;
                     }
                 }
             }
 
             // sort by "date", then by "chartNum"
-            List<Dictionary<string, string>> sortedStragglerList = stragglerList.OrderBy(x => Convert.ToDateTime(x["date"]))
-                                                                   .ThenBy(x => x["chartNum"])
+            List<Dictionary<string, string>> sortedStragglerList = stragglerList.OrderBy(x => x["chartNum"])
+                                                                   .ThenBy(x => Convert.ToDateTime(x["date"]))
                                                                    .ToList<Dictionary<string, string>>();
 
             return sortedStragglerList;
@@ -387,44 +441,6 @@ namespace MB_Utilities.ui.chester
             rowsToDelete.Reverse();
 
             return rowsToDelete;
-        }
-
-        private void updateMissingList(List<SubList> subLists, List<int> rowsToDelete)
-        {
-            FileInfo path = new FileInfo(missingListPathField.Text);
-            using (ExcelPackage package = new ExcelPackage(path))
-            using (ExcelWorksheet worksheet = package.Workbook.Worksheets[1])
-            {
-                if (deleteRowsCheckBox.Checked)
-                {
-                    foreach (SubList subList in subLists)
-                    {
-                        int rowWithTotal = subList.endRow;
-                        worksheet.Cells[rowWithTotal, 3].Value = subList.numPatients;
-                    }
-
-                    foreach (int row in rowsToDelete)
-                    {
-                        worksheet.DeleteRow(row);
-                    }
-                }
-                else
-                {
-                    foreach (int row in rowsToDelete)
-                    {
-                        worksheet.Row(row).Style.Font.Bold = true;
-                    }
-                }
-
-                try
-                {
-                    package.Save();
-                }
-                catch (InvalidOperationException)
-                {
-                    showErrorMessage(MISSING_LIST_CANNOT_SAVE);
-                }
-            }
         }
 
         private bool createLists(List<Dictionary<string, string>> missingList, List<Dictionary<string, string>> voidedList, List<Dictionary<string, string>> stragglerList)
@@ -590,10 +606,6 @@ namespace MB_Utilities.ui.chester
             {
                 return MISSING_LIST_NOT_FOUND;
             }
-            else if (!correctMissingList())
-            {
-                return MISSING_LIST_INCORRECT;
-            }
             return MISSING_LIST_READY;
         }
 
@@ -653,28 +665,12 @@ namespace MB_Utilities.ui.chester
             return true;
         }
 
-        private bool correctMissingList()
-        {
-            FileInfo missingListPath = new FileInfo(missingListPathField.Text);
-            using (ExcelPackage packageMissing = new ExcelPackage(missingListPath))
-            using (ExcelWorksheet worksheetMissing = packageMissing.Workbook.Worksheets[1])
-            {
-                string title = worksheetMissing.Cells[1, 1].GetValue<string>();
-                if (title == "CT Unbilled Report")
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         private void disableUI()
         {
             chooseMissingListBTN.Enabled = false;
             chooseLogFileBTN.Enabled = false;
             chooseFileFolderBTN.Enabled = false;
             createListsBTN.Enabled = false;
-            deleteRowsCheckBox.Enabled = false;
         }
 
         private void enableUI()
@@ -683,7 +679,6 @@ namespace MB_Utilities.ui.chester
             chooseLogFileBTN.Enabled = true;
             chooseFileFolderBTN.Enabled = true;
             createListsBTN.Enabled = true;
-            deleteRowsCheckBox.Enabled = true;
         }
 
         private DialogResult showWarning(int warning)
@@ -711,9 +706,6 @@ namespace MB_Utilities.ui.chester
                     return;
                 case MISSING_LIST_NOT_FOUND:
                     MessageBox.Show("The CT missing list could not be found.");
-                    return;
-                case MISSING_LIST_INCORRECT:
-                    MessageBox.Show("The missing list you chose is not the CT missing list.");
                     return;
                 case LOG_FILE_PATH_EMPTY:
                     MessageBox.Show("Please select a file.");

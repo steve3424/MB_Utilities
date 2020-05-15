@@ -35,7 +35,6 @@
             this.chooseLogFileBTN = new System.Windows.Forms.Button();
             this.folderPathField = new System.Windows.Forms.RichTextBox();
             this.chooseFileFolderBTN = new System.Windows.Forms.Button();
-            this.deleteRowsCheckBox = new System.Windows.Forms.CheckBox();
             this.createListsBTN = new System.Windows.Forms.Button();
             this.voidedTotalLabel = new System.Windows.Forms.Label();
             this.missingTotalLabel = new System.Windows.Forms.Label();
@@ -115,18 +114,6 @@
             this.chooseFileFolderBTN.UseVisualStyleBackColor = true;
             this.chooseFileFolderBTN.Click += new System.EventHandler(this.chooseFileFolderBTN_Click);
             // 
-            // deleteRowsCheckBox
-            // 
-            this.deleteRowsCheckBox.AutoSize = true;
-            this.deleteRowsCheckBox.Checked = true;
-            this.deleteRowsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.deleteRowsCheckBox.Location = new System.Drawing.Point(151, 459);
-            this.deleteRowsCheckBox.Name = "deleteRowsCheckBox";
-            this.deleteRowsCheckBox.Size = new System.Drawing.Size(102, 21);
-            this.deleteRowsCheckBox.TabIndex = 9;
-            this.deleteRowsCheckBox.Text = "delete rows";
-            this.deleteRowsCheckBox.UseVisualStyleBackColor = true;
-            // 
             // createListsBTN
             // 
             this.createListsBTN.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -176,7 +163,6 @@
             this.Controls.Add(this.voidedTotalLabel);
             this.Controls.Add(this.missingTotalLabel);
             this.Controls.Add(this.createListsBTN);
-            this.Controls.Add(this.deleteRowsCheckBox);
             this.Controls.Add(this.folderPathField);
             this.Controls.Add(this.chooseFileFolderBTN);
             this.Controls.Add(this.logFilePathField);
@@ -200,7 +186,6 @@
         private System.Windows.Forms.Button chooseLogFileBTN;
         private System.Windows.Forms.RichTextBox folderPathField;
         private System.Windows.Forms.Button chooseFileFolderBTN;
-        private System.Windows.Forms.CheckBox deleteRowsCheckBox;
         private System.Windows.Forms.Button createListsBTN;
         private System.Windows.Forms.Label voidedTotalLabel;
         private System.Windows.Forms.Label missingTotalLabel;
