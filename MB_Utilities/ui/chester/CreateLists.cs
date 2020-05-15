@@ -39,8 +39,6 @@ namespace MB_Utilities.ui.chester
             {"WR", "need to implement"}
         };
 
-        private const int DELETE_ROWS_WARNING = 0;
-
         // state of missing list
         private const int MISSING_LIST_READY = 0;
         private const int MISSING_LIST_PATH_EMPTY = 1;
@@ -255,7 +253,7 @@ namespace MB_Utilities.ui.chester
         {
             // creates text file of missing charts to use in UiPath
 
-            string savePath = folderPathField.Text + "\\missing_list.txt";
+            string savePath = folderPathField.Text + "\\TD_and_LS_ChartsToModify.txt";
             StreamWriter sw = new StreamWriter(savePath, false);
 
             foreach (var patientInfo in missingList)
@@ -427,22 +425,6 @@ namespace MB_Utilities.ui.chester
             return sortedStragglerList;
         }
 
-        private List<int> getRowsToDelete(List<Dictionary<string, string>> stragglerList)
-        {
-            List<int> rowsToDelete = new List<int>();
-
-            foreach (var chartInfo in stragglerList)
-            {
-                int rowNumber = Int32.Parse(chartInfo["rowNum"]);
-                rowsToDelete.Add(rowNumber);
-            }
-
-            rowsToDelete.Sort();
-            rowsToDelete.Reverse();
-
-            return rowsToDelete;
-        }
-
         private bool createLists(List<Dictionary<string, string>> missingList, List<Dictionary<string, string>> voidedList, List<Dictionary<string, string>> stragglerList)
         {
             try
@@ -574,11 +556,11 @@ namespace MB_Utilities.ui.chester
                     stragglerTable.Columns.AutoFit();
                 }
 
-                object fileName = folderPathField.Text + "\\file_lists.docx";
+                object fileName = folderPathField.Text + "\\accountability_list.docx";
                 int fileNum = 1;
                 while(File.Exists(fileName.ToString()))
                 {
-                    fileName = folderPathField.Text + "\\file_lists_" + fileNum.ToString() + ".docx";
+                    fileName = folderPathField.Text + "\\accountability_list_" + fileNum.ToString() + ".docx";
                     fileNum++;
                 }
                 document.SaveAs2(ref fileName);
@@ -590,6 +572,7 @@ namespace MB_Utilities.ui.chester
                 MessageBox.Show(ex.Message);
                 return false;
             }
+
             return true;
         }
 
@@ -679,22 +662,6 @@ namespace MB_Utilities.ui.chester
             chooseLogFileBTN.Enabled = true;
             chooseFileFolderBTN.Enabled = true;
             createListsBTN.Enabled = true;
-        }
-
-        private DialogResult showWarning(int warning)
-        {
-            string title = "Warning";
-            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
-
-            switch (warning)
-            {
-                case DELETE_ROWS_WARNING:
-                    string createListMessage = "This program will remove all of the charts from the missing list.\n\n" +
-                "Are you sure you are ready to continue?";
-                    return MessageBox.Show(createListMessage, title, buttons);
-                default:
-                    return DialogResult.No;
-            }
         }
 
         private void showErrorMessage(int error)

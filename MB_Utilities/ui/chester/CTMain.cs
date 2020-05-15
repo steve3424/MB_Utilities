@@ -44,14 +44,6 @@ namespace MB_Utilities.ui.chester
             createLists1.Show();
         }
 
-        private void updateMissingNavBTN_Click(object sender, EventArgs e)
-        {
-            navSelectedPanel.Top = updateMissingNavBTN.Top;
-
-            hideAllControls();
-            updateMissingList1.Show();
-        }
-
         private void loadDaysNavBTN_Click(object sender, EventArgs e)
         {
             navSelectedPanel.Top = loadDaysNavBTN.Top;
@@ -65,8 +57,12 @@ namespace MB_Utilities.ui.chester
             processFiles1.Hide();
             processStragglers1.Hide();
             createLists1.Hide();
-            updateMissingList1.Hide();
             loadDays1.Hide();
+        }
+
+        private void CTMain_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

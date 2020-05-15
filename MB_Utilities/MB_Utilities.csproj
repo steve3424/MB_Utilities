@@ -140,12 +140,6 @@
     <Compile Include="ui\chester\ProcessStragglers.Designer.cs">
       <DependentUpon>ProcessStragglers.cs</DependentUpon>
     </Compile>
-    <Compile Include="ui\chester\UpdateMissingList.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ui\chester\UpdateMissingList.Designer.cs">
-      <DependentUpon>UpdateMissingList.cs</DependentUpon>
-    </Compile>
     <Compile Include="ui\FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -199,9 +193,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ui\chester\ProcessStragglers.resx">
       <DependentUpon>ProcessStragglers.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ui\chester\UpdateMissingList.resx">
-      <DependentUpon>UpdateMissingList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ui\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
