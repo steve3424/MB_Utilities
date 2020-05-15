@@ -35,8 +35,6 @@
             this.navSelectedPanel = new System.Windows.Forms.Panel();
             this.hospitalTitlePanel = new System.Windows.Forms.Panel();
             this.hospitalTitle = new System.Windows.Forms.Label();
-            this.updateMissingListNavBTN = new System.Windows.Forms.Button();
-            this.updateMissingList_GV1 = new MB_Utilities.ui.grandview.UpdateMissingList_GV();
             this.searchStragglers_GV1 = new MB_Utilities.ui.grandview.SearchStragglers_GV();
             this.loadDays_GV1 = new MB_Utilities.ui.grandview.LoadDays_GV();
             this.createLists_GV1 = new MB_Utilities.ui.grandview.CreateLists_GV();
@@ -52,7 +50,6 @@
             this.gvNav.Controls.Add(this.createListsNavBTN);
             this.gvNav.Controls.Add(this.navSelectedPanel);
             this.gvNav.Controls.Add(this.hospitalTitlePanel);
-            this.gvNav.Controls.Add(this.updateMissingListNavBTN);
             this.gvNav.Dock = System.Windows.Forms.DockStyle.Left;
             this.gvNav.Location = new System.Drawing.Point(0, 0);
             this.gvNav.Name = "gvNav";
@@ -82,7 +79,7 @@
             this.loadDaysNavBTN.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.loadDaysNavBTN.Font = new System.Drawing.Font("Calibri", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.loadDaysNavBTN.ForeColor = System.Drawing.Color.Black;
-            this.loadDaysNavBTN.Location = new System.Drawing.Point(3, 248);
+            this.loadDaysNavBTN.Location = new System.Drawing.Point(3, 183);
             this.loadDaysNavBTN.Name = "loadDaysNavBTN";
             this.loadDaysNavBTN.Size = new System.Drawing.Size(177, 50);
             this.loadDaysNavBTN.TabIndex = 4;
@@ -135,30 +132,6 @@
             this.hospitalTitle.Text = "GV";
             this.hospitalTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // updateMissingListNavBTN
-            // 
-            this.updateMissingListNavBTN.FlatAppearance.BorderSize = 0;
-            this.updateMissingListNavBTN.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightGray;
-            this.updateMissingListNavBTN.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.updateMissingListNavBTN.Font = new System.Drawing.Font("Calibri", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.updateMissingListNavBTN.ForeColor = System.Drawing.Color.Black;
-            this.updateMissingListNavBTN.Location = new System.Drawing.Point(3, 183);
-            this.updateMissingListNavBTN.Name = "updateMissingListNavBTN";
-            this.updateMissingListNavBTN.Size = new System.Drawing.Size(177, 50);
-            this.updateMissingListNavBTN.TabIndex = 3;
-            this.updateMissingListNavBTN.Text = "Update Missing List";
-            this.updateMissingListNavBTN.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.updateMissingListNavBTN.UseVisualStyleBackColor = true;
-            this.updateMissingListNavBTN.Click += new System.EventHandler(this.updateMissingListNavBTN_Click);
-            // 
-            // updateMissingList_GV1
-            // 
-            this.updateMissingList_GV1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.updateMissingList_GV1.Location = new System.Drawing.Point(190, 0);
-            this.updateMissingList_GV1.Name = "updateMissingList_GV1";
-            this.updateMissingList_GV1.Size = new System.Drawing.Size(816, 692);
-            this.updateMissingList_GV1.TabIndex = 2;
-            // 
             // searchStragglers_GV1
             // 
             this.searchStragglers_GV1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -188,7 +161,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.createLists_GV1);
-            this.Controls.Add(this.updateMissingList_GV1);
             this.Controls.Add(this.searchStragglers_GV1);
             this.Controls.Add(this.loadDays_GV1);
             this.Controls.Add(this.gvNav);
@@ -207,8 +179,6 @@
         private System.Windows.Forms.Panel navSelectedPanel;
         private System.Windows.Forms.Panel hospitalTitlePanel;
         private System.Windows.Forms.Label hospitalTitle;
-        private System.Windows.Forms.Button updateMissingListNavBTN;
-        private UpdateMissingList_GV updateMissingList_GV1;
         private System.Windows.Forms.Button createListsNavBTN;
         private System.Windows.Forms.Button loadDaysNavBTN;
         private LoadDays_GV loadDays_GV1;

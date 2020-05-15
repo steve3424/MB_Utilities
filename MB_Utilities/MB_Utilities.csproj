@@ -172,12 +172,6 @@
     <Compile Include="ui\grandview\SearchStragglers_GV.Designer.cs">
       <DependentUpon>SearchStragglers_GV.cs</DependentUpon>
     </Compile>
-    <Compile Include="ui\grandview\UpdateMissingList_GV.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ui\grandview\UpdateMissingList_GV.Designer.cs">
-      <DependentUpon>UpdateMissingList_GV.cs</DependentUpon>
-    </Compile>
     <Compile Include="utils\SubList.cs" />
     <EmbeddedResource Include="ui\chester\CreateLists.resx">
       <DependentUpon>CreateLists.cs</DependentUpon>
@@ -217,9 +211,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ui\grandview\SearchStragglers_GV.resx">
       <DependentUpon>SearchStragglers_GV.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ui\grandview\UpdateMissingList_GV.resx">
-      <DependentUpon>UpdateMissingList_GV.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
