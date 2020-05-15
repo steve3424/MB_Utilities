@@ -17,8 +17,6 @@ namespace MB_Utilities.ui.grandview
 {
     public partial class CreateLists_GV : UserControl
     {
-        private const int DELETE_ROWS_WARNING = 0;
-
         // state of missing list
         private const int MISSING_LIST_READY = 0;
         private const int MISSING_LIST_PATH_EMPTY = 1;
@@ -82,61 +80,52 @@ namespace MB_Utilities.ui.grandview
         {
             disableUI();
 
-            DialogResult warningSelection = DialogResult.Yes;
-            if (deleteRowsCheckBox.Checked)
+            int missingListState = getMissingListState();
+            int logFileState = getLogFileState();
+            int folderState = getFolderState();
+            if (missingListState != MISSING_LIST_READY)
             {
-                warningSelection = showWarning(DELETE_ROWS_WARNING);
+                showErrorMessage(missingListState);
             }
-
-            if (warningSelection == DialogResult.Yes)
+            else if (logFileState != LOG_FILE_READY)
             {
-                int missingListState = getMissingListState();
-                int logFileState = getLogFileState();
-                int folderState = getFolderState();
-                if (missingListState != MISSING_LIST_READY)
+                showErrorMessage(logFileState);
+            }
+            else if (folderState != FOLDER_READY)
+            {
+                showErrorMessage(folderState);
+            }
+            else
+            {
+                List<Dictionary<string, string>> logFile = loadLogFile();
+                List<Dictionary<string, string>> missingList = createMissingList(logFile);
+                List<Dictionary<string, string>> voidedList = createVoidedList(logFile);
+
+                List<string> subListIDs = new List<string>() { "ME", "PM", "TD" };
+                List<SubList> subLists = createSubLists(subListIDs);
+                List<Dictionary<string, string>> stragglerList = createStragglerList(subLists);
+
+                bool docCreated = docCreated = createLists(missingList, voidedList, stragglerList);
+
+                if (docCreated)
                 {
-                    showErrorMessage(missingListState);
-                }
-                else if (logFileState != LOG_FILE_READY)
-                {
-                    showErrorMessage(logFileState);
-                }
-                else if (folderState != FOLDER_READY)
-                {
-                    showErrorMessage(folderState);
+                    // if lists are created and checkbox is marked, we can delete the rows from the missing list
+                    if (deleteRowsCheckBox.Checked)
+                    {
+                        List<int> rowsToDelete = getRowsToDelete(stragglerList);
+                        updateMissingList(subLists, rowsToDelete);
+                    }
+
+                    // output number on each list
+                    missingTotalLabel.Text = "Missing Total: " + missingList.Count;
+                    voidedTotalLabel.Text = "Voided Total: " + voidedList.Count;
+                    stragglersTotalLabel.Text = "Straggler Total: " + stragglerList.Count;
+
+                    MessageBox.Show("Lists created!!");
                 }
                 else
                 {
-                    List<Dictionary<string, string>> logFile = loadLogFile();
-                    List<Dictionary<string, string>> missingList = createMissingList(logFile);
-                    List<Dictionary<string, string>> voidedList = createVoidedList(logFile);
-
-                    List<string> subListIDs = new List<string>() { "ME", "PM", "TD" };
-                    List<SubList> subLists = createSubLists(subListIDs);
-                    List<Dictionary<string, string>> stragglerList = createStragglerList(subLists);
-
-                    bool docCreated = docCreated = createLists(missingList, voidedList, stragglerList);
-
-                    if (docCreated)
-                    {
-                        // if lists are created and checkbox is marked, we can delete the rows from the missing list
-                        if (deleteRowsCheckBox.Checked)
-                        {
-                            List<int> rowsToDelete = getRowsToDelete(stragglerList);
-                            updateMissingList(subLists, rowsToDelete);
-                        }
-
-                        // output number on each list
-                        missingTotalLabel.Text = "Missing Total: " + missingList.Count;
-                        voidedTotalLabel.Text = "Voided Total: " + voidedList.Count;
-                        stragglersTotalLabel.Text = "Straggler Total: " + stragglerList.Count;
-
-                        MessageBox.Show("Lists created!!");
-                    }
-                    else
-                    {
-                        MessageBox.Show("An error occurred so the lists were not created and the missing list was not updated. Try again.");
-                    }
+                    MessageBox.Show("An error occurred so the lists were not created and the missing list was not updated. Try again.");
                 }
             }
 
@@ -623,22 +612,6 @@ namespace MB_Utilities.ui.grandview
                 default:
                     MessageBox.Show("An unspecified error occurred.");
                     return;
-            }
-        }
-
-        private DialogResult showWarning(int warning)
-        {
-            string title = "Warning";
-            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
-
-            switch (warning)
-            {
-                case DELETE_ROWS_WARNING:
-                    string createListMessage = "This program will remove all of the charts from the missing list.\n\n" +
-                "Are you sure you are ready to continue?";
-                    return MessageBox.Show(createListMessage, title, buttons);
-                default:
-                    return DialogResult.No;
             }
         }
     }
