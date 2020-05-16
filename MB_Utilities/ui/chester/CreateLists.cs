@@ -557,12 +557,6 @@ namespace MB_Utilities.ui.chester
                 }
 
                 object fileName = folderPathField.Text + "\\accountability_list.docx";
-                int fileNum = 1;
-                while(File.Exists(fileName.ToString()))
-                {
-                    fileName = folderPathField.Text + "\\accountability_list_" + fileNum.ToString() + ".docx";
-                    fileNum++;
-                }
                 document.SaveAs2(ref fileName);
                 document.Close();
                 application.Quit();
