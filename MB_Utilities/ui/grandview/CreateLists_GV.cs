@@ -17,12 +17,32 @@ namespace MB_Utilities.ui.grandview
 {
     public partial class CreateLists_GV : UserControl
     {
+        // string and column that indicate the end of the UnbilledRegularReport
+        string EOF = "1/1";
+
+        // sublist header and footer strings
+        Dictionary<string, string> header_strings = new Dictionary<string, string>() {
+            {"ME", "ME - MISSING EXAM OR PHYS NOTES"},
+            {"PM", "PM - PROCEDURE NOTE MISSING"},
+            {"SC", "SC - MISSING SIGNATURE BUT CODED"},
+            {"SG", "SG - MISSING SIGNATURE"},
+            {"TD", "TD - MISSING COMPLETE CHART"},
+            {"WR", "need to implement"}
+        };
+
+        Dictionary<string, string> footer_strings = new Dictionary<string, string>() {
+            {"ME", "ME - MISSING EXAM OR PHYS NOTES Total:"},
+            {"PM", "PM - PROCEDURE NOTE MISSING Total:"},
+            {"SC", "SC - MISSING SIGNATURE BUT CODED Total:"},
+            {"SG", "SG - MISSING SIGNATURE Total:"},
+            {"TD", "TD - MISSING COMPLETE CHART Total:"},
+            {"WR", "need to implement"}
+        };
+
         // state of missing list
         private const int MISSING_LIST_READY = 0;
         private const int MISSING_LIST_PATH_EMPTY = 1;
         private const int MISSING_LIST_NOT_FOUND = 2;
-        private const int MISSING_LIST_INCORRECT = 3;
-        private const int MISSING_LIST_CANNOT_SAVE = 4;
 
         // state of log file
         private const int LOG_FILE_READY = 5;
@@ -101,7 +121,7 @@ namespace MB_Utilities.ui.grandview
                 List<Dictionary<string, string>> missingList = createMissingList(logFile);
                 List<Dictionary<string, string>> voidedList = createVoidedList(logFile);
 
-                List<string> subListIDs = new List<string>() { "ME", "PM", "TD" };
+                List<string> subListIDs = new List<string>() { "ME", "PM", "SG", "TD", "WR" };
                 List<SubList> subLists = createSubLists(subListIDs);
                 List<Dictionary<string, string>> stragglerList = createStragglerList(subLists);
 
@@ -109,12 +129,8 @@ namespace MB_Utilities.ui.grandview
 
                 if (docCreated)
                 {
-                    // if lists are created and checkbox is marked, we can delete the rows from the missing list
-                    if (deleteRowsCheckBox.Checked)
-                    {
-                        List<int> rowsToDelete = getRowsToDelete(stragglerList);
-                        updateMissingList(subLists, rowsToDelete);
-                    }
+                    // missing list file to be used in UiPath
+                    createTextFile(stragglerList);
 
                     // output number on each list
                     missingTotalLabel.Text = "Missing Total: " + missingList.Count;
@@ -130,6 +146,23 @@ namespace MB_Utilities.ui.grandview
             }
 
             enableUI();
+        }
+
+
+        private void createTextFile(List<Dictionary<string, string>> stragglerList)
+        {
+            // creates text file of missing charts to use in UiPath
+
+            string savePath = saveFileToPathField.Text + "\\LS_ChartsToModify.txt";
+            StreamWriter sw = new StreamWriter(savePath, false);
+
+            foreach (var patientInfo in stragglerList)
+            {
+                sw.WriteLine(patientInfo["chartNum"] + "," + "LS - LOCATED CHART SENT TO CODING");
+            }
+
+            sw.Flush();
+            sw.Close();
         }
 
 
@@ -195,7 +228,6 @@ namespace MB_Utilities.ui.grandview
 
 
         /************* STRAGGLER LIST FUNCTIONS ******************/
-
         private List<SubList> createSubLists(List<string> subListsToCreate)
         {
             List<SubList> subLists = new List<SubList>();
@@ -210,8 +242,7 @@ namespace MB_Utilities.ui.grandview
                     newSubList.name = subListID;
                     newSubList.startRow = findStartOfList(worksheet, subListID);
                     newSubList.endRow = findEndOfList(worksheet, subListID);
-                    newSubList.patientInfo = loadPatientInfo(worksheet, newSubList);
-                    newSubList.numPatients = newSubList.patientInfo.Count;
+                    newSubList.patientInfo = loadPatientInfo(worksheet, newSubList.startRow, newSubList.endRow);
 
                     subLists.Add(newSubList);
                 }
@@ -219,67 +250,96 @@ namespace MB_Utilities.ui.grandview
             return subLists;
         }
 
+        /**
+         *  @RETURN =   5 rows ahead of where the header string was found (starts from 1 not 0)
+         *              0 if list was not found
+         *  @worksheet =    unbilled missing list containing all of the lists to be searched
+         *  @subListID =    2 letter log code indicating list to be searched
+         *  
+         *  REQUIRES =  header strings to be in column B(2)
+         *              EOF string to be in column P(16)
+         *              first chart # to be 5 rows after header string
+         */
+        // TODO: Is the first chart # always 5 rows after header string ???
         private int findStartOfList(ExcelWorksheet worksheet, string subListID)
         {
-            int start = 1;
-            string cellValue = worksheet.Cells[start, 1].GetValue<string>();
-            while (!cellValue.Contains(subListID))
+            string cellValue = null;
+            string header = header_strings[subListID];
+            string eof_check = null;
+            int start = 0;
+            while ((cellValue != header) && (eof_check != EOF))
             {
-                start++;
-                cellValue = worksheet.Cells[start, 1].GetValue<string>();
-                while (cellValue == null)
-                {
-                    start++;
-                    cellValue = worksheet.Cells[start, 1].GetValue<string>();
-                }
+                ++start;
+                cellValue = worksheet.Cells[start, 2].GetValue<string>();
+                eof_check = worksheet.Cells[start, 16].GetValue<string>();
             }
-            start += 2;
+
+            if (eof_check == EOF)
+            {
+                start = 0;
+            }
+            else
+            {
+                start += 5;
+            }
+
             return start;
         }
 
+        /**
+         *  @RETURN =   row on spreadsheet where footer string was found
+         *              0 if list was not found
+         *  @worksheet =    unbilled missing list containing all of the lists to be searched
+         *  @subListID =    2 letter log code indicating list to be searched
+         *  
+         *  REQUIRES =  footer strings to be in column C(3)
+         *              EOF string to be in column P(16)
+         */
+
         private int findEndOfList(ExcelWorksheet worksheet, string subListID)
         {
-            int end = 1;
-            string cellValue = worksheet.Cells[end, 1].GetValue<string>();
-            while (!cellValue.Contains(subListID) || !cellValue.Contains("Total:"))
+            string cellValue = null;
+            string footer = footer_strings[subListID];
+            string eof_check = null;
+            int end = 0;
+            while ((cellValue != footer) && (eof_check != EOF))
             {
-                end++;
-                cellValue = worksheet.Cells[end, 1].GetValue<string>();
-                while (cellValue == null)
-                {
-                    end++;
-                    cellValue = worksheet.Cells[end, 1].GetValue<string>();
-                }
+                ++end;
+                cellValue = worksheet.Cells[end, 3].GetValue<string>();
+                eof_check = worksheet.Cells[end, 16].GetValue<string>();
             }
+
+            if (eof_check == EOF)
+            {
+                end = 0;
+            }
+
             return end;
         }
 
-        private Dictionary<string, Dictionary<string, string>> loadPatientInfo(ExcelWorksheet worksheet, SubList subList)
+        private Dictionary<string, Dictionary<string, string>> loadPatientInfo(ExcelWorksheet worksheet, int startRow, int endRow)
         {
-            // Only loads patient to sublist if the first cell of the row is underlined.
-            // This how to mark which stragglers we want to send
-
             Dictionary<string, Dictionary<string, string>> patients = new Dictionary<string, Dictionary<string, string>>();
 
-            int startRow = subList.startRow;
-            int endRow = subList.endRow;
             for (int row = startRow; row < endRow; ++row)
             {
-                if (worksheet.Cells[row, 1].Style.Font.UnderLine)
+                string chartNum = worksheet.Cells[row, 1].GetValue<string>();
+                bool isUnderlined = worksheet.Cells[row, 1].Style.Font.UnderLine;
+                if (string.IsNullOrEmpty(chartNum) || string.IsNullOrWhiteSpace(chartNum) || !isUnderlined)
                 {
-                    string chartNum = worksheet.Cells[row, 1].GetValue<string>();
-                    string patientName = worksheet.Cells[row, 2].GetValue<string>();
-                    string date = worksheet.Cells[row, 3].GetValue<DateTime>().ToShortDateString();
-
-                    Dictionary<string, string> patientInfo = new Dictionary<string, string>()
-                    {
-                        { "chartNum", chartNum },
-                        { "rowNum", row.ToString()},
-                        { "patientName", patientName},
-                        { "date", date}
-                    };
-                    patients.Add(chartNum, patientInfo);
+                    continue;
                 }
+                string patientName = worksheet.Cells[row, 4].GetValue<string>();
+                string date = worksheet.Cells[row, 7].GetValue<DateTime>().ToShortDateString();
+
+                Dictionary<string, string> patientInfo = new Dictionary<string, string>()
+                {
+                    { "rowNum", row.ToString()},
+                    { "patientName", patientName},
+                    { "date", date},
+                    { "chartNum", chartNum }
+                };
+                patients.Add(chartNum, patientInfo);
             }
             return patients;
         }
@@ -301,52 +361,6 @@ namespace MB_Utilities.ui.grandview
                                                                    .ThenBy(x => x["chartNum"])
                                                                    .ToList<Dictionary<string, string>>();
             return sortedStragglerList;
-        }
-
-        private List<int> getRowsToDelete(List<Dictionary<string, string>> stragglerList)
-        {
-            List<int> rowsToDelete = new List<int>();
-
-            foreach (var chartInfo in stragglerList)
-            {
-                int rowNumber = Int32.Parse(chartInfo["rowNum"]);
-                rowsToDelete.Add(rowNumber);
-            }
-
-            rowsToDelete.Sort();
-            rowsToDelete.Reverse();
-
-            return rowsToDelete;
-        }
-
-        private void updateMissingList(List<SubList> subLists, List<int> rowsToDelete)
-        {
-            FileInfo path = new FileInfo(missingListPathField.Text);
-            using (ExcelPackage package = new ExcelPackage(path))
-            using (ExcelWorksheet worksheet = package.Workbook.Worksheets[1])
-            {
-                foreach (SubList subList in subLists)
-                {
-                    // get total and subtract the number of patients in each sublist since each sublist only contains the patients we want to delete
-                    int rowWithTotal = subList.endRow;
-                    int total = worksheet.Cells[rowWithTotal, 3].GetValue<int>();
-                    worksheet.Cells[rowWithTotal, 3].Value = total - subList.numPatients;
-                }
-
-                foreach (int row in rowsToDelete)
-                {
-                    worksheet.DeleteRow(row);
-                }
-
-                try
-                {
-                    package.Save();
-                }
-                catch (InvalidOperationException)
-                {
-                    showErrorMessage(MISSING_LIST_CANNOT_SAVE);
-                }
-            }
         }
 
         private bool createLists(List<Dictionary<string, string>> missingList, List<Dictionary<string, string>> voidedList, List<Dictionary<string, string>> stragglerList)
@@ -513,10 +527,6 @@ namespace MB_Utilities.ui.grandview
             {
                 return MISSING_LIST_NOT_FOUND;
             }
-            else if (!correctMissingList())
-            {
-                return MISSING_LIST_INCORRECT;
-            }
             return MISSING_LIST_READY;
         }
 
@@ -544,21 +554,6 @@ namespace MB_Utilities.ui.grandview
                 return FOLDER_NOT_FOUND;
             }
             return FOLDER_READY;
-        }
-
-        private bool correctMissingList()
-        {
-            FileInfo missingListPath = new FileInfo(missingListPathField.Text);
-            using (ExcelPackage packageMissing = new ExcelPackage(missingListPath))
-            using (ExcelWorksheet worksheetMissing = packageMissing.Workbook.Worksheets[1])
-            {
-                string title = worksheetMissing.Cells[1, 1].GetValue<string>();
-                if (title == "GV Unbilled Report")
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
         private void disableUI()
@@ -589,9 +584,6 @@ namespace MB_Utilities.ui.grandview
                 case MISSING_LIST_NOT_FOUND:
                     MessageBox.Show("The GV missing list could not be found.");
                     return;
-                case MISSING_LIST_INCORRECT:
-                    MessageBox.Show("The missing list you chose is not the GV missing list.");
-                    return;
                 case LOG_FILE_PATH_EMPTY:
                     MessageBox.Show("Please select a GV log file.");
                     return;
@@ -603,11 +595,6 @@ namespace MB_Utilities.ui.grandview
                     return;
                 case FOLDER_NOT_FOUND:
                     MessageBox.Show("The folder you selected could not be found.");
-                    return;
-                case MISSING_LIST_CANNOT_SAVE:
-                    MessageBox.Show("It looks like the missing list is open somewhere else.\n\n" +
-                        "Your lists have been created, but the missing list was not updated.\n\n" +
-                        "Either update the missing list manually or close it and run the program again.");
                     return;
                 default:
                     MessageBox.Show("An unspecified error occurred.");
