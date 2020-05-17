@@ -43,7 +43,6 @@ namespace MB_Utilities.ui.chester
         private const int MISSING_LIST_READY = 0;
         private const int MISSING_LIST_PATH_EMPTY = 1;
         private const int MISSING_LIST_NOT_FOUND = 2;
-        private const int MISSING_LIST_CANNOT_SAVE = 4;
 
         // state of log file
         private const int LOG_FILE_READY = 5;
@@ -685,11 +684,6 @@ namespace MB_Utilities.ui.chester
                     return;
                 case CONTAINS_BAD_FILE:
                     MessageBox.Show("There was a problem with one or more file names. Please rename the files and try again.");
-                    return;
-                case MISSING_LIST_CANNOT_SAVE:
-                    MessageBox.Show("It looks like the missing list is open somewhere else.\n\n" +
-                        "Your lists have been created, but the missing list was not updated.\n\n" +
-                        "Either update the missing list manually or close it and run the program again.");
                     return;
                 default:
                     MessageBox.Show("An unspecified error occurred.");
