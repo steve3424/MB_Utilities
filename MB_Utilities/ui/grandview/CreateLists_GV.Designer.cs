@@ -39,7 +39,6 @@
             this.missingTotalLabel = new System.Windows.Forms.Label();
             this.saveFileToBTN = new System.Windows.Forms.Button();
             this.saveFileToPathField = new System.Windows.Forms.RichTextBox();
-            this.deleteRowsCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // createListsTitle
@@ -156,18 +155,6 @@
             this.saveFileToPathField.TabStop = false;
             this.saveFileToPathField.Text = "";
             // 
-            // deleteRowsCheckBox
-            // 
-            this.deleteRowsCheckBox.AutoSize = true;
-            this.deleteRowsCheckBox.Checked = true;
-            this.deleteRowsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.deleteRowsCheckBox.Location = new System.Drawing.Point(151, 459);
-            this.deleteRowsCheckBox.Name = "deleteRowsCheckBox";
-            this.deleteRowsCheckBox.Size = new System.Drawing.Size(102, 21);
-            this.deleteRowsCheckBox.TabIndex = 8;
-            this.deleteRowsCheckBox.Text = "delete rows";
-            this.deleteRowsCheckBox.UseVisualStyleBackColor = true;
-            // 
             // CreateLists_GV
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -177,7 +164,6 @@
             this.Controls.Add(this.stragglersTotalLabel);
             this.Controls.Add(this.voidedTotalLabel);
             this.Controls.Add(this.missingTotalLabel);
-            this.Controls.Add(this.deleteRowsCheckBox);
             this.Controls.Add(this.createListsBTN);
             this.Controls.Add(this.logFilePathField);
             this.Controls.Add(this.chooseLogFileBTN);
@@ -204,6 +190,5 @@
         private System.Windows.Forms.Label missingTotalLabel;
         private System.Windows.Forms.Button saveFileToBTN;
         private System.Windows.Forms.RichTextBox saveFileToPathField;
-        private System.Windows.Forms.CheckBox deleteRowsCheckBox;
     }
 }

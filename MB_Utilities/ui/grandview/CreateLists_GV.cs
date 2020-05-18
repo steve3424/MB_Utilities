@@ -562,7 +562,6 @@ namespace MB_Utilities.ui.grandview
             chooseLogFileBTN.Enabled = false;
             saveFileToBTN.Enabled = false;
             createListsBTN.Enabled = false;
-            deleteRowsCheckBox.Enabled = false;
         }
 
         private void enableUI()
@@ -571,7 +570,6 @@ namespace MB_Utilities.ui.grandview
             chooseLogFileBTN.Enabled = true;
             saveFileToBTN.Enabled = true;
             createListsBTN.Enabled = true;
-            deleteRowsCheckBox.Enabled = true;
         }
 
         private void showErrorMessage(int error)
