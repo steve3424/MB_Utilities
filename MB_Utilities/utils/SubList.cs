@@ -75,26 +75,31 @@ namespace MB_Utilities.utils
             return subLists;
         }
 
+        /*
+         * Header string is in col B (2)
+         * EOF string is in col N (14)
+         * charts begin 2 rows after header string
+         */
         public static int findStartOfList(ExcelWorksheet worksheet, string subListID)
         {
             string cellValue = null;
-            string header = MissingList.header_strings[subListID];
+            string header = header_strings[subListID];
             string eof_check = null;
             int start = 0;
-            while ((cellValue != header) && (eof_check != MissingList.EOF))
+            while ((cellValue != header) && (eof_check != EOF))
             {
                 ++start;
                 cellValue = worksheet.Cells[start, 2].GetValue<string>();
-                eof_check = worksheet.Cells[start, 16].GetValue<string>();
+                eof_check = worksheet.Cells[start, 14].GetValue<string>();
             }
 
-            if (eof_check == MissingList.EOF)
+            if (eof_check == EOF)
             {
                 start = 0;
             }
             else
             {
-                start += 5;
+                start += 2;
             }
 
             return start;
@@ -103,17 +108,22 @@ namespace MB_Utilities.utils
         public static int findEndOfList(ExcelWorksheet worksheet, string subListID)
         {
             string cellValue = null;
-            string footer = MissingList.footer_strings[subListID];
+            string footer = footer_strings[subListID];
             string eof_check = null;
             int end = 0;
-            while ((cellValue != footer) && (eof_check != MissingList.EOF))
+            bool footerFound = false;
+            while (!footerFound && (eof_check != EOF))
             {
                 ++end;
-                cellValue = worksheet.Cells[end, 3].GetValue<string>();
-                eof_check = worksheet.Cells[end, 16].GetValue<string>();
+                cellValue = worksheet.Cells[end, 2].GetValue<string>();
+                eof_check = worksheet.Cells[end, 14].GetValue<string>();
+                if (!string.IsNullOrEmpty(cellValue) && !string.IsNullOrWhiteSpace(cellValue))
+                {
+                    footerFound = cellValue.Contains(footer);
+                }
             }
 
-            if (eof_check == MissingList.EOF)
+            if (eof_check == EOF)
             {
                 end = 0;
             }
@@ -132,7 +142,8 @@ namespace MB_Utilities.utils
                 {
                     continue;
                 }
-                string patientName = worksheet.Cells[row, 4].GetValue<string>();
+                string isUnderlined = worksheet.Cells[row, 1].Style.Font.UnderLine ? "isUnderlined" : "";
+                string patientName = worksheet.Cells[row, 3].GetValue<string>();
                 string date = worksheet.Cells[row, 7].GetValue<DateTime>().ToShortDateString();
 
                 Dictionary<string, string> patientInfo = new Dictionary<string, string>()
@@ -140,7 +151,8 @@ namespace MB_Utilities.utils
                     { "rowNum", row.ToString()},
                     { "patientName", patientName},
                     { "date", date},
-                    { "chartNum", chartNum }
+                    { "chartNum", chartNum },
+                    { "isUnderlined", isUnderlined}
                 };
                 patients.Add(chartNum, patientInfo);
             }

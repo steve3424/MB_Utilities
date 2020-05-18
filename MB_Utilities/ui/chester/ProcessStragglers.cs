@@ -85,7 +85,7 @@ namespace MB_Utilities.controls.chester
                 {
                     List<string> subListIDs = new List<string>() { "ME", "PM", "SC", "SG", "WR", "TD" };
                     List<SubList> subLists = MissingList.createSubLists(subListIDs, missingListPathField.Text);
-
+                    
                     foreach (string file in Directory.EnumerateFiles(folderPathField.Text, "*.pdf"))
                     {
                         string fileName = Path.GetFileNameWithoutExtension(file);
