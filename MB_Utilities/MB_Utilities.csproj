@@ -172,6 +172,7 @@
     <Compile Include="ui\grandview\SearchStragglers_GV.Designer.cs">
       <DependentUpon>SearchStragglers_GV.cs</DependentUpon>
     </Compile>
+    <Compile Include="utils\MissingList.cs" />
     <Compile Include="utils\SubList.cs" />
     <EmbeddedResource Include="ui\chester\CreateLists.resx">
       <DependentUpon>CreateLists.cs</DependentUpon>
