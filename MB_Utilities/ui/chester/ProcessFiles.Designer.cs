@@ -34,6 +34,7 @@
             this.processFilesBTN = new System.Windows.Forms.Button();
             this.Title = new System.Windows.Forms.Label();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.passwordField = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // folderPathField
@@ -95,10 +96,18 @@
             this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
+            // passwordField
+            // 
+            this.passwordField.Location = new System.Drawing.Point(288, 521);
+            this.passwordField.Name = "passwordField";
+            this.passwordField.Size = new System.Drawing.Size(184, 22);
+            this.passwordField.TabIndex = 22;
+            // 
             // ProcessFiles
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.passwordField);
             this.Controls.Add(this.Title);
             this.Controls.Add(this.outputField);
             this.Controls.Add(this.processFilesBTN);
@@ -119,5 +128,6 @@
         private System.Windows.Forms.Button processFilesBTN;
         private System.Windows.Forms.Label Title;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.TextBox passwordField;
     }
 }

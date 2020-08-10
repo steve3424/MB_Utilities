@@ -169,7 +169,10 @@ namespace MB_Utilities.controls.chester
             foreach (FileInfo file in files)
             {
                 string filePath = file.FullName;
-                using (PdfReader reader = new PdfReader(filePath))
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(passwordField.Text);
+                ReaderProperties readerProperties = new ReaderProperties();
+                readerProperties.SetPassword(passwordBytes);
+                using (PdfReader reader = new PdfReader(filePath, readerProperties))
                 using (PdfDocument document = new PdfDocument(reader))
                 {
                     // flags
