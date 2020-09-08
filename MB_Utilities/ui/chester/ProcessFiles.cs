@@ -33,6 +33,7 @@ namespace MB_Utilities.controls.chester
         {
             "Ader",
             "Arnone",
+            "Baierno, Amanda Sue",
             "Benedict, John",
             "Clark",
             "Cohen, Megan",
