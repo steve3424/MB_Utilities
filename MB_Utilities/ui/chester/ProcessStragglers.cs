@@ -83,7 +83,7 @@ namespace MB_Utilities.controls.chester
                 }
                 else
                 {
-                    List<string> subListIDs = new List<string>() { "ME", "PM", "SC", "SG", "WR", "TD" };
+                    List<string> subListIDs = new List<string>() { "ME", "NN", "PM", "SC", "SG", "WR", "TD" };
                     List<SubList> subLists = MissingList.createSubLists(subListIDs, missingListPathField.Text);
                     
                     foreach (string file in Directory.EnumerateFiles(folderPathField.Text, "*.pdf"))
@@ -177,6 +177,9 @@ namespace MB_Utilities.controls.chester
             {
                 case "ME":
                     appendToFileName("ME", fileToRename);
+                    return;
+                case "NN":
+                    appendToFileName("NN", fileToRename);
                     return;
                 case "PM":
                     appendToFileName("PM", fileToRename);

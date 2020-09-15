@@ -16,6 +16,7 @@ namespace MB_Utilities.utils
         // sublist header and footer strings
         public static Dictionary<string, string> header_strings = new Dictionary<string, string>() {
             {"ME", "ME - MISSING EXAM OR PHYS NOTES"},
+            {"NN", "NN - CHRT RECVD FROM FAC CHRT INCOM" },
             {"PM", "PM - PROCEDURE NOTE MISSING"},
             {"SC", "SC - MISSING SIGNATURE BUT CODED"},
             {"SG", "SG - MISSING SIGNATURE"},
@@ -25,6 +26,7 @@ namespace MB_Utilities.utils
 
         public static Dictionary<string, string> footer_strings = new Dictionary<string, string>() {
             {"ME", "ME - MISSING EXAM OR PHYS NOTES Total:"},
+            {"NN", "NN - CHRT RECVD FROM FAC CHRT INCOM Total:" },
             {"PM", "PM - PROCEDURE NOTE MISSING Total:"},
             {"SC", "SC - MISSING SIGNATURE BUT CODED Total:"},
             {"SG", "SG - MISSING SIGNATURE Total:"},

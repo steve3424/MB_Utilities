@@ -105,7 +105,7 @@ namespace MB_Utilities.ui.chester
                 List<Dictionary<string, string>> voidedList = createVoidedList(logFile, fileNames);
 
                 // create straggler list
-                List<string> subListIDs = new List<string>() { "ME", "PM", "SG", "TD", "WR" };
+                List<string> subListIDs = new List<string>() { "ME", "NN", "PM", "SG", "TD", "WR" };
                 List<SubList> subLists = MissingList.createSubLists(subListIDs, missingListPathField.Text);
                 List<Dictionary<string, string>> stragglerList = createStragglerList(subLists);
 
@@ -195,8 +195,8 @@ namespace MB_Utilities.ui.chester
             {
                 if (!fileNames.Contains(patientInfo["chartNum"]))
                 {
-                    // chart is missing AND is RG or already modified to TD
-                    if (patientInfo["logCode"] == "RG" || patientInfo["logCode"] == "TD")
+                    // chart is missing AND is RG or already modified to TD or NN
+                    if (patientInfo["logCode"] == "RG" || patientInfo["logCode"] == "TD" || patientInfo["logCode"] == "NN")
                     {
                         missingList.Add(patientInfo);
                     }
@@ -213,7 +213,7 @@ namespace MB_Utilities.ui.chester
                 if (!fileNames.Contains(patientInfo["chartNum"]))
                 {
                     // log code CAN'T be RG or TD
-                    if (!(patientInfo["logCode"] == "RG") && !(patientInfo["logCode"] == "TD"))
+                    if (!(patientInfo["logCode"] == "RG") && !(patientInfo["logCode"] == "TD") && !(patientInfo["logCode"] == "NN"))
                     {
                         patientInfo["missing"] = "-";
                         voidedList.Add(patientInfo);
