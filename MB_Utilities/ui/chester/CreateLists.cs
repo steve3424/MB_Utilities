@@ -476,16 +476,25 @@ namespace MB_Utilities.ui.chester
             FileInfo[] files = folder.GetFiles("*.pdf");
             foreach (FileInfo file in files)
             {
-                try
+                // skip "- BAD" files
+                // they will be NN later
+                string fileName = Path.GetFileNameWithoutExtension(file.Name);
+                if (fileName.Contains("BAD"))
                 {
-                    string[] splitFileName = file.Name.Split('.');
-                    int chartNum = Int32.Parse(splitFileName[0]);
+                    continue;
                 }
-                catch (Exception ex)
+                else 
                 {
-                    if (ex is FormatException || ex is OverflowException)
+                    try
                     {
-                        return false;
+                        int chartNum = Int32.Parse(fileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex is FormatException || ex is OverflowException)
+                        {
+                            return false;
+                        }
                     }
                 }
             }
