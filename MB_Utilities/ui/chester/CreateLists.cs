@@ -98,6 +98,8 @@ namespace MB_Utilities.ui.chester
             }
             else
             {
+                List<string> NNList = processNNCharts();
+
                 // create missing and voided lists
                 HashSet<string> fileNames = loadFileNames();
                 List<Dictionary<string, string>> logFile = loadLogFile();
@@ -115,9 +117,9 @@ namespace MB_Utilities.ui.chester
                 if (docCreated)
                 {
                     // file to be used in UiPath
-                    if (missingList.Count > 0 || stragglerList.Count > 0)
+                    if (missingList.Count > 0 || stragglerList.Count > 0 || NNList.Count > 0)
                     {
-                        createTextFile(missingList, stragglerList);
+                        createTextFile(missingList, stragglerList, NNList);
                     }
 
                     // output number on each list
@@ -146,6 +148,78 @@ namespace MB_Utilities.ui.chester
 
 
         /************* MISSING AND VOIDED LIST FUNCTIONS ******************/
+
+        private List<string> processNNCharts() 
+        {
+            // get all "- BAD" charts in a list
+            List<string> NNCharts = new List<string>();
+            foreach (string file in Directory.EnumerateFiles(folderPathField.Text, "*.pdf"))
+            {
+                string fileName = Path.GetFileNameWithoutExtension(file);
+                if (fileName.Contains("BAD"))
+                {
+                    NNCharts.Add(fileName);
+                }
+            }
+
+            // move files into don't needs folder
+            foreach (string file in NNCharts)
+            {
+                string source = folderPathField.Text + "\\" + file + ".pdf";
+                string dest = "S:\\MB Charts\\Chester County\\TempNewProcess\\possible signatures - DO NOT DELETE" + file + ".pdf";
+
+                try 
+                {
+                    File.Move(source, dest);
+                }
+                catch (Exception e)
+                {
+                    if (e is FileNotFoundException)
+                    {
+                        MessageBox.Show(source + " file not found. \n\n" +
+                                        "bad charts were not moved from day folder into don't needs. \n\n " +
+                                        "Please manually move them.");
+                    }
+                    else if (e is DirectoryNotFoundException)
+                    {
+                        MessageBox.Show("One of the following paths is invalid: \n\n" +
+                                        source + "\n\n" +
+                                        dest + "\n\n" +
+                                        "bad charts were not moved from day folder into don't needs. \n\n " +
+                                        "Please manually move them.");
+                    }
+                }
+                
+            }
+
+            // sanitize chart names
+            for (int i = 0; i < NNCharts.Count; ++i)
+            {
+                string sanitized_name = NNCharts[i];
+
+                do
+                {
+                    
+
+                    try
+                    {
+                        Int32.Parse(sanitized_name);
+                        break;
+                    }
+                    catch (Exception)
+                    {
+                        sanitized_name = sanitized_name.Remove(sanitized_name.Length - 1);
+                    }
+                    
+                } while (true);
+
+                sanitized_name = sanitized_name.Trim(' ');
+
+                NNCharts[i] = sanitized_name;
+            }
+
+            return NNCharts;
+        }
 
         private HashSet<string> loadFileNames()
         {
@@ -228,7 +302,7 @@ namespace MB_Utilities.ui.chester
             return voidedList;
         }
 
-        private void createTextFile(List<Dictionary<string, string>> missingList, List<Dictionary<string, string>> stragglerList)
+        private void createTextFile(List<Dictionary<string, string>> missingList, List<Dictionary<string, string>> stragglerList, List<string> NNList)
         {
             // creates text file of missing charts to use in UiPath
 
@@ -238,6 +312,11 @@ namespace MB_Utilities.ui.chester
             foreach (var patientInfo in missingList)
             {
                 sw.WriteLine(patientInfo["chartNum"] + "," + "TD - MISSING COMPLETE CHART");
+            }
+
+            foreach (string NNChart in NNList)
+            {
+                sw.WriteLine(NNChart + "," + "NN - CHRT RECVD FROM FAC CHRT INCOM");
             }
 
             foreach (var patientInfo in stragglerList)
