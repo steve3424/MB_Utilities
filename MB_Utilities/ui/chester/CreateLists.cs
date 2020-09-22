@@ -112,14 +112,14 @@ namespace MB_Utilities.ui.chester
                 List<Dictionary<string, string>> stragglerList = createStragglerList(subLists);
 
                 // create word doc of lists
-                bool docCreated = createLists(missingList, voidedList, stragglerList);
+                bool docCreated = createWordDoc(missingList, voidedList, stragglerList);
 
                 if (docCreated)
                 {
                     // file to be used in UiPath
                     if (missingList.Count > 0 || stragglerList.Count > 0 || NNList.Count > 0)
                     {
-                        createTextFile(missingList, stragglerList, NNList);
+                        createUIPathList(missingList, stragglerList, NNList);
                     }
 
                     // output number on each list
@@ -166,7 +166,7 @@ namespace MB_Utilities.ui.chester
             foreach (string file in NNCharts)
             {
                 string source = folderPathField.Text + "\\" + file + ".pdf";
-                string dest = "S:\\MB Charts\\Chester County\\TempNewProcess\\possible signatures - DO NOT DELETE" + file + ".pdf";
+                string dest = "S:\\MB Charts\\Chester County\\TempNewProcess\\possible signatures - DO NOT DELETE\\" + file + ".pdf";
 
                 try 
                 {
@@ -174,20 +174,7 @@ namespace MB_Utilities.ui.chester
                 }
                 catch (Exception e)
                 {
-                    if (e is FileNotFoundException)
-                    {
-                        MessageBox.Show(source + " file not found. \n\n" +
-                                        "bad charts were not moved from day folder into don't needs. \n\n " +
-                                        "Please manually move them.");
-                    }
-                    else if (e is DirectoryNotFoundException)
-                    {
-                        MessageBox.Show("One of the following paths is invalid: \n\n" +
-                                        source + "\n\n" +
-                                        dest + "\n\n" +
-                                        "bad charts were not moved from day folder into don't needs. \n\n " +
-                                        "Please manually move them.");
-                    }
+                    MessageBox.Show(file + "\n\n" + e.ToString());
                 }
                 
             }
@@ -199,8 +186,6 @@ namespace MB_Utilities.ui.chester
 
                 do
                 {
-                    
-
                     try
                     {
                         Int32.Parse(sanitized_name);
@@ -302,11 +287,12 @@ namespace MB_Utilities.ui.chester
             return voidedList;
         }
 
-        private void createTextFile(List<Dictionary<string, string>> missingList, List<Dictionary<string, string>> stragglerList, List<string> NNList)
+        private void createUIPathList(List<Dictionary<string, string>> missingList, List<Dictionary<string, string>> stragglerList, List<string> NNList)
         {
-            // creates text file of missing charts to use in UiPath
+            // remove NN charts from TD list
+            missingList.RemoveAll(x => NNList.Contains(x["chartNum"]));
 
-            string savePath = folderPathField.Text + "\\TD_and_LS_ChartsToModify.txt";
+            string savePath = folderPathField.Text + "\\ChartsToModify.txt";
             StreamWriter sw = new StreamWriter(savePath, false);
 
             foreach (var patientInfo in missingList)
@@ -354,7 +340,7 @@ namespace MB_Utilities.ui.chester
             return sortedStragglerList;
         }
 
-        private bool createLists(List<Dictionary<string, string>> missingList, List<Dictionary<string, string>> voidedList, List<Dictionary<string, string>> stragglerList)
+        private bool createWordDoc(List<Dictionary<string, string>> missingList, List<Dictionary<string, string>> voidedList, List<Dictionary<string, string>> stragglerList)
         {
             try
             {
