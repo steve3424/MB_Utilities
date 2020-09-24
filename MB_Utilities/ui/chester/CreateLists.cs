@@ -123,7 +123,8 @@ namespace MB_Utilities.ui.chester
                     }
 
                     // output number on each list
-                    missingTotalLabel.Text = "Missing Total: " + missingList.Count;
+                    int missingTotal = missingList.Count + NNList.Count;
+                    missingTotalLabel.Text = "Missing Total: " + missingTotal;
                     int voidedChartsNotMissing = 0;
                     foreach (var patientInfo in voidedList)
                     {
