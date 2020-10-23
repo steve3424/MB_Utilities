@@ -61,6 +61,7 @@ namespace MB_Utilities.controls.chester
             "Lehmann",
             "Lynch, Joseph Patrick",
             "Matsco",
+            "McCormick, Christine",
             "McKinley",
             "McMullan",
             "Mihalakis",
