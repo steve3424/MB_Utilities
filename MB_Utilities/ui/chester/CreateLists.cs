@@ -35,6 +35,10 @@ namespace MB_Utilities.ui.chester
         private const int CONTAINS_BAD_FILE = 12;
 
 
+        List<String> log_codes_regular = new List<string>() { "RG" };
+        List<String> log_codes_missing = new List<string>() { "TD", "NN" };
+        List<String> log_codes_voided = new List<string>() { "LW", "PD", "NS" };
+
         public CreateLists()
         {
             InitializeComponent();
@@ -98,11 +102,10 @@ namespace MB_Utilities.ui.chester
             }
             else
             {
-                List<string> NNList = processNNCharts();
-
-                // create missing and voided lists
-                HashSet<string> fileNames = loadFileNames();
                 List<Dictionary<string, string>> logFile = loadLogFile();
+                processNNCharts(ref logFile);
+
+                HashSet<string> fileNames = loadFileNames();
                 List<Dictionary<string, string>> missingList = createMissingList(logFile, fileNames);
                 List<Dictionary<string, string>> voidedList = createVoidedList(logFile, fileNames);
 
@@ -117,13 +120,13 @@ namespace MB_Utilities.ui.chester
                 if (docCreated)
                 {
                     // file to be used in UiPath
-                    if (missingList.Count > 0 || stragglerList.Count > 0 || NNList.Count > 0)
+                    if (missingList.Count > 0 || stragglerList.Count > 0)
                     {
-                        createUIPathList(missingList, stragglerList, NNList);
+                        createUIPathList(missingList, stragglerList);
                     }
 
                     // output number on each list
-                    int missingTotal = missingList.Count + NNList.Count;
+                    int missingTotal = missingList.Count;
                     missingTotalLabel.Text = "Missing Total: " + missingTotal;
                     int voidedChartsNotMissing = 0;
                     foreach (var patientInfo in voidedList)
@@ -150,7 +153,7 @@ namespace MB_Utilities.ui.chester
 
         /************* MISSING AND VOIDED LIST FUNCTIONS ******************/
 
-        private List<string> processNNCharts() 
+        private void processNNCharts(ref List<Dictionary<string, string>> logFile) 
         {
             // get all "- BAD" charts in a list
             List<string> NNCharts = new List<string>();
@@ -200,11 +203,15 @@ namespace MB_Utilities.ui.chester
                 } while (true);
 
                 sanitized_name = sanitized_name.Trim(' ');
-
-                NNCharts[i] = sanitized_name;
+                
+                // find this chart in logfile struct and change log code to NN
+                foreach(var patientInfo in logFile)
+                {
+                    if (patientInfo["chartNum"] == sanitized_name) {
+                        patientInfo["logCode"] = "NN";
+                    }
+                }
             }
-
-            return NNCharts;
         }
 
         private HashSet<string> loadFileNames()
@@ -253,13 +260,11 @@ namespace MB_Utilities.ui.chester
             List<Dictionary<string, string>> missingList = new List<Dictionary<string, string>>();
             foreach (var patientInfo in logFile)
             {
-                if (!fileNames.Contains(patientInfo["chartNum"]))
+                bool chart_is_missing = !fileNames.Contains(patientInfo["chartNum"]);
+                bool chart_has_log_code = log_codes_missing.Contains(patientInfo["logCode"]) || log_codes_regular.Contains(patientInfo["logCode"]);
+                if (chart_is_missing && chart_has_log_code)
                 {
-                    // chart is missing AND is RG or already modified to TD or NN
-                    if (patientInfo["logCode"] == "RG" || patientInfo["logCode"] == "TD" || patientInfo["logCode"] == "NN")
-                    {
-                        missingList.Add(patientInfo);
-                    }
+                    missingList.Add(patientInfo);
                 }
             }
             return missingList;
@@ -270,40 +275,36 @@ namespace MB_Utilities.ui.chester
             List<Dictionary<string, string>> voidedList = new List<Dictionary<string, string>>();
             foreach (var patientInfo in logFile)
             {
-                if (!fileNames.Contains(patientInfo["chartNum"]))
+                if (log_codes_voided.Contains(patientInfo["logCode"]))
                 {
-                    // log code CAN'T be RG or TD
-                    if (!(patientInfo["logCode"] == "RG") && !(patientInfo["logCode"] == "TD") && !(patientInfo["logCode"] == "NN"))
+                    if (fileNames.Contains(patientInfo["chartNum"]))
                     {
+                        voidedList.Add(patientInfo);
+                    }
+                    else {
                         patientInfo["missing"] = "-";
                         voidedList.Add(patientInfo);
                     }
-                }
-                else if (patientInfo["logCode"] != "RG")
-                {
-                    // chart is found, but is not a voided code
-                    voidedList.Add(patientInfo);
                 }
             }
             return voidedList;
         }
 
-        private void createUIPathList(List<Dictionary<string, string>> missingList, List<Dictionary<string, string>> stragglerList, List<string> NNList)
+        private void createUIPathList(List<Dictionary<string, string>> missingList, List<Dictionary<string, string>> stragglerList)
         {
-            // remove NN charts from TD list
-            missingList.RemoveAll(x => NNList.Contains(x["chartNum"]));
-
             string savePath = folderPathField.Text + "\\ChartsToModify.txt";
             StreamWriter sw = new StreamWriter(savePath, false);
 
             foreach (var patientInfo in missingList)
             {
-                sw.WriteLine(patientInfo["chartNum"] + "," + "TD - MISSING COMPLETE CHART");
-            }
-
-            foreach (string NNChart in NNList)
-            {
-                sw.WriteLine(NNChart + "," + "NN - CHRT RECVD FROM FAC CHRT INCOM");
+                if (patientInfo["logCode"] == "NN")
+                {
+                    sw.WriteLine(patientInfo["chartNum"] + "," + "NN - CHRT RECVD FROM FAC CHRT INCOM");
+                }
+                else {
+                    sw.WriteLine(patientInfo["chartNum"] + "," + "TD - MISSING COMPLETE CHART");
+                }
+                
             }
 
             foreach (var patientInfo in stragglerList)
