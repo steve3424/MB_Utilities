@@ -19,6 +19,8 @@ namespace MB_Utilities.controls.chester
     public partial class ProcessFiles : UserControl
     {
         private Stopwatch mStopwatch = new Stopwatch();
+        private const string log_directory = "..\\logs\\";
+        private StreamWriter global_log_file_sw = null;
 
         // state of directory
         private const int FOLDER_READY = 0;
@@ -110,6 +112,11 @@ namespace MB_Utilities.controls.chester
             }
             else
             {
+                // Create log file
+                Directory.CreateDirectory(log_directory);
+                string log_file_path = log_directory + "ct_process_files_log.txt";
+                global_log_file_sw = new StreamWriter(log_file_path, false);
+
                 mStopwatch.Start();
 
                 FileInfo[] files = loadFiles();
@@ -170,6 +177,9 @@ namespace MB_Utilities.controls.chester
 
             foreach (FileInfo file in files)
             {
+                // LOGGING
+                global_log_file_sw.Write(Path.GetFileNameWithoutExtension(file.FullName) + ": ");
+
                 string filePath = file.FullName;
                 byte[] passwordBytes = Encoding.UTF8.GetBytes("MB954Billing!");
                 ReaderProperties readerProperties = new ReaderProperties();
@@ -192,7 +202,12 @@ namespace MB_Utilities.controls.chester
                 numFilesSearched++;
                 int percentComplete = (int)((numFilesSearched / numFiles) * 100);
                 backgroundWorker1.ReportProgress(percentComplete);
+
+                global_log_file_sw.Write(Environment.NewLine);
             }
+
+            global_log_file_sw.Flush();
+            global_log_file_sw.Close();
         }
 
         private int getFolderState()
@@ -269,6 +284,9 @@ namespace MB_Utilities.controls.chester
                 string pageContent = PdfTextExtractor.GetTextFromPage(currentPage);
                 if (pageContent.Contains("Physical Exam") && physicianOnChart(pageContent))
                 {
+                    // LOGGING
+                    global_log_file_sw.Write("on page " + pageNumber.ToString() + " - GOOD");
+
                     return true;
                 }
             }
@@ -296,6 +314,9 @@ namespace MB_Utilities.controls.chester
             {
                 if (pageContent.Contains(physician))
                 {
+                    // LOGGING
+                    global_log_file_sw.Write(physician + " - ");
+
                     return true;
                 }
             }
