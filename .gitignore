@@ -21,6 +21,7 @@ x86/
 bld/
 [Oo]bj/
 [Ll]og/
+MB_Utilities/bin/logs/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
