@@ -221,12 +221,15 @@ namespace MB_Utilities.controls.chester
                     if (pageContent.Contains(physicianString) && pageContent.Contains("Physical Exam"))
                     {
                         // LOGGING
-                        global_log_file_sw.Write(physicianString + " Physical Exam on page" + pageNumber.ToString() + " - GOOD");
+                        global_log_file_sw.Write(doc + " on page " + pageNumber.ToString() + " - GOOD");
 
                         return true;
                     }
                 }
             }
+
+            // LOGGING
+            global_log_file_sw.Write(" - BAD");
 
             return false;
         }
