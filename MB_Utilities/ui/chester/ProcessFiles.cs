@@ -33,51 +33,48 @@ namespace MB_Utilities.controls.chester
         // list of our physicians to search for
         List<string> physicianList = new List<string>
         {
-            "Ader",
-            "Arnone",
+            "Arnone, Caitlin",
             "Baierno, Amanda Sue",
             "Benedict, John",
-            "Clark",
+            "Bolesta, Andrea",
+            "Clark, Davis",
             "Cohen, Megan",
-            "Crofcheck",
-            "Deardorff",
-            "Dhargalkar",
+            "Crofcheck, Lisa",
+            "Deardorff, Jennifer",
+            "Delcollo, Jessica",
+            "Dhargalkar, Aneesha",
             "Doherty, Laura",
-            "Donatelli",
-            "Fan",
-            "Fisk",
+            "Donatelli, Tamara",
             "Gaffney, Kevin",
             "Gagliardi, Shannon Tracey",
             "Gelman, Ricardo",
             "Gibbons, Ryan",
-            "Goudouvas",
-            "Henry, Michael Thomas",
+            "Goudouvas, Sotirios",
             "Henry, Michael T",
-            "Hooper",
+            "Hooper, Eric",
             "Jeffrey, Chad",
             "Jeffery, Chad", // sometimes Chad Jeffery's name is spelled differently
-            "Kane",
-            "Kelton",
-            "Kossey",
-            "Landi",
-            "Lehmann",
+            "Kane, Diana",
+            "Kelton, Franklin",
+            "Kossey, Michele",
+            "Landi, Laura",
+            "Lehmann, Rosamund",
             "Lynch, Joseph Patrick",
-            "Matsco",
+            "Matsco, Kara",
             "McCormick, Christine",
-            "McKinley",
-            "McMullan",
-            "Mihalakis",
-            "Modi",
-            "Packard",
-            "Parvis",
+            "McKinley, John",
+            "Mihalakis, Michael",
+            "Modi, Isha",
+            "O'Donnell, Maureen",
+            "Parvis, Eric",
             "Paterno, Amanda",
             "Purvis, Michele Ann",
-            "Roe",
+            "Roe, Justin",
             "Ryan, Devon",
-            "Sainval",
-            "Trevisan",
+            "Sainval, Othniel",
+            "Trevisan, Elizabeth",
             "Solimini, Elizabeth", // Elizabeth Trevisan name change
-            "Ware",
+            "Ware, Christopher",
         };
 
         public ProcessFiles()
@@ -270,13 +267,6 @@ namespace MB_Utilities.controls.chester
 
         private bool isGoodChart(PdfDocument document)
         {
-            /* Current strategy for categorizing chart as good or bad
-             * is to check if "Physical Exam" and one of our doctors name is
-             * present on the same page.
-             * 
-             * There are some cases that it can't handle but is around 99% accurate
-             */
-
             int numPages = document.GetNumberOfPages();
             for (int pageNumber = 1; pageNumber <= numPages; pageNumber++)
             {
