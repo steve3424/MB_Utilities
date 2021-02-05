@@ -207,6 +207,63 @@ namespace MB_Utilities.controls.chester
             global_log_file_sw.Close();
         }
 
+        private bool isGoodChart(PdfDocument document)
+        {
+            int numPages = document.GetNumberOfPages();
+            for (int pageNumber = 1; pageNumber <= numPages; pageNumber++)
+            {
+                PdfPage currentPage = document.GetPage(pageNumber);
+                string pageContent = PdfTextExtractor.GetTextFromPage(currentPage);
+                string physicianString = null;
+                foreach(string doc in physicianList)
+                {
+                    physicianString = "ED Provider Notes by " + doc;
+                    if (pageContent.Contains(physicianString) && pageContent.Contains("Physical Exam"))
+                    {
+                        // LOGGING
+                        global_log_file_sw.Write(physicianString + " Physical Exam on page" + pageNumber.ToString() + " - GOOD");
+
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool is803(PdfPage firstPage)
+        {
+            /* Currently it works out that if this string is present on the first page, then the chart is misnamed
+             * This very well could change at any point
+             */
+            string firstPageContent = PdfTextExtractor.GetTextFromPage(firstPage);
+            if (firstPageContent.Contains("80300"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void renameFile(FileInfo file, bool goodChart, bool eight_zero_three)
+        {
+            string[] fileName = file.FullName.Split('.');
+            string newFileName = fileName[0];
+
+            if (eight_zero_three)
+            {
+                newFileName += " - 803";
+            }
+
+            if (!goodChart)
+            {
+                newFileName += " - BAD";
+            }
+
+            newFileName += "." + fileName[1];
+            File.Move(file.FullName, newFileName);
+        }
+
         private int getFolderState()
         {
             if (String.IsNullOrEmpty(folderPathField.Text))
@@ -263,73 +320,6 @@ namespace MB_Utilities.controls.chester
         {
             chooseFilesFolderBTN.Enabled = true;
             processFilesBTN.Enabled = true;
-        }
-
-        private bool isGoodChart(PdfDocument document)
-        {
-            int numPages = document.GetNumberOfPages();
-            for (int pageNumber = 1; pageNumber <= numPages; pageNumber++)
-            {
-                PdfPage currentPage = document.GetPage(pageNumber);
-                string pageContent = PdfTextExtractor.GetTextFromPage(currentPage);
-                if (pageContent.Contains("Physical Exam") && physicianOnChart(pageContent))
-                {
-                    // LOGGING
-                    global_log_file_sw.Write("on page " + pageNumber.ToString() + " - GOOD");
-
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private bool is803(PdfPage firstPage)
-        {
-            /* Currently it works out that if this string is present on the first page, then the chart is misnamed
-             * This very well could change at any point
-             */
-            string firstPageContent = PdfTextExtractor.GetTextFromPage(firstPage);
-            if (firstPageContent.Contains("80300"))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool physicianOnChart (string pageContent)
-        {
-            foreach (string physician in physicianList)
-            {
-                if (pageContent.Contains(physician))
-                {
-                    // LOGGING
-                    global_log_file_sw.Write(physician + " - ");
-
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private void renameFile(FileInfo file, bool goodChart, bool eight_zero_three)
-        {
-            string[] fileName = file.FullName.Split('.');
-            string newFileName = fileName[0];
-
-            if (eight_zero_three)
-            {
-                newFileName += " - 803";
-            }
-
-            if (!goodChart)
-            {
-                newFileName += " - BAD";
-            }
-
-            newFileName += "." + fileName[1];
-            File.Move(file.FullName, newFileName);
         }
     }
 }
