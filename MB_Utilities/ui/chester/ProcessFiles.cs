@@ -57,7 +57,7 @@ namespace MB_Utilities.controls.chester
             "Kane, Diana",
             "Kelton, Franklin",
             "Kossey, Michele",
-            "Landi, Laura",
+            "Landi, Lauri",
             "Lehmann, Rosamund",
             "Lynch, Joseph Patrick",
             "Matsco, Kara",
