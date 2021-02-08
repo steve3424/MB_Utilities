@@ -240,8 +240,9 @@ namespace MB_Utilities.controls.chester
              * This very well could change at any point
              */
             string firstPageContent = PdfTextExtractor.GetTextFromPage(firstPage);
-            if (firstPageContent.Contains("80300"))
+            if (firstPageContent.Contains("CSN:  80300"))
             {
+                MessageBox.Show(firstPageContent);
                 return true;
             }
 
