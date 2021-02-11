@@ -189,10 +189,12 @@ namespace MB_Utilities.controls.chester
                     bool eight_zero_three = is803(document.GetFirstPage());
 
                     document.Close();
+#if !DEBUG
                     if (!goodChart || eight_zero_three)
                     {
                         renameFile(file, goodChart, eight_zero_three);
                     }
+#endif
                 }
 
                 // update background worker progress
