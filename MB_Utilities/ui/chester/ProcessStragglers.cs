@@ -173,31 +173,22 @@ namespace MB_Utilities.controls.chester
         private void renameFile(string listContainingChart, string fileToRename)
         {
             // rules on how to rename file when found in a particular list
-            switch (listContainingChart)
+            if (listContainingChart == null)
             {
-                case "ME":
-                    appendToFileName("ME", fileToRename);
-                    return;
-                case "NN":
-                    appendToFileName("NN", fileToRename);
-                    return;
-                case "PM":
-                    appendToFileName("PM", fileToRename);
-                    return;
-                case "SC":
-                    appendToFileName("SC save", fileToRename);
-                    return;
-                case "SG":
-                    appendToFileName("SG", fileToRename);
-                    return;
-                case "WR":
-                    appendToFileName("WR", fileToRename);
-                    return;
-                case "TD":
-                    return;
-                case null:
-                    appendToFileName("not on list", fileToRename);
-                    return;
+                appendToFileName("not on list", fileToRename);
+
+            }
+            else if (listContainingChart == "TD" || listContainingChart == "NN")
+            {
+                return;
+            }
+            else if (listContainingChart == "SC")
+            {
+                appendToFileName("SC save", fileToRename);
+            }
+            else
+            {
+                appendToFileName(listContainingChart, fileToRename);
             }
         }
 
