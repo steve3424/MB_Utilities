@@ -14,6 +14,8 @@ using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 
+using MB_Utilities.utils;
+
 namespace MB_Utilities.controls.chester
 {
     public partial class ProcessFiles : UserControl
@@ -22,16 +24,8 @@ namespace MB_Utilities.controls.chester
         private const string log_directory = "..\\logs\\";
         private StreamWriter global_log_file_sw = null;
 
-        // state of directory
-        private const int FOLDER_READY = 0;
-        private const int PATH_IS_EMPTY = 1;
-        private const int PATH_NOT_FOUND = 2;
-        private const int FOLDER_IS_EMPTY = 3;
-
-        private const int BACKGROUND_WORKER_ERROR = 4;
-
         // list of our physicians to search for
-        List<string> physicianList = new List<string>
+        private List<string> physicianList = new List<string>
         {
             "Arnone, Caitlin",
             "Baierno, Amanda Sue",
@@ -101,10 +95,10 @@ namespace MB_Utilities.controls.chester
             disableUI();
 
             // check state of folder before running
-            int folderState = getFolderState();
-            if (folderState != FOLDER_READY)
+            State folderState = StateChecks.getFolderState(folderPathField.Text);
+            if (folderState != State.FOLDER_READY)
             {
-                showErrorMessage(folderState);
+                StateChecks.showErrorMessage(folderState, folderPathField.Text);
                 enableUI();
             }
             else
@@ -146,7 +140,7 @@ namespace MB_Utilities.controls.chester
 
             if (e.Error != null)
             {
-                showErrorMessage(BACKGROUND_WORKER_ERROR);
+                StateChecks.showErrorMessage(State.BACKGROUND_WORKER_ERROR, null);
                 outputField.Text = "";
             }
             else
@@ -268,45 +262,6 @@ namespace MB_Utilities.controls.chester
 
             newFileName += "." + fileName[1];
             File.Move(file.FullName, newFileName);
-        }
-
-        private int getFolderState()
-        {
-            if (String.IsNullOrEmpty(folderPathField.Text))
-            {
-                return PATH_IS_EMPTY;
-            }
-            else if (!Directory.Exists(folderPathField.Text))
-            {
-                return PATH_NOT_FOUND;
-            }
-            else if (!Directory.EnumerateFiles(folderPathField.Text, "*.pdf").Any())
-            {
-                return FOLDER_IS_EMPTY;
-            }
-            return FOLDER_READY;
-        }
-
-        private void showErrorMessage(int error)
-        {
-            switch (error)
-            {
-                case PATH_IS_EMPTY:
-                    MessageBox.Show("Please select a folder.");
-                    return;
-                case PATH_NOT_FOUND:
-                    MessageBox.Show("The folder you selected could not be found.");
-                    return;
-                case FOLDER_IS_EMPTY:
-                    MessageBox.Show("There are no pdf files in the selected folder");
-                    return;
-                case BACKGROUND_WORKER_ERROR:
-                    MessageBox.Show("There was an error when processing the files.");
-                    return;
-                default:
-                    MessageBox.Show("An unspecified error occurred.");
-                    return;
-            }
         }
 
         private FileInfo[] loadFiles()
