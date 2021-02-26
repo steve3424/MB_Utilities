@@ -22,18 +22,6 @@ namespace MB_Utilities.controls.chester
     {
         private const int RENAME_WARNING = 0;
 
-        // state of missing list
-        private const int MISSING_LIST_READY = 0;
-        private const int MISSING_LIST_PATH_EMPTY = 1;
-        private const int MISSING_LIST_NOT_FOUND = 2;
-
-        // state of folder
-        private const int FOLDER_READY = 5;
-        private const int FOLDER_PATH_EMPTY = 6;
-        private const int FOLDER_NOT_FOUND = 7;
-        private const int FOLDER_IS_EMPTY = 8;
-        private const int CONTAINS_BAD_FILE = 9;
-
         public ProcessStragglers()
         {
             InitializeComponent();
@@ -71,15 +59,23 @@ namespace MB_Utilities.controls.chester
             if (showWarning(RENAME_WARNING) == DialogResult.Yes)
             {
                 // check state of missing list and files in folder
-                int missingListState = getMissingListState();
-                int folderState = getFolderState();
-                if (missingListState != MISSING_LIST_READY)
+                List<State> missingListChecks = new List<State>() { State.FILE_PATH_EMPTY,
+                                                                    State.FILE_PATH_NOT_FOUND};
+                List<State> folderChecks = new List<State>() { State.FOLDER_PATH_EMPTY,
+                                                               State.FOLDER_PATH_NOT_FOUND,
+                                                               State.FOLDER_HAS_NO_PDFS,
+                                                               State.BAD_FILE_NAME};
+                State missingListState = StateChecks.performStateChecks(missingListPathField.Text, 
+                                                                        missingListChecks);
+                State folderState = StateChecks.performStateChecks(folderPathField.Text,
+                                                                   folderChecks);
+                if (missingListState != State.READY)
                 {
-                    showErrorMessage(missingListState);
+                    StateChecks.showErrorMessage(missingListState, missingListPathField.Text);
                 }
-                else if (folderState != FOLDER_READY)
+                else if (folderState != State.READY)
                 {
-                    showErrorMessage(folderState);
+                    StateChecks.showErrorMessage(folderState, folderPathField.Text);
                 }
                 else
                 {
@@ -114,61 +110,6 @@ namespace MB_Utilities.controls.chester
 
         /************* UTILITY FUNCTIONS ******************/
 
-        private int getMissingListState()
-        {
-            if (string.IsNullOrEmpty(missingListPathField.Text))
-            {
-                return MISSING_LIST_PATH_EMPTY;
-            }
-            else if (!File.Exists(missingListPathField.Text))
-            {
-                return MISSING_LIST_NOT_FOUND;
-            }
-            return MISSING_LIST_READY;
-        }
-
-        private int getFolderState()
-        {
-            if (string.IsNullOrEmpty(folderPathField.Text))
-            {
-                return FOLDER_PATH_EMPTY;
-            }
-            else if (!Directory.Exists(folderPathField.Text))
-            {
-                return FOLDER_NOT_FOUND;
-            }
-            else if (!Directory.EnumerateFiles(folderPathField.Text, "*.pdf").Any())
-            {
-                return FOLDER_IS_EMPTY;
-            }
-            else if (!fileNamesAreGood())
-            {
-                return CONTAINS_BAD_FILE;
-            }
-            return FOLDER_READY;
-        }
-
-        private bool fileNamesAreGood()
-        {
-            DirectoryInfo folder = new DirectoryInfo(folderPathField.Text);
-            FileInfo[] files = folder.GetFiles("*.pdf");
-            foreach (FileInfo file in files)
-            {
-                try
-                {
-                    string[] splitFileName = file.Name.Split('.');
-                    int chartNum = Int32.Parse(splitFileName[0]);
-                }
-                catch (Exception ex)
-                {
-                    if (ex is FormatException || ex is OverflowException)
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
 
         private void renameFile(string listContainingChart, string fileToRename)
         {
@@ -231,34 +172,6 @@ namespace MB_Utilities.controls.chester
                     return MessageBox.Show(renameMessage, title, buttons);
                 default:
                     return DialogResult.No;
-            }
-        }
-
-        private void showErrorMessage(int error)
-        {
-            switch (error)
-            {
-                case MISSING_LIST_PATH_EMPTY:
-                    MessageBox.Show("Please select a file.");
-                    return;
-                case MISSING_LIST_NOT_FOUND:
-                    MessageBox.Show("The file you selected could not be found.");
-                    return;
-                case FOLDER_PATH_EMPTY:
-                    MessageBox.Show("Please select a folder.");
-                    return;
-                case FOLDER_NOT_FOUND:
-                    MessageBox.Show("The folder you selected could not be found.");
-                    return;
-                case FOLDER_IS_EMPTY:
-                    MessageBox.Show("There are no pdf files in the selected folder");
-                    return;
-                case CONTAINS_BAD_FILE:
-                    MessageBox.Show("There was a problem with one or more file names. Please rename the files and try again.");
-                    return;
-                default:
-                    MessageBox.Show("An unspecified error occurred.");
-                    return;
             }
         }
     }
