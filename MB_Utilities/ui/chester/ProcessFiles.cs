@@ -95,8 +95,11 @@ namespace MB_Utilities.controls.chester
             disableUI();
 
             // check state of folder before running
-            State folderState = StateChecks.getFolderState(folderPathField.Text);
-            if (folderState != State.FOLDER_READY)
+            List<State> folderChecksToDo = new List<State>() {State.FOLDER_PATH_EMPTY,
+                                                              State.FOLDER_PATH_NOT_FOUND,
+                                                              State.FOLDER_HAS_NO_PDFS};
+            State folderState = StateChecks.performStateChecks(folderPathField.Text, folderChecksToDo);
+            if (folderState != State.READY)
             {
                 StateChecks.showErrorMessage(folderState, folderPathField.Text);
                 enableUI();

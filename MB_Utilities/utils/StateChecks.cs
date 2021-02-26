@@ -12,38 +12,79 @@ namespace MB_Utilities.utils
     {
         FOLDER_PATH_EMPTY,
         FOLDER_PATH_NOT_FOUND,
-        FOLDER_EMPTY,
-        FOLDER_READY,
+        FOLDER_HAS_NO_PDFS,
 
         FILE_PATH_EMPTY,
         FILE_PATH_NOT_FOUND,
         FILE_INCORRECT,
-        FILE_READY,
 
         BAD_FILE_NAME,
-        BACKGROUND_WORKER_ERROR
+        BACKGROUND_WORKER_ERROR,
+
+        READY
     }
 
     public class StateChecks
     {
-        public static State getFolderState(string folder_path)
+        public static State performStateChecks(string path, List<State> checksToDo)
         {
-            if (String.IsNullOrEmpty(folder_path))
+            foreach (State stateCheck in checksToDo)
             {
-                return State.FOLDER_PATH_EMPTY;
+                switch(stateCheck)
+                {
+                    case State.FOLDER_PATH_EMPTY:
+                        {
+                            if (String.IsNullOrEmpty(path))
+                            {
+                                return State.FOLDER_PATH_EMPTY;
+                            }
+                        }
+                        break;
+                    case State.FOLDER_PATH_NOT_FOUND:
+                        {
+                            if (!Directory.Exists(path))
+                            {
+                                return State.FOLDER_PATH_NOT_FOUND;
+                            }
+                        }
+                        break;
+                    case State.FOLDER_HAS_NO_PDFS:
+                        {
+                            if (!Directory.EnumerateFiles(path, "*.pdf").Any())
+                            {
+                                return State.FOLDER_HAS_NO_PDFS;
+                            }
+                        }
+                        break;
+                    case State.BAD_FILE_NAME:
+                        {
+
+                        }
+                        break;
+                    case State.FILE_PATH_EMPTY:
+                        {
+
+                        }
+                        break;
+                    case State.FILE_PATH_NOT_FOUND:
+                        {
+
+                        }
+                        break;
+                    case State.FILE_INCORRECT:
+                        {
+
+                        }
+                        break;
+                    case State.BACKGROUND_WORKER_ERROR:
+                        {
+
+                        }
+                        break;
+                }
             }
-            else if (!Directory.Exists(folder_path))
-            {
-                return State.FOLDER_PATH_NOT_FOUND;
-            }
-            else if (!Directory.EnumerateFiles(folder_path, "*.pdf").Any())
-            {
-                return State.FOLDER_EMPTY;
-            }
-            else
-            {
-                return State.FOLDER_READY;
-            }
+
+            return State.READY;
         }
 
         public static void showErrorMessage(State state, string path)
@@ -58,7 +99,7 @@ namespace MB_Utilities.utils
                     {
                         MessageBox.Show("Could not find folder: " + path);
                     } break;
-                case State.FOLDER_EMPTY:
+                case State.FOLDER_HAS_NO_PDFS:
                     {
                         MessageBox.Show("There were no pdf's in folder: " + path);
                     } break;
