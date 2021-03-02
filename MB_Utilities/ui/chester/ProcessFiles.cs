@@ -98,7 +98,7 @@ namespace MB_Utilities.controls.chester
             List<State> folderChecksToDo = new List<State>() {State.FOLDER_PATH_EMPTY,
                                                               State.FOLDER_PATH_NOT_FOUND,
                                                               State.FOLDER_HAS_NO_PDFS};
-            State folderState = StateChecks.performStateChecks(folderPathField.Text, folderChecksToDo);
+            State folderState = StateChecks.performStateChecks(folderChecksToDo, folderPathField.Text);
             if (folderState != State.READY)
             {
                 StateChecks.showErrorMessage(folderState, folderPathField.Text);

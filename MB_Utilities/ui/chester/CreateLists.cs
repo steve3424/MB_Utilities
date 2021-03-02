@@ -17,22 +17,6 @@ namespace MB_Utilities.ui.chester
 {
     public partial class CreateLists : UserControl
     {
-        // state of missing list
-        private const int MISSING_LIST_READY = 0;
-        private const int MISSING_LIST_PATH_EMPTY = 1;
-        private const int MISSING_LIST_NOT_FOUND = 2;
-
-        // state of log file
-        private const int LOG_FILE_READY = 5;
-        private const int LOG_FILE_PATH_EMPTY = 6;
-        private const int LOG_FILE_NOT_FOUND = 7;
-
-        // state of folder
-        private const int FOLDER_READY = 8;
-        private const int FOLDER_PATH_EMPTY = 9;
-        private const int FOLDER_NOT_FOUND = 10;
-        private const int FOLDER_IS_EMPTY = 11;
-        private const int CONTAINS_BAD_FILE = 12;
 
 
         List<String> log_codes_regular = new List<string>() { "RG" };
@@ -85,20 +69,31 @@ namespace MB_Utilities.ui.chester
         {
             disableUI();
 
-            int missingListState = getMissingListState();
-            int logFileState = getLogFileState();
-            int folderState = getFolderState();
-            if (missingListState != MISSING_LIST_READY)
+            List<State> missingListChecks = new List<State>() { State.FILE_PATH_EMPTY,
+                                                                State.FILE_PATH_NOT_FOUND};
+            List<State> logFileChecks = new List<State>() { State.FILE_PATH_EMPTY,
+                                                                State.FILE_PATH_NOT_FOUND};
+            List<State> folderChecks = new List<State>() { State.FOLDER_PATH_EMPTY,
+                                                               State.FOLDER_PATH_NOT_FOUND,
+                                                               State.FOLDER_HAS_NO_PDFS,
+                                                               State.BAD_FILE_NAME_SKIP_BAD};
+            State missingListState = StateChecks.performStateChecks(missingListChecks,
+                                                                    missingListPathField.Text);
+            State logFileState = StateChecks.performStateChecks(logFileChecks,
+                                                                logFilePathField.Text);
+            State folderState = StateChecks.performStateChecks(folderChecks,
+                                                               folderPathField.Text);
+            if (missingListState != State.READY)
             {
-                showErrorMessage(missingListState);
+                StateChecks.showErrorMessage(missingListState, missingListPathField.Text);
             }
-            else if (logFileState != LOG_FILE_READY)
+            else if (logFileState != State.READY)
             {
-                showErrorMessage(logFileState);
+                StateChecks.showErrorMessage(logFileState, logFilePathField.Text);
             }
-            else if (folderState != FOLDER_READY)
+            else if (folderState != State.READY)
             {
-                showErrorMessage(folderState);
+                StateChecks.showErrorMessage(folderState, folderPathField.Text);
             }
             else
             {
@@ -490,84 +485,6 @@ namespace MB_Utilities.ui.chester
 
         /************* UTILITY FUNCTIONS ******************/
 
-        private int getMissingListState()
-        {
-            if (string.IsNullOrEmpty(missingListPathField.Text))
-            {
-                return MISSING_LIST_PATH_EMPTY;
-            }
-            else if (!File.Exists(missingListPathField.Text))
-            {
-                return MISSING_LIST_NOT_FOUND;
-            }
-            return MISSING_LIST_READY;
-        }
-
-        private int getLogFileState()
-        {
-            if (string.IsNullOrEmpty(logFilePathField.Text))
-            {
-                return LOG_FILE_PATH_EMPTY;
-            }
-            else if (!File.Exists(logFilePathField.Text))
-            {
-                return LOG_FILE_NOT_FOUND;
-            }
-            return LOG_FILE_READY;
-        }
-
-        private int getFolderState()
-        {
-            if (string.IsNullOrEmpty(folderPathField.Text))
-            {
-                return FOLDER_PATH_EMPTY;
-            }
-            else if (!Directory.Exists(folderPathField.Text))
-            {
-                return FOLDER_NOT_FOUND;
-            }
-            else if (!Directory.EnumerateFiles(folderPathField.Text, "*.pdf").Any())
-            {
-                return FOLDER_IS_EMPTY;
-            }
-            else if (!fileNamesAreGood())
-            {
-                return CONTAINS_BAD_FILE;
-            }
-            return FOLDER_READY;
-        }
-
-        private bool fileNamesAreGood()
-        {
-            DirectoryInfo folder = new DirectoryInfo(folderPathField.Text);
-            FileInfo[] files = folder.GetFiles("*.pdf");
-            foreach (FileInfo file in files)
-            {
-                // skip "- BAD" files
-                // they will be NN later
-                string fileName = Path.GetFileNameWithoutExtension(file.Name);
-                if (fileName.Contains("BAD"))
-                {
-                    continue;
-                }
-                else 
-                {
-                    try
-                    {
-                        int chartNum = Int32.Parse(fileName);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (ex is FormatException || ex is OverflowException)
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-            return true;
-        }
-
         private void disableUI()
         {
             chooseMissingListBTN.Enabled = false;
@@ -582,40 +499,6 @@ namespace MB_Utilities.ui.chester
             chooseLogFileBTN.Enabled = true;
             chooseFileFolderBTN.Enabled = true;
             createListsBTN.Enabled = true;
-        }
-
-        private void showErrorMessage(int error)
-        {
-            switch (error)
-            {
-                case MISSING_LIST_PATH_EMPTY:
-                    MessageBox.Show("Please select the CT missing list");
-                    return;
-                case MISSING_LIST_NOT_FOUND:
-                    MessageBox.Show("The CT missing list could not be found.");
-                    return;
-                case LOG_FILE_PATH_EMPTY:
-                    MessageBox.Show("Please select a file.");
-                    return;
-                case LOG_FILE_NOT_FOUND:
-                    MessageBox.Show("The file you selected could not be found.");
-                    return;
-                case FOLDER_PATH_EMPTY:
-                    MessageBox.Show("Please select a folder.");
-                    return;
-                case FOLDER_NOT_FOUND:
-                    MessageBox.Show("The folder you selected could not be found.");
-                    return;
-                case FOLDER_IS_EMPTY:
-                    MessageBox.Show("There are no pdf files in the selected folder");
-                    return;
-                case CONTAINS_BAD_FILE:
-                    MessageBox.Show("There was a problem with one or more file names. Please rename the files and try again.");
-                    return;
-                default:
-                    MessageBox.Show("An unspecified error occurred.");
-                    return;
-            }
         }
     }
 }

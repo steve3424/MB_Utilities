@@ -19,6 +19,7 @@ namespace MB_Utilities.utils
         FILE_INCORRECT,
 
         BAD_FILE_NAME,
+        BAD_FILE_NAME_SKIP_BAD,
         BACKGROUND_WORKER_ERROR,
 
         READY
@@ -26,7 +27,7 @@ namespace MB_Utilities.utils
 
     public class StateChecks
     {
-        public static State performStateChecks(string path, List<State> checksToDo)
+        public static State performStateChecks(List<State> checksToDo, string path)
         {
             foreach (State stateCheck in checksToDo)
             {
@@ -61,6 +62,14 @@ namespace MB_Utilities.utils
                             if (!fileNamesAreGood(path))
                             {
                                 return State.BAD_FILE_NAME;
+                            }
+                        }
+                        break;
+                    case State.BAD_FILE_NAME_SKIP_BAD:
+                        {
+                            if (!fileNamesAreGoodSkipBad(path))
+                            {
+                                return State.BAD_FILE_NAME_SKIP_BAD;
                             }
                         }
                         break;
@@ -103,16 +112,24 @@ namespace MB_Utilities.utils
                 case State.FOLDER_PATH_EMPTY:
                     {
                         MessageBox.Show("Please select a folder");
-                    } break;
+                    } 
+                    break;
                 case State.FOLDER_PATH_NOT_FOUND:
                     {
                         MessageBox.Show("Could not find folder: " + path);
-                    } break;
+                    } 
+                    break;
                 case State.FOLDER_HAS_NO_PDFS:
                     {
                         MessageBox.Show("There were no pdf's in folder: " + path);
-                    } break;
+                    } 
+                    break;
                 case State.BAD_FILE_NAME:
+                    {
+                        MessageBox.Show("One or more files have a bad name in: " + path);
+                    }
+                    break;
+                case State.BAD_FILE_NAME_SKIP_BAD:
                     {
                         MessageBox.Show("One or more files have a bad name in: " + path);
                     }
@@ -130,11 +147,13 @@ namespace MB_Utilities.utils
                 case State.BACKGROUND_WORKER_ERROR:
                     {
                         MessageBox.Show("There was an error when processing the files.");
-                    } break;
+                    }
+                    break;
                 default:
                     {
                         MessageBox.Show("An unspecified error occurred");
-                    } break;
+                    } 
+                    break;
             }
         }
 
@@ -154,6 +173,37 @@ namespace MB_Utilities.utils
                     if (ex is FormatException || ex is OverflowException)
                     {
                         return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        private static bool fileNamesAreGoodSkipBad(string path)
+        {
+            DirectoryInfo folder = new DirectoryInfo(path);
+            FileInfo[] files = folder.GetFiles("*.pdf");
+            foreach (FileInfo file in files)
+            {
+                // skip "- BAD" files
+                // they will be NN later
+                string fileName = Path.GetFileNameWithoutExtension(file.Name);
+                if (fileName.Contains("BAD"))
+                {
+                    continue;
+                }
+                else
+                {
+                    try
+                    {
+                        int chartNum = Int32.Parse(fileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex is FormatException || ex is OverflowException)
+                        {
+                            return false;
+                        }
                     }
                 }
             }

@@ -65,10 +65,10 @@ namespace MB_Utilities.controls.chester
                                                                State.FOLDER_PATH_NOT_FOUND,
                                                                State.FOLDER_HAS_NO_PDFS,
                                                                State.BAD_FILE_NAME};
-                State missingListState = StateChecks.performStateChecks(missingListPathField.Text, 
-                                                                        missingListChecks);
-                State folderState = StateChecks.performStateChecks(folderPathField.Text,
-                                                                   folderChecks);
+                State missingListState = StateChecks.performStateChecks(missingListChecks, 
+                                                                        missingListPathField.Text);
+                State folderState = StateChecks.performStateChecks(folderChecks,
+                                                                   folderPathField.Text);
                 if (missingListState != State.READY)
                 {
                     StateChecks.showErrorMessage(missingListState, missingListPathField.Text);
