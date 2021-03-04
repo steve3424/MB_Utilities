@@ -22,6 +22,8 @@ namespace MB_Utilities.utils
         BAD_FILE_NAME_SKIP_BAD,
         BACKGROUND_WORKER_ERROR,
 
+        CHECKBOX_NOT_CHECKED,
+
         READY
     }
 
@@ -150,6 +152,11 @@ namespace MB_Utilities.utils
                 case State.FILE_INCORRECT_CT:
                     {
                         MessageBox.Show("This doesn't look like the CT coding log file: " + path);
+                    }
+                    break;
+                case State.CHECKBOX_NOT_CHECKED:
+                    {
+                        MessageBox.Show("Please select a checkbox option!!!");
                     }
                     break;
                 case State.BACKGROUND_WORKER_ERROR:
