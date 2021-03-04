@@ -16,7 +16,7 @@ namespace MB_Utilities.utils
 
         FILE_PATH_EMPTY,
         FILE_PATH_NOT_FOUND,
-        FILE_INCORRECT,
+        FILE_INCORRECT_CT,
 
         BAD_FILE_NAME,
         BAD_FILE_NAME_SKIP_BAD,
@@ -89,9 +89,12 @@ namespace MB_Utilities.utils
                             }
                         }
                         break;
-                    case State.FILE_INCORRECT:
+                    case State.FILE_INCORRECT_CT:
                         {
-
+                            if (!StateChecks.correctFile(path))
+                            {
+                                return State.FILE_INCORRECT_CT;
+                            }
                         }
                         break;
                     case State.BACKGROUND_WORKER_ERROR:
@@ -142,6 +145,11 @@ namespace MB_Utilities.utils
                 case State.FILE_PATH_NOT_FOUND:
                     {
                         MessageBox.Show("Could not find file: " + path);
+                    }
+                    break;
+                case State.FILE_INCORRECT_CT:
+                    {
+                        MessageBox.Show("This doesn't look like the CT coding log file: " + path);
                     }
                     break;
                 case State.BACKGROUND_WORKER_ERROR:
@@ -208,6 +216,26 @@ namespace MB_Utilities.utils
                 }
             }
             return true;
+        }
+
+        private static bool correctFile(string path)
+        {
+            string fileName = Path.GetFileNameWithoutExtension(path);
+            // get first 5 letters of file name
+            string hospitalCode = "";
+            if (fileName.Length >= 5)
+            {
+                for (int i = 0; i < 5; ++i)
+                {
+                    hospitalCode += fileName[i];
+                }
+            }
+
+            if (hospitalCode == "1938L")
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

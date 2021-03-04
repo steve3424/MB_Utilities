@@ -9,20 +9,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using MB_Utilities.utils;
+
 namespace MB_Utilities.controls.chester
 {
     public partial class LoadDays : UserControl
     {
-        // state of file
-        private const int FILE_READY = 0;
-        private const int FILE_PATH_EMPTY = 1;
-        private const int FILE_NOT_FOUND = 2;
-        private const int FILE_INCORRECT = 3;
-
-        // state of save folder
-        private const int FOLDER_READY = 4;
-        private const int FOLDER_PATH_EMPTY = 5;
-        private const int FOLDER_NOT_FOUND = 6;
 
         public LoadDays()
         {
@@ -56,15 +48,21 @@ namespace MB_Utilities.controls.chester
         {
             disableUI();
 
-            int fileState = getFileState();
-            int folderState = getFolderState();
-            if (fileState != FILE_READY)
+            List<State> fileChecks = new List<State>() { State.FILE_PATH_EMPTY,
+                                                         State.FILE_PATH_NOT_FOUND,
+                                                         State.FILE_INCORRECT_CT};
+            List<State> folderChecks = new List<State>() { State.FOLDER_PATH_EMPTY,
+                                                         State.FOLDER_PATH_NOT_FOUND};
+
+            State fileState = StateChecks.performStateChecks(fileChecks, codingLogFilePathField.Text);
+            State folderState = StateChecks.performStateChecks(folderChecks, saveFileToPathField.Text);
+            if (fileState != State.READY)
             {
-                showErrorMessage(fileState);
+                StateChecks.showErrorMessage(fileState, codingLogFilePathField.Text);
             }
-            else if (folderState != FOLDER_READY)
+            else if (folderState != State.READY)
             {
-                showErrorMessage(folderState);
+                StateChecks.showErrorMessage(folderState, saveFileToPathField.Text);
             }
             else
             {
@@ -191,56 +189,6 @@ namespace MB_Utilities.controls.chester
             return firstName;
         }
 
-        private int getFileState()
-        {
-            if (string.IsNullOrEmpty(codingLogFilePathField.Text))
-            {
-                return FILE_PATH_EMPTY;
-            }
-            else if (!File.Exists(codingLogFilePathField.Text))
-            {
-                return FILE_NOT_FOUND;
-            }
-            else if (!correctFile())
-            {
-                return FILE_INCORRECT;
-            }
-            return FILE_READY;
-        }
-
-        private bool correctFile()
-        {
-            string fileName = Path.GetFileNameWithoutExtension(codingLogFilePathField.Text);
-            // get first 5 letters of file name
-            string hospitalCode = "";
-            if (fileName.Length >= 5)
-            {
-                for (int i = 0; i < 5; ++i)
-                {
-                    hospitalCode += fileName[i];
-                }
-            }
-            
-            if (hospitalCode == "1938L")
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private int getFolderState()
-        {
-            if (string.IsNullOrEmpty(saveFileToPathField.Text))
-            {
-                return FOLDER_PATH_EMPTY;
-            }
-            else if (!Directory.Exists(saveFileToPathField.Text))
-            {
-                return FOLDER_NOT_FOUND;
-            }
-            return FOLDER_READY;
-        }
-
         private void disableUI()
         {
             chooseCodingLogFileBTN.Enabled = false;
@@ -253,31 +201,6 @@ namespace MB_Utilities.controls.chester
             chooseCodingLogFileBTN.Enabled = true;
             saveFileToBTN.Enabled = true;
             createListsBTN.Enabled = true;
-        }
-
-        private void showErrorMessage(int error)
-        {
-            switch (error)
-            {
-                case FILE_PATH_EMPTY:
-                    MessageBox.Show("Please select a file.");
-                    return;
-                case FILE_NOT_FOUND:
-                    MessageBox.Show("The file you selected could not be found.");
-                    return;
-                case FILE_INCORRECT:
-                    MessageBox.Show("This looks like the wrong file. Please select the LOG file sent from coding.");
-                    return;
-                case FOLDER_PATH_EMPTY:
-                    MessageBox.Show("Please select a folder.");
-                    return;
-                case FOLDER_NOT_FOUND:
-                    MessageBox.Show("The folder you selected could not be found.");
-                    return;
-                default:
-                    MessageBox.Show("An unspecified error occurred.");
-                    return;
-            }
         }
     }
 }
