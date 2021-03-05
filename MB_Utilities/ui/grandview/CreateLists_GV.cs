@@ -17,20 +17,6 @@ namespace MB_Utilities.ui.grandview
 {
     public partial class CreateLists_GV : UserControl
     {
-        // state of missing list
-        private const int MISSING_LIST_READY = 0;
-        private const int MISSING_LIST_PATH_EMPTY = 1;
-        private const int MISSING_LIST_NOT_FOUND = 2;
-
-        // state of log file
-        private const int LOG_FILE_READY = 5;
-        private const int LOG_FILE_PATH_EMPTY = 6;
-        private const int LOG_FILE_NOT_FOUND = 7;
-
-        // state of save folder
-        private const int FOLDER_READY = 8;
-        private const int FOLDER_PATH_EMPTY = 9;
-        private const int FOLDER_NOT_FOUND = 10;
 
 
         public CreateLists_GV()
@@ -78,20 +64,29 @@ namespace MB_Utilities.ui.grandview
         {
             disableUI();
 
-            int missingListState = getMissingListState();
-            int logFileState = getLogFileState();
-            int folderState = getFolderState();
-            if (missingListState != MISSING_LIST_READY)
+            List<State> missingListChecks = new List<State>() { State.FILE_PATH_EMPTY,
+                                                                State.FILE_PATH_NOT_FOUND};
+            List<State> logFileChecks = new List<State>() { State.FILE_PATH_EMPTY,
+                                                            State.FILE_PATH_NOT_FOUND};
+            List<State> folderChecks = new List<State>() { State.FOLDER_PATH_EMPTY,
+                                                           State.FOLDER_PATH_NOT_FOUND};
+            State missingListState = StateChecks.performStateChecks(missingListChecks,
+                                                                    missingListPathField.Text);
+            State logFileState = StateChecks.performStateChecks(logFileChecks,
+                                                                logFilePathField.Text);
+            State folderState = StateChecks.performStateChecks(folderChecks,
+                                                               saveFileToPathField.Text);
+            if (missingListState != State.READY)
             {
-                showErrorMessage(missingListState);
+                StateChecks.showErrorMessage(missingListState, missingListPathField.Text);
             }
-            else if (logFileState != LOG_FILE_READY)
+            else if (logFileState != State.READY)
             {
-                showErrorMessage(logFileState);
+                StateChecks.showErrorMessage(logFileState, logFilePathField.Text);
             }
-            else if (folderState != FOLDER_READY)
+            else if (folderState != State.READY)
             {
-                showErrorMessage(folderState);
+                StateChecks.showErrorMessage(folderState, saveFileToPathField.Text);
             }
             else
             {
@@ -377,45 +372,6 @@ namespace MB_Utilities.ui.grandview
         
         /************* UTILITY FUNCTIONS ******************/
 
-        private int getMissingListState()
-        {
-            if (string.IsNullOrEmpty(missingListPathField.Text))
-            {
-                return MISSING_LIST_PATH_EMPTY;
-            }
-            else if (!File.Exists(missingListPathField.Text))
-            {
-                return MISSING_LIST_NOT_FOUND;
-            }
-            return MISSING_LIST_READY;
-        }
-
-        private int getLogFileState()
-        {
-            if (string.IsNullOrEmpty(logFilePathField.Text))
-            {
-                return LOG_FILE_PATH_EMPTY;
-            }
-            else if (!File.Exists(logFilePathField.Text))
-            {
-                return LOG_FILE_NOT_FOUND;
-            }
-            return LOG_FILE_READY;
-        }
-
-        private int getFolderState()
-        {
-            if (string.IsNullOrEmpty(saveFileToPathField.Text))
-            {
-                return FOLDER_PATH_EMPTY;
-            }
-            else if (!Directory.Exists(saveFileToPathField.Text))
-            {
-                return FOLDER_NOT_FOUND;
-            }
-            return FOLDER_READY;
-        }
-
         private void disableUI()
         {
             chooseMissingListBTN.Enabled = false;
@@ -430,34 +386,6 @@ namespace MB_Utilities.ui.grandview
             chooseLogFileBTN.Enabled = true;
             saveFileToBTN.Enabled = true;
             createListsBTN.Enabled = true;
-        }
-
-        private void showErrorMessage(int error)
-        {
-            switch (error)
-            {
-                case MISSING_LIST_PATH_EMPTY:
-                    MessageBox.Show("Please select the GV missing list");
-                    return;
-                case MISSING_LIST_NOT_FOUND:
-                    MessageBox.Show("The GV missing list could not be found.");
-                    return;
-                case LOG_FILE_PATH_EMPTY:
-                    MessageBox.Show("Please select a GV log file.");
-                    return;
-                case LOG_FILE_NOT_FOUND:
-                    MessageBox.Show("The log file you selected could not be found.");
-                    return;
-                case FOLDER_PATH_EMPTY:
-                    MessageBox.Show("Please select a folder.");
-                    return;
-                case FOLDER_NOT_FOUND:
-                    MessageBox.Show("The folder you selected could not be found.");
-                    return;
-                default:
-                    MessageBox.Show("An unspecified error occurred.");
-                    return;
-            }
         }
     }
 }
