@@ -8,6 +8,11 @@ using OfficeOpenXml;
 
 namespace MB_Utilities.utils
 {
+    // The main use of this is the createSubLists function
+    // It takes in a spreadsheet that is assumed to be a missing list from CT or GV hospital as well as a list of log codes (sub list IDS)
+    // It then creates a list of sublists structs for each list that was input
+    // If the list cannot be found on the spreadsheet it will return an empty sublist for that ID
+    // loadPatientInfo is the same for each hospital, but this is flexible and there can be different info loaded for different hospitals
     class MissingList
     {
         // string that indicates the end of the UnbilledRegularReport
@@ -58,6 +63,7 @@ namespace MB_Utilities.utils
 
         /*
          * Header string is in col B (2)
+         * Footer string is in col B (2)
          * EOF string is in col N (14)
          * charts begin 2 rows after header string
          */
@@ -127,6 +133,8 @@ namespace MB_Utilities.utils
                 string patientName = worksheet.Cells[row, 3].GetValue<string>();
                 string date = worksheet.Cells[row, 7].GetValue<DateTime>().ToShortDateString();
 
+                // chartNum is used as the key AND is a field in the dictionary
+                // This redundancy is so the lists that are created can be ordered using the chartNum field
                 Dictionary<string, string> patientInfo = new Dictionary<string, string>()
                 {
                     { "rowNum", row.ToString()},

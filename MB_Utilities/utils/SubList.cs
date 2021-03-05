@@ -7,6 +7,10 @@ using System.Windows.Forms;
 
 namespace MB_Utilities.utils
 {
+    // name => log code ID (TD, NN, ME, etc)
+    // startRow => row number on spreadsheet where first chart is on sublist
+    // endRow => row number + 1 where last chart is on sublist
+    // patientInfo => nested dictionary where key is chart number and secondary dictionary can have any info that you would want to load for the patient
     class SubList
     {
         public string name;
