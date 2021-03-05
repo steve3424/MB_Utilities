@@ -17,6 +17,7 @@ namespace MB_Utilities.utils
         FILE_PATH_EMPTY,
         FILE_PATH_NOT_FOUND,
         FILE_INCORRECT_CT,
+        FILE_INCORRECT_GV,
 
         BAD_FILE_NAME,
         BAD_FILE_NAME_SKIP_BAD,
@@ -93,9 +94,17 @@ namespace MB_Utilities.utils
                         break;
                     case State.FILE_INCORRECT_CT:
                         {
-                            if (!StateChecks.correctFile(path))
+                            if (!StateChecks.correctFileCT(path))
                             {
                                 return State.FILE_INCORRECT_CT;
+                            }
+                        }
+                        break;
+                    case State.FILE_INCORRECT_GV:
+                        {
+                            if (!StateChecks.correctFileGV(path))
+                            {
+                                return State.FILE_INCORRECT_GV;
                             }
                         }
                         break;
@@ -152,6 +161,11 @@ namespace MB_Utilities.utils
                 case State.FILE_INCORRECT_CT:
                     {
                         MessageBox.Show("This doesn't look like the CT coding log file: " + path);
+                    }
+                    break;
+                case State.FILE_INCORRECT_GV:
+                    {
+                        MessageBox.Show("This doesn't look like the GV coding log file: " + path);
                     }
                     break;
                 case State.CHECKBOX_NOT_CHECKED:
@@ -225,7 +239,7 @@ namespace MB_Utilities.utils
             return true;
         }
 
-        private static bool correctFile(string path)
+        private static bool correctFileCT(string path)
         {
             string fileName = Path.GetFileNameWithoutExtension(path);
             // get first 5 letters of file name
@@ -239,6 +253,26 @@ namespace MB_Utilities.utils
             }
 
             if (hospitalCode == "1938L")
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private static bool correctFileGV(string path)
+        {
+            string fileName = Path.GetFileNameWithoutExtension(path);
+            // get first 5 letters of file name
+            string hospitalCode = "";
+            if (fileName.Length >= 5)
+            {
+                for (int i = 0; i < 5; ++i)
+                {
+                    hospitalCode += fileName[i];
+                }
+            }
+
+            if (hospitalCode == "1950L")
             {
                 return true;
             }
