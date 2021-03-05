@@ -90,7 +90,7 @@ namespace MB_Utilities.ui.grandview
             }
             else
             {
-                List<Dictionary<string, string>> logFile = loadLogFile();
+                List<Dictionary<string, string>> logFile = LogReportOnDemand.loadLogFile(logFilePathField.Text);
                 List<Dictionary<string, string>> missingList = createMissingList(logFile);
                 List<Dictionary<string, string>> voidedList = createVoidedList(logFile);
 
@@ -139,39 +139,6 @@ namespace MB_Utilities.ui.grandview
 
             sw.Flush();
             sw.Close();
-        }
-
-
-        /************* CREATE LIST FUNCTIONS ******************/
-
-        private List<Dictionary<string, string>> loadLogFile()
-        {
-            List<Dictionary<string, string>> logFile = new List<Dictionary<string, string>>();
-
-            string[] lines = File.ReadAllLines(logFilePathField.Text).Where(line => line != "").ToArray();
-            foreach (string line in lines)
-            {
-                string[] chartInfo = line.Split(',');
-                string date = chartInfo[0];
-                string chartNum = chartInfo[1];
-                string lastName = chartInfo[2];
-                string firstName = chartInfo[3];
-                string logCode = chartInfo[4];
-                Dictionary<string, string> patientInfo = new Dictionary<string, string>()
-                {
-                    {"date", date },
-                    {"chartNum", chartNum },
-                    {"lastName", lastName },
-                    {"firstName", firstName },
-                    {"logCode", logCode },
-                    {"missing", " " }
-                };
-                logFile.Add(patientInfo);
-            }
-
-            // log file is not necessarily in number order so it must be sorted by chart num
-            logFile = logFile.OrderBy(x => x["chartNum"]).ToList<Dictionary<string, string>>();
-            return logFile;
         }
 
         private List<Dictionary<string, string>> createMissingList(List<Dictionary<string, string>> logFile)
