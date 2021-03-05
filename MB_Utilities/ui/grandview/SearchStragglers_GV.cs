@@ -17,12 +17,6 @@ namespace MB_Utilities.ui.grandview
 {
     public partial class SearchStragglers_GV : UserControl
     {
-
-        // check box states
-        private const int CHECKBOX_READY = 7;
-        private const int CHECKBOX_NOT_SELECTED = 8;
-
-
         public SearchStragglers_GV()
         {
             InitializeComponent();

@@ -21,7 +21,7 @@ namespace MB_Utilities.utils
             {"SC", "SC - MISSING SIGNATURE BUT CODED"},
             {"SG", "SG - MISSING SIGNATURE"},
             {"TD", "TD - MISSING COMPLETE CHART"},
-            {"WR", "need to implement"}
+            {"WR", "WR - WAITING FOR RESPONSE FROM FACI"}
         };
 
         public static Dictionary<string, string> footer_strings = new Dictionary<string, string>() {
@@ -31,7 +31,7 @@ namespace MB_Utilities.utils
             {"SC", "SC - MISSING SIGNATURE BUT CODED Total:"},
             {"SG", "SG - MISSING SIGNATURE Total:"},
             {"TD", "TD - MISSING COMPLETE CHART Total:"},
-            {"WR", "need to implement"}
+            {"WR", "WR - WAITING FOR RESPONSE FROM FACI Total:"}
         };
 
         public static List<SubList> createSubLists(List<string> subListsToCreate, string missingListPathField)
