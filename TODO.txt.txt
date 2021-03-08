@@ -1,0 +1,18 @@
+- CT Process Files
+	-- Why load files into list and then go through them, why not go through each file with Enumerate.Files or something ??
+	-- Have doc list loaded from file so it is easy to change without recompiling AND have default list if file is not found
+
+- CT Process Stragglers
+	-- Skip "- BAD" files when checking file names
+	-- Load "- BAD" into list to check if it is TD, then output UiPath list to modify to NN
+	-- Show Warning doesn't need to be a function.
+
+- CT Create Lists
+	-- Refactor "- BAD" NN chart processing
+	-- Abstract out LoadFileNames()
+	-- Move RG, TD, and VD list to Missing List modules
+	-- Refactor word doc creation
+	-- Abstract out word doc creation
+
+- BOTH Missing List / Sub List
+	-- Load RG, TD, and VD lists from file AND have default lists if file is not found
