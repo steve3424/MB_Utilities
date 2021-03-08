@@ -11,7 +11,10 @@
 	-- Refactor "- BAD" NN chart processing
 	-- Abstract out LoadFileNames()
 	-- Move RG, TD, and VD list to Missing List modules
+	-- createStragglerLists() enumerates files when we already load files into hashset
 	-- Refactor word doc creation
+		--- createAccountabilityLists(missingList, voidedList, stragglerList, date, hospitalCode=(GV,CT))
+		--- file name should be (GV,CT)_accountability_lists_DOS_(1,2,3,...).docx
 	-- Abstract out word doc creation
 
 - BOTH Missing List / Sub List
