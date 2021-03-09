@@ -3,8 +3,7 @@
 	-- Have doc list loaded from file so it is easy to change without recompiling AND have default list if file is not found
 
 - CT Process Stragglers
-	-- Skip "- BAD" files when checking file names
-	-- Load "- BAD" into list to check if it is TD, then output UiPath list to modify to NN
+	-- Procces "- BAD" to NN list
 	-- Show Warning doesn't need to be a function.
 
 - CT Create Lists
@@ -17,5 +16,11 @@
 		--- file name should be (GV,CT)_accountability_lists_DOS_(1,2,3,...).docx
 	-- Abstract out word doc creation
 
-- BOTH Missing List / Sub List
+- CT Load Days
+	-- Doesn't work for stragglers, coding changed the file format so this needs to be changed
+
+- GV Create Lists
+	-- Refactor word doc creation
+
+- UTILS Missing List / Sub List
 	-- Load RG, TD, and VD lists from file AND have default lists if file is not found
